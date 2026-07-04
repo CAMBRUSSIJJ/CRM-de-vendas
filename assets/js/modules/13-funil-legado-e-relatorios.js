@@ -1,0 +1,200 @@
+/* Script original 13 */
+(function(){ window.__crmFunilV25_disabled = true; })();
+/* Script original 14 */
+(function(){ window.__crmFunilV26_disabled = true; })();
+/* Script original 15 */
+(function(){
+  'use strict';
+  if(window.__crmFunilV27) return; window.__crmFunilV27=true;
+  const $=(q,r=document)=>r.querySelector(q);
+  const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const COLORS={Lead:['#19b5a5','#10a093'],Contato:['#8cc84b','#73b43a'],Proposta:['#d8cf20','#c8be17'],Fechado:['#ff8427','#ef6f18'],Perdido:['#d82035','#bb1428']};
+  const WIDTHS=[100,88,76,64,52];
+
+  function getLeads(){try{if(typeof safeLeads==='function')return safeLeads()}catch(e){}try{if(Array.isArray(window.leads))return window.leads}catch(e){}try{if(typeof leads!=='undefined'&&Array.isArray(leads))return leads}catch(e){}try{return JSON.parse(localStorage.getItem('outbounder_leads_v5')||'[]')}catch(e){return[]}}
+  function stages(){try{if(Array.isArray(window.STAGES)&&window.STAGES.length)return window.STAGES}catch(e){}return ['Lead','Contato','Proposta','Fechado','Perdido']}
+  function prob(s){try{if(window.PROB&&window.PROB[s]!=null)return Number(window.PROB[s])||0}catch(e){}return {Lead:10,Contato:30,Proposta:60,Fechado:100,Perdido:0}[s]??0}
+  function brl(v){try{return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(Number(v)||0)}catch(e){return 'R$ '+(Number(v)||0)}}
+  function pct(a,b){a=Number(a)||0;b=Number(b)||0;return b?Math.round(a*100/b):0}
+  function today(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+  function parseDate(v){if(!v)return null;const d=new Date(String(v).slice(0,10)+'T12:00:00');return isNaN(+d)?null:d}
+  function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+  function addMonths(d,n){return new Date(d.getFullYear(),d.getMonth()+n,1)}
+  function days(v){const d=parseDate(v);if(!d)return 0;return Math.max(0,Math.round((today()-d)/86400000))}
+  function uniq(list,key){return [...new Set(list.map(l=>l[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'pt-BR'))}
+  function leadDate(l){return parseDate(l.ultimaAtualizacao||l.dataEntrada||l.criadoEm||l.followup)}
+  function lossReason(l){return l.motivoPerda||l.perdaMotivo||l.motivo||l.razaoPerda||l.lossReason||(l.etapa==='Perdido'?'Sem motivo informado':'')}
+
+  function filtered(){
+    const all=getLeads(), period=$('#v27Period')?.value||'all', resp=$('#v27Resp')?.value||'', orig=$('#v27Orig')?.value||'';
+    const t=today();let start=null;
+    if(period==='month')start=new Date(t.getFullYear(),t.getMonth(),1);
+    if(period==='30d')start=new Date(t.getFullYear(),t.getMonth(),t.getDate()-29);
+    if(period==='90d')start=new Date(t.getFullYear(),t.getMonth(),t.getDate()-89);
+    return all.filter(l=>{if(resp&&(l.responsavel||'')!==resp)return false;if(orig&&(l.origem||'')!==orig)return false;if(start){const d=leadDate(l);if(d&&d<start)return false}return true});
+  }
+  function rows(list){
+    const total=Math.max(1,list.length);
+    return stages().map((s,i)=>{const arr=list.filter(l=>(l.etapa||'Lead')===s), val=arr.reduce((a,l)=>a+(Number(l.valor)||0),0), fc=arr.reduce((a,l)=>a+(Number(l.valor)||0)*(Number(l.probabilidade||prob(s))/100),0), next=stages()[i+1], nextCnt=next?list.filter(l=>(l.etapa||'Lead')===next).length:0, conv=s==='Fechado'?100:s==='Perdido'?0:pct(nextCnt,arr.length||1), avg=arr.length?Math.round(arr.reduce((a,l)=>a+days(l.ultimaAtualizacao||l.dataEntrada||l.criadoEm),0)/arr.length):0, stale=arr.filter(l=>!['Fechado','Perdido'].includes(s)&&days(l.ultimaAtualizacao||l.dataEntrada||l.criadoEm)>=7).length;return{stage:s,arr,val,forecast:fc,conv,avg,stale,share:pct(arr.length,total)}});
+  }
+  function recs(rs){const rec=[],lead=rs.find(r=>r.stage==='Lead'),cont=rs.find(r=>r.stage==='Contato'),prop=rs.find(r=>r.stage==='Proposta'),lost=rs.find(r=>r.stage==='Perdido'),b=rs.filter(r=>!['Fechado','Perdido'].includes(r.stage)&&r.arr.length).sort((a,b)=>a.conv-b.conv)[0];if((lead?.arr.length||0)>(cont?.arr.length||0))rec.push(['Acelerar primeiro contato','O topo do funil está maior que a etapa de contato. Crie uma rotina diária para abordar os leads novos antes que esfriem.']);if(prop?.stale)rec.push(['Propostas precisam de follow-up',`Há ${prop.stale} oportunidade(s) em proposta sem atualização recente. Priorize retorno com prazo de decisão.`]);if(lost?.arr.length)rec.push(['Usar perdas como aprendizado','Classifique os motivos de perda para encontrar padrões de preço, timing, concorrência ou falta de interesse.']);if(b)rec.push(['Gargalo principal: '+b.stage,'Revise abordagem, objeções e próximos passos dessa etapa antes de aumentar volume no topo.']);if(!rec.length)rec.push(['Funil saudável','Não há alerta crítico no filtro atual. Continue monitorando follow-ups e próximas ações.']);return rec.slice(0,4)}
+  function compare(all){const now=today(),cur=monthKey(now),prev=monthKey(addMonths(now,-1));return stages().map(s=>{const c=all.filter(l=>(l.etapa||'Lead')===s&&leadDate(l)&&monthKey(leadDate(l))===cur).length,p=all.filter(l=>(l.etapa||'Lead')===s&&leadDate(l)&&monthKey(leadDate(l))===prev).length;return{stage:s,cur:c,prev:p,delta:c-p}})}
+  function losses(list){const map={};list.filter(l=>(l.etapa||'')==='Perdido').forEach(l=>{const r=lossReason(l)||'Sem motivo informado';map[r]=(map[r]||0)+1});return Object.entries(map).sort((a,b)=>b[1]-a[1])}
+  function openLead(l){try{if(typeof openDetail==='function')return openDetail(l.id||l.nome)}catch(e){}try{if(window.openDetail)return window.openDetail(l.id||l.nome)}catch(e){}}
+
+  function renderPanel(r){const box=$('#v27StagePanel');if(!box||!r)return;box.innerHTML=`<div class="stage">${esc(r.stage)}</div><div class="meta">${r.arr.length} lead(s) · ${r.share}% da base filtrada</div><div class="v27-stage-stats"><div class="v27-stat"><b>${brl(r.val)}</b><span>Valor total</span></div><div class="v27-stat"><b>${brl(r.forecast)}</b><span>Forecast</span></div><div class="v27-stat"><b>${r.conv}%</b><span>Conversão</span></div><div class="v27-stat"><b>${r.avg}d</b><span>Tempo médio</span></div></div><div class="v27-rec" style="margin-top:14px"><b>Leitura rápida</b><p>${r.stale?`${r.stale} lead(s) estão parados há 7+ dias. Clique para abrir a lista e priorizar follow-up.`:'Etapa sem acúmulo crítico de oportunidades paradas.'}</p></div><div class="v27-stage-actions"><button class="btn btn-sm btn-primary" type="button" data-v27-open-stage="${esc(r.stage)}">Abrir leads</button><button class="btn btn-sm" type="button" data-view="pipeline">Ver no pipeline</button></div>`}
+
+  function openStage(stage){const list=filtered().filter(l=>(l.etapa||'Lead')===stage),panel=$('#v27LeadsPanel');if(!panel)return;panel.classList.add('active');panel.innerHTML=`<div class="v27-leads-head"><div><div class="v27-leads-title">Leads em ${esc(stage)}</div><div class="v27-sub">${list.length} lead(s) encontrados no filtro atual.</div></div><button class="btn btn-sm" id="v27CloseLeads">Fechar</button></div><div class="v27-lead-list">${list.map(l=>`<div class="v27-lead-row" data-v27-open-lead="${esc(l.id||l.nome)}"><div><b>${esc(l.nome||'Lead')}</b><span>${esc(l.segmento||'Sem segmento')} · ${esc(l.responsavel||'Sem responsável')} · ${esc(l.origem||'Sem origem')}</span></div><div class="v27-lead-value">${brl(l.valor||0)}</div></div>`).join('')||'<div class="crm-empty">Nenhum lead nessa etapa.</div>'}</div>`;$('#v27CloseLeads')?.addEventListener('click',()=>panel.classList.remove('active'));$$('[data-v27-open-lead]',panel).forEach(row=>row.addEventListener('click',()=>{const lead=getLeads().find(l=>String(l.id||l.nome)===String(row.dataset.v27OpenLead));if(lead)openLead(lead)}));panel.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+  function render(){
+    let page=$('#funil');if(!page){page=document.createElement('section');page.id='funil';page.className='view grid-view';$('#pipeline')?.insertAdjacentElement('afterend',page)}
+    page.className='view grid-view funil-v27'+(page.classList.contains('active')?' active':'');
+    const oldMode=page.dataset.v27Mode||localStorage.getItem('crm_funil_v27_mode')||'funnel';
+    const all=getLeads(), period=$('#v27Period')?.value||'all', resp=$('#v27Resp')?.value||'', orig=$('#v27Orig')?.value||'', resps=uniq(all,'responsavel'), origs=uniq(all,'origem');
+    page.innerHTML=`<div class="section-header"><div><div class="section-title-text">Funil de vendas</div><div class="section-sub">Conversão, forecast, comparativo mensal e motivos de perda.</div></div><div class="v27-actions"><button class="btn btn-sm" type="button" data-view="pipeline">Abrir pipeline</button></div></div><div class="v27-shell"><div class="v27-viewbar"><div class="v27-viewbar-title"><b>Visualização do funil</b><span>Escolha como quer analisar o funil de vendas.</span></div><div class="v27-switch"><button type="button" data-v27-mode="funnel">Funil interativo</button><button type="button" data-v27-mode="clean">Visão limpa</button><button type="button" data-v27-mode="compare">Comparativo</button><button type="button" data-v27-mode="losses">Perdas</button></div></div><div class="v27-filters"><div class="v27-field"><label>Período</label><select id="v27Period"><option value="all">Geral</option><option value="month">Mês atual</option><option value="30d">Últimos 30 dias</option><option value="90d">Últimos 90 dias</option></select></div><div class="v27-field"><label>Responsável</label><select id="v27Resp"><option value="">Todos responsáveis</option>${resps.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div><div class="v27-field"><label>Origem</label><select id="v27Orig"><option value="">Todas origens</option>${origs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div></div><div class="v27-kpis" id="v27Kpis"></div><div class="v27-main-grid v27-only-funnel"><div class="v27-card"><div class="v27-card-head"><div><div class="v27-title">Funil interativo</div><div class="v27-sub">Passe o mouse para ver informações. Clique em uma etapa para abrir os leads.</div></div></div><div class="v27-body"><div class="v27-funnel-layout"><div class="v27-funnel" id="v27Funnel"></div><div class="v27-stage-panel" id="v27StagePanel"></div></div></div></div><div class="v27-card"><div class="v27-card-head"><div><div class="v27-title">Recomendações</div><div class="v27-sub">Ações sugeridas para destravar o processo.</div></div></div><div class="v27-body"><div class="v27-rec-list" id="v27Recs"></div></div></div></div><div id="v27LeadsPanel" class="v27-leads-panel"></div><div class="v27-card v27-only-clean"><div class="v27-card-head"><div><div class="v27-title">Visão limpa por etapa</div><div class="v27-sub">Use quando quiser leitura mais objetiva, sem animações.</div></div></div><div class="v27-body v27-table-wrap"><table class="v27-table"><thead><tr><th>Etapa</th><th>Leads</th><th>Valor</th><th>Forecast</th><th>Conversão</th><th>Tempo médio</th><th>Parados</th></tr></thead><tbody id="v27Table"></tbody></table></div></div><div class="v27-card v27-only-compare"><div class="v27-card-head"><div><div class="v27-title">Este mês vs mês passado</div><div class="v27-sub">Comparativo de volume por etapa.</div></div></div><div class="v27-body"><div class="v27-compare-grid" id="v27Compare"></div></div></div><div class="v27-card v27-only-losses"><div class="v27-card-head"><div><div class="v27-title">Perdas por motivo</div><div class="v27-sub">Ranking de motivos registrados nos leads perdidos.</div></div></div><div class="v27-body"><div class="v27-loss-grid" id="v27Losses"></div></div></div></div>`;
+    $('#v27Period').value=period; $('#v27Resp').value=resp; $('#v27Orig').value=orig;
+    const list=filtered(), rs=rows(list), active=list.filter(l=>!['Fechado','Perdido'].includes(l.etapa)), won=list.filter(l=>l.etapa==='Fechado'), openVal=active.reduce((s,l)=>s+(Number(l.valor)||0),0), forecast=rs.reduce((s,r)=>s+r.forecast,0), bottleneck=rs.filter(r=>!['Fechado','Perdido'].includes(r.stage)&&r.arr.length).sort((a,b)=>a.conv-b.conv)[0]||rs[0];
+    $('#v27Kpis').innerHTML=`<div class="v27-kpi"><div class="val">${pct(won.length,Math.max(1,active.length||list.length))}%</div><div class="lbl">Conversão geral</div><div class="hint">Fechados em relação às oportunidades do filtro.</div></div><div class="v27-kpi"><div class="val">${brl(openVal)}</div><div class="lbl">Valor em negociação</div><div class="hint">Soma das oportunidades abertas.</div></div><div class="v27-kpi"><div class="val">${brl(forecast)}</div><div class="lbl">Forecast ponderado</div><div class="hint">Valor x probabilidade da etapa.</div></div><div class="v27-kpi"><div class="val">${esc(bottleneck?.stage||'—')}</div><div class="lbl">Gargalo principal</div><div class="hint">Etapa com menor avanço aparente.</div></div>`;
+    $('#v27Funnel').innerHTML=rs.map((r,i)=>{const c=COLORS[r.stage]||['#2563eb','#1d4ed8'],w=WIDTHS[i]||Math.max(46,100-i*12);return `<button class="v27-stage${i===0?' active':''}" type="button" data-v27-stage="${esc(r.stage)}" style="--w:${w}%;--c1:${c[0]};--c2:${c[1]}"><div class="v27-stage-inner"><div><div class="v27-stage-name">${esc(r.stage)}</div><div class="v27-stage-meta">${r.arr.length} lead(s) · ${brl(r.val)} · forecast ${brl(r.forecast)}</div></div><div class="v27-stage-side">${r.share}% da base<br>Conv. ${r.conv}%</div></div><div class="v27-tip"><b>${esc(r.stage)}</b><span>${r.arr.length} lead(s) · ${brl(r.val)}<br>Forecast ${brl(r.forecast)} · ${r.conv}% conversão<br>${r.avg} dia(s) médios · ${r.stale} parado(s)</span></div></button>`}).join('');
+    function select(stage){const r=rs.find(x=>x.stage===stage)||rs[0];$$('#v27Funnel .v27-stage').forEach(b=>b.classList.toggle('active',b.dataset.v27Stage===r.stage));renderPanel(r)}
+    select(rs[0]?.stage);
+    $$('#v27Funnel .v27-stage').forEach(b=>{b.addEventListener('mouseenter',()=>select(b.dataset.v27Stage));b.addEventListener('click',()=>openStage(b.dataset.v27Stage))});
+    $('#v27Recs').innerHTML=recs(rs).map(([t,p])=>`<div class="v27-rec"><b>${esc(t)}</b><p>${esc(p)}</p></div>`).join('');
+    $('#v27Table').innerHTML=rs.map(r=>`<tr data-v27-stage-row="${esc(r.stage)}"><td><span class="v27-pill" style="color:${(COLORS[r.stage]||['#2563eb'])[0]}"><span class="v27-dot"></span>${esc(r.stage)}</span></td><td>${r.arr.length}</td><td>${brl(r.val)}</td><td>${brl(r.forecast)}</td><td>${r.conv}%</td><td>${r.avg}d</td><td>${r.stale}</td></tr>`).join('');
+    $$('[data-v27-stage-row]').forEach(r=>r.addEventListener('click',()=>openStage(r.dataset.v27StageRow)));
+    $('#v27Compare').innerHTML=compare(all).map(r=>{const cls=r.delta>0?'up':r.delta<0?'down':'flat',txt=r.delta>0?`+${r.delta}`:String(r.delta);return `<div class="v27-compare-card"><b>${esc(r.stage)}</b><div class="v27-compare-nums"><strong>${r.cur}</strong><span>este mês<br>${r.prev} mês passado</span></div><em class="v27-delta ${cls}">${txt}</em></div>`}).join('');
+    const los=losses(list), max=Math.max(1,...los.map(x=>x[1]));$('#v27Losses').innerHTML=los.length?los.map(([name,count])=>`<div class="v27-loss-row"><div class="v27-loss-name">${esc(name)}</div><div class="v27-loss-track"><div class="v27-loss-fill" style="width:${pct(count,max)}%"></div></div><div class="v27-loss-count">${count}</div></div>`).join(''):'<div class="crm-empty">Nenhum motivo de perda registrado no filtro atual.</div>';
+    function mode(m){page.dataset.v27Mode=m;localStorage.setItem('crm_funil_v27_mode',m);$$('[data-v27-mode]',page).forEach(b=>b.classList.toggle('active',b.dataset.v27Mode===m))}
+    mode(oldMode);
+    $$('[data-v27-mode]',page).forEach(b=>b.addEventListener('click',()=>mode(b.dataset.v27Mode)));
+    ['#v27Period','#v27Resp','#v27Orig'].forEach(s=>$(s)?.addEventListener('change',render));
+    $$('[data-v27-open-stage]',page).forEach(btn=>btn.addEventListener('click',()=>openStage(btn.dataset.v27OpenStage)));
+  }
+
+  function patch(){
+    try{window.renderFunilPage=render; renderFunilPage=render}catch(e){}
+    try{const old=window.setView;if(typeof old==='function'&&!old.__funilv27){const w=function(v){const out=old.apply(this,arguments);if(v==='funil'){setTimeout(render,30);setTimeout(render,160)}return out};w.__funilv27=true;window.setView=w;try{setView=w}catch(e){}}}catch(e){}
+    document.addEventListener('click',e=>{if(e.target.closest('[data-view="funil"],[data-go="funil"]')){setTimeout(render,80);setTimeout(render,220)}},true);
+    /* render interval removido para evitar piscar */
+  }
+  function init(){patch(); if($('#funil')) render();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+/* Script original 16 */
+(function(){
+  'use strict';
+  if(window.__crmFunilV28Stability) return;
+  window.__crmFunilV28Stability = true;
+  const $=(q,r=document)=>r.querySelector(q);
+  const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+
+  function markButtonLabel(){
+    const page=$('#funil');
+    if(!page) return;
+    const bar=page.querySelector('.v27-viewbar-title b');
+    if(bar) bar.textContent='Botão de mudar visualização do funil';
+    const subtitle=page.querySelector('.v27-viewbar-title span');
+    if(subtitle) subtitle.textContent='Troque entre Funil interativo, Visão limpa, Comparativo e Perdas sem recarregar a aba.';
+    const actions=page.querySelector('.v27-actions');
+    if(actions && !page.querySelector('#v28ToggleVisual')){
+      actions.insertAdjacentHTML('afterbegin','<button class="btn btn-sm btn-primary" type="button" id="v28ToggleVisual">Mudar visualização</button>');
+    }
+  }
+
+  function renderStable(){
+    const page=$('#funil');
+    if(!page) return;
+    if(typeof window.renderFunilPage==='function'){
+      try{ window.renderFunilPage(); }catch(e){ console.warn('Funil v28:', e); }
+    }
+    markButtonLabel();
+    page.classList.add('funil-v27');
+    if(page.classList.contains('active')) page.style.display='grid';
+  }
+
+  function activateFunil(){
+    const page=$('#funil');
+    if(!page) return;
+    document.querySelectorAll('.view').forEach(v=>{
+      if(v.id==='chat') v.classList.remove('active');
+      else v.classList.toggle('active', v.id==='funil');
+      if(v.id!=='funil' && v.id!=='chat') v.style.display='';
+    });
+    page.classList.add('active','grid-view','funil-v27');
+    page.style.display='grid';
+    const title=$('#topbarTitle'), sub=$('#topbarSub');
+    if(title) title.textContent='Funil de vendas';
+    if(sub) sub.textContent='Conversão, forecast, comparativo mensal e motivos de perda';
+    document.querySelectorAll('[data-view],[data-go],[data-go-view]').forEach(el=>{
+      const v=el.dataset.view||el.dataset.go||el.dataset.goView;
+      el.classList.toggle('active', v==='funil');
+    });
+    renderStable();
+  }
+
+  function patchSetView(){
+    const old=window.setView;
+    if(typeof old==='function' && !old.__funilV28Stable){
+      const wrapped=function(view){
+        if(view==='funil'){
+          activateFunil();
+          return;
+        }
+        const out=old.apply(this,arguments);
+        const page=$('#funil');
+        if(page && view!=='funil') page.style.display='';
+        return out;
+      };
+      wrapped.__funilV28Stable=true;
+      window.setView=wrapped;
+      try{ setView=wrapped; }catch(e){}
+    }
+  }
+
+  function bind(){
+    document.addEventListener('click',function(e){
+      const btn=e.target.closest('[data-view="funil"],[data-go="funil"],[data-go-view="funil"]');
+      if(!btn) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      activateFunil();
+    },true);
+
+    document.addEventListener('click',function(e){
+      const quick=e.target.closest('#v28ToggleVisual');
+      if(quick){
+        e.preventDefault();
+        const page=$('#funil');
+        if(page){
+          const order=['funnel','clean','compare','losses'];
+          const current=page.dataset.v27Mode||localStorage.getItem('crm_funil_v27_mode')||'funnel';
+          const next=order[(Math.max(0,order.indexOf(current))+1)%order.length];
+          page.dataset.v27Mode=next;
+          try{localStorage.setItem('crm_funil_v27_mode',next)}catch(_){ }
+          $$('#funil [data-v27-mode]').forEach(b=>b.classList.toggle('active',b.dataset.v27Mode===next));
+        }
+        return;
+      }
+      const modeBtn=e.target.closest('#funil [data-v27-mode]');
+      if(modeBtn){
+        const page=$('#funil');
+        if(page){
+          page.dataset.v27Mode=modeBtn.dataset.v27Mode;
+          try{localStorage.setItem('crm_funil_v27_mode',modeBtn.dataset.v27Mode)}catch(_){ }
+          $$('#funil [data-v27-mode]').forEach(b=>b.classList.toggle('active',b===modeBtn));
+        }
+      }
+    },true);
+  }
+
+  function init(){
+    patchSetView();
+    bind();
+    const page=$('#funil');
+    if(page && page.classList.contains('active')) renderStable();
+    setTimeout(()=>{patchSetView(); if($('#funil.active')) renderStable();},120);
+    setTimeout(()=>{patchSetView(); if($('#funil.active')) renderStable();},360);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();

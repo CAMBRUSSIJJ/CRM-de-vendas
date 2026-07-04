@@ -1,38 +1,1043 @@
-<!doctype html>
-<html lang="pt-BR" data-theme="light">
+<!DOCTYPE html>
+
+<html data-theme="light" lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Outbounder CRM Modular</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles/base.css" />
-  <link rel="stylesheet" href="./styles/layout.css" />
-  <link rel="stylesheet" href="./styles/components.css" />
-</head>
-<body>
-  <aside id="appSidebar" class="sidebar" aria-label="Menu principal"></aside>
+&lt;!-- CRM v47 modularizado: estilos e scripts foram separados para facilitar manutenção e reduzir risco de código visível na tela. --&gt;
 
-  <header class="topbar">
-    <div>
-      <h1 id="pageTitle">Início</h1>
-      <p id="pageSubtitle">CRM modularizado, sem backend e sem Vite.</p>
-    </div>
-    <div class="topbar-actions">
-      <button id="globalNewLeadBtn" class="btn btn-primary" type="button">Novo lead</button>
-      <button id="themeToggleBtn" class="btn" type="button">Tema</button>
-    </div>
-  </header>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Outbounder CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Inter+Tight:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 
-  <main id="appMain" class="main" tabindex="-1">
-    <section class="loading-card">
-      <strong>Carregando CRM...</strong>
-      <span>Preparando módulos e dados locais.</span>
-    </section>
-  </main>
+<link href="assets/css/app.css" rel="stylesheet"/><link href="assets/css/crm-ui-profissional.css" rel="stylesheet"/></head>
+<body><svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></symbol><symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></symbol><symbol id="ic-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6M23 11h-6"></path></symbol><symbol id="ic-columns" viewBox="0 0 24 24"><rect height="4" width="6" x="2" y="7"></rect><rect height="4" width="6" x="9" y="13"></rect><rect height="4" width="6" x="16" y="7"></rect></symbol><symbol id="ic-icon-05" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></symbol><symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol><symbol id="ic-icon-07" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></symbol><symbol id="ic-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6M9 9l6 6"></path></symbol><symbol id="ic-grid" viewBox="0 0 24 24"><rect height="9" rx="1" width="9" x="2" y="3"></rect><rect height="9" rx="1" width="9" x="13" y="3"></rect><rect height="7" rx="1" width="9" x="2" y="14"></rect><rect height="7" rx="1" width="9" x="13" y="14"></rect></symbol><symbol id="ic-trending-up" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"></path></symbol><symbol id="ic-calendar" viewBox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></symbol><symbol id="ic-message-square" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></symbol><symbol id="ic-bar-chart" viewBox="0 0 24 24"><path d="M4 20V9M10 20V4M16 20v-7M22 20v-11"></path></symbol><symbol id="ic-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></symbol><symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></symbol><symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></symbol><symbol id="ic-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></symbol><symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></symbol><symbol id="ic-icon-20" viewBox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01zm3.96-5.37c-.22-.11-1.28-.63-1.48-.7-.2-.07-.34-.11-.49.11-.14.22-.56.7-.69.84-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.74-1.08-.64-.57-1.08-1.27-1.2-1.49-.13-.22-.01-.34.11-.45.11-.11.25-.27.37-.41.12-.14.16-.24.24-.4.08-.16.04-.3-.04-.41-.07-.11-.43-1.04-.59-1.43-.16-.39-.32-.34-.44-.34-.11-.01-.25-.01-.38-.01-.13 0-.34.05-.52.25-.18.2-.69.68-.69 1.65 0 .97.7 1.91.8 2.04.1.13 1.36 2.08 3.31 2.83 1.64.62 1.97.5 2.32.47.35-.04 1.12-.46 1.28-.9.16-.45.16-.83.11-.91-.05-.08-.2-.13-.42-.24z"></path></symbol><symbol id="ic-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></symbol><symbol id="ic-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol><symbol id="ic-icon-23" viewBox="0 0 24 24"><line x1="12" x2="12" y1="1" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></symbol><symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></symbol><symbol id="ic-icon-25" viewBox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01z"></path></symbol><symbol id="ic-icon-26" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></symbol></svg>
+<div id="app">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="sidebar-brand">
+<div class="brand-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><use href="#ic-zap"></use></svg></div>
+<div><div class="brand-name">Outbounder</div><div class="brand-sub">CRM de vendas</div></div>
+</div>
+<nav class="sidebar-nav">
+<div class="nav-label">Principal</div>
+<button class="nav-item active" data-view="inicio"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-home"></use></svg><span>Painel</span></button>
+<button class="nav-item" data-view="leads"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-users"></use></svg><span>Gestão de leads</span><span class="nav-badge" id="navLeadsBadge">4</span></button>
+<button class="nav-item" data-view="pipeline"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-columns"></use></svg><span>Pipeline</span></button>
+<button class="nav-item" data-view="clientes"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-icon-05"></use></svg><span>Clientes</span></button>
+<div class="nav-label" style="margin-top:6px">Ferramentas</div>
+<button class="nav-item" data-view="playbooks"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-book"></use></svg><span>Playbooks</span></button>
+<button class="nav-item" data-view="objecoes"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-icon-07"></use></svg><span>Objeções</span></button>
+<button class="nav-item" data-view="perdas"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-x-circle"></use></svg><span>Motivos de Perda</span></button>
+<button class="nav-item" data-view="dashboard"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-grid"></use></svg><span>Dashboard</span></button>
+<button class="nav-item" data-view="cadencias"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-trending-up"></use></svg><span>Follow-ups</span></button>
+<button class="nav-item" data-view="automacoes"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-zap"></use></svg><span>Automações</span></button>
+<button class="nav-item" data-view="agenda"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-calendar"></use></svg><span>Agenda</span></button>
+<button class="nav-item" data-view="chat"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-message-square"></use></svg><span>Chat</span><span class="nav-badge" id="navChatBadge" style="background:#25d366">0</span></button>
+<button class="nav-item" data-view="metricas"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-bar-chart"></use></svg><span>Métricas</span></button>
+<button class="nav-item" data-view="importar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-upload"></use></svg><span>Importar / Exportar</span></button>
+<button class="nav-item" data-view="novo-lead"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg><span>Novo lead</span></button>
+</nav>
+<div class="sidebar-footer">
+<button class="theme-toggle" id="themeToggle"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg><span>Alternar tema</span></button>
+</div>
+</aside>
+<!-- RAIL -->
+<nav class="rail">
+<div class="rail-logo" data-view="inicio"><svg fill="none" stroke="currentColor" stroke-width="2" style="color:#fff" viewbox="0 0 24 24"><use href="#ic-zap"></use></svg></div>
+<div class="rail-sep"></div>
+<button class="rail-btn active" data-view="inicio" title="Painel"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-home"></use></svg></button>
+<button class="rail-btn" data-view="leads" title="Leads"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-users"></use></svg></button>
+<button class="rail-btn" data-view="pipeline" title="Pipeline"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-columns"></use></svg></button>
+<button class="rail-btn" data-view="clientes" title="Clientes"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-icon-05"></use></svg></button>
+<div class="rail-sep"></div>
+<button class="rail-btn" data-view="playbooks" title="Playbooks"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-book"></use></svg></button>
+<button class="rail-btn" data-view="objecoes" title="Objeções"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-icon-07"></use></svg></button>
+<button class="rail-btn" data-view="perdas" title="Motivos de Perda"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-x-circle"></use></svg></button>
+<button class="rail-btn" data-view="dashboard" title="Dashboard"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-grid"></use></svg></button>
+<button class="rail-btn" data-view="cadencias" title="Follow-ups"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-trending-up"></use></svg></button>
+<button class="rail-btn" data-view="automacoes" title="Automações"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-zap"></use></svg></button>
+<button class="rail-btn" data-view="agenda" title="Agenda"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-calendar"></use></svg></button>
+<button class="rail-btn" data-view="chat" title="Chat / WhatsApp"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-message-square"></use></svg></button>
+<button class="rail-btn" data-view="metricas" title="Métricas"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-bar-chart"></use></svg></button>
+<button class="rail-btn" data-view="importar" title="Importar/Exportar"><svg fill="none" stroke="currentColor" stroke-width="1.9" viewbox="0 0 24 24"><use href="#ic-upload"></use></svg></button>
+<div class="rail-spacer"></div>
+<button class="rail-btn rail-add" data-view="novo-lead" title="Novo lead"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg></button>
+</nav>
+<!-- TOPBAR -->
+<header class="topbar">
+<div class="topbar-left">
+<div class="topbar-title" id="topbarTitle">Painel</div>
+<div class="topbar-sub" id="topbarSub">Visão geral das suas oportunidades</div>
+</div>
+<nav class="topbar-tabs">
+<button class="tab active" data-view="inicio">Painel</button>
+<button class="tab" data-view="leads">Leads</button>
+<button class="tab" data-view="pipeline">Pipeline</button>
+<button class="tab" data-view="agenda">Agenda</button>
+<button class="tab" data-view="chat">Chat</button>
+<button class="tab" data-view="dashboard">Dashboard</button>
+<button class="tab" data-view="playbooks">Playbooks</button>
+<button class="tab" data-view="objecoes">Objeções</button>
+<button class="tab" data-view="perdas">Perdas</button>
+<button class="tab" data-view="metricas">Métricas</button>
+<button class="tab" data-view="cadencias">Follow-ups</button>
+</nav>
+<div class="topbar-actions">
+<button class="btn btn-primary btn-sm" id="openNewLeadBtn"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Novo lead</button>
+</div>
+</header>
+<!-- MAIN -->
+<main class="main">
+<!-- INICIO -->
+<section class="view grid-view active panel-pro-page" id="inicio">
+<div class="panel-pro-hero" data-panel-core="hero" id="panelHero">
+<div class="panel-pro-hero-content">
+<div class="panel-pro-eyebrow">Painel operacional</div>
+<h2 id="panelFocusTitle">Foco do dia</h2>
+<p id="panelFocusText">Veja o que precisa de atenção, execute a próxima ação e mantenha o funil em movimento.</p>
+<div class="panel-pro-hero-actions">
+<button class="btn btn-primary" id="panelStartRoutine" type="button">Começar rotina</button>
+<button class="btn" id="panelNewLeadBtn" type="button">Novo lead</button>
+<button class="btn" data-view="pipeline" type="button">Abrir funil</button>
+</div>
+</div>
+<div class="panel-pro-hero-metrics">
+<div><strong id="homeLeadCount">0</strong><span>Leads ativos</span></div>
+<div><strong id="homePropCount">0</strong><span>Propostas</span></div>
+<div><strong id="homeCloseCount">0</strong><span>Fechados</span></div>
+</div>
+</div>
+<div class="panel-pro-toolbar">
+<div>
+<strong>Quadros do painel</strong>
+<span>Escolha, arraste e mude as cores dos quadros abaixo.</span>
+</div>
+<div class="panel-pro-toolbar-actions">
+<span class="panel-pro-count" id="panelWidgetCount">0 quadros visíveis</span>
+<button class="btn btn-sm" id="panelChooseWidgets" type="button">Escolher quadros</button>
+<button class="btn btn-sm" id="panelMoveWidgets" type="button">Mover quadros</button>
+<button class="btn btn-sm" id="panelShowAllWidgets" type="button">Mostrar todos</button>
+</div>
+</div>
+<div class="panel-pro-grid" id="panelWidgetsGrid">
+<div class="panel-widget" data-color="blue" data-panel-widget="summary">
+<div class="panel-widget-head"><div><h3>Resumo essencial</h3><p>Os quatro números que importam agora.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="summary" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="summary" title="Ocultar" type="button">×</button></div></div>
+<div class="stats-grid panel-stats-grid">
+<div class="stat-card blue"><div class="stat-value" id="kpiLeads">0</div><div class="stat-label">Leads ativos</div></div>
+<div class="stat-card amber"><div class="stat-value" id="kpiPropostas">0</div><div class="stat-label">Propostas abertas</div></div>
+<div class="stat-card green"><div class="stat-value" id="kpiFechamentos">0</div><div class="stat-label">Fechamentos</div></div>
+<div class="stat-card purple"><div class="stat-value" id="kpiPipeline">R$0</div><div class="stat-label">Pipeline aberto</div></div>
+</div>
+</div>
+<div class="panel-widget" data-color="green" data-panel-widget="actions">
+<div class="panel-widget-head"><div><h3>Próximas ações</h3><p>Fila simples para executar sem se perder.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="actions" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="actions" title="Ocultar" type="button">×</button></div></div>
+<div class="panel-action-list" id="panelActionQueue"></div>
+</div>
+<div class="panel-widget" data-color="rose" data-panel-widget="overdue">
+<div class="panel-widget-head"><div><h3>Follow-ups vencidos</h3><p>Prioridade máxima para recuperar contato.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="overdue" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="overdue" title="Ocultar" type="button">×</button></div></div>
+<div class="panel-native-list" id="overdueList"></div>
+</div>
+<div class="panel-widget" data-color="amber" data-panel-widget="today">
+<div class="panel-widget-head"><div><h3>Hoje</h3><p>Ações programadas para o dia.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="today" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="today" title="Ocultar" type="button">×</button></div></div>
+<div class="panel-action-list" id="panelTodayList"></div>
+</div>
+<div class="panel-widget" data-color="purple" data-panel-widget="hot">
+<div class="panel-widget-head"><div><h3>Leads quentes</h3><p>Melhores oportunidades para atacar.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="hot" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="hot" title="Ocultar" type="button">×</button></div></div>
+<div class="panel-action-list" id="panelHotList"></div>
+</div>
+<div class="panel-widget" data-color="cyan" data-panel-widget="shortcuts">
+<div class="panel-widget-head"><div><h3>Atalhos</h3><p>Acesse as áreas principais rapidamente.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="shortcuts" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="shortcuts" title="Ocultar" type="button">×</button></div></div>
+<div class="panel-shortcuts">
+<button class="btn btn-sm" data-view="leads" type="button">Leads</button>
+<button class="btn btn-sm" data-view="agenda" type="button">Agenda</button>
+<button class="btn btn-sm" data-view="dashboard" type="button">Dashboard</button>
+<button class="btn btn-sm" data-view="cadencias" type="button">Follow-ups</button>
+</div>
+</div>
+<div class="panel-widget" data-color="slate" data-panel-widget="note">
+<div class="panel-widget-head"><div><h3>Nota rápida</h3><p>Anote algo importante para não perder.</p></div><div class="panel-widget-actions"><button class="panel-color-btn" data-panel-color="note" title="Mudar cor" type="button"></button><button class="panel-hide-btn" data-panel-hide="note" title="Ocultar" type="button">×</button></div></div>
+<div class="nota-card panel-note-card"><textarea id="quickNote" placeholder="Registre uma observação rápida..."></textarea><div><button class="btn btn-sm btn-primary" id="saveNoteBtn" type="button">Salvar nota</button></div></div>
+</div>
+</div>
+</section>
+<!-- LEADS -->
+<section class="view grid-view" id="leads">
+<div class="section-header"><div><div class="section-title-text">Gestão de leads</div><div class="section-sub">Base comercial principal</div></div></div>
+<div class="card" style="overflow:hidden">
+<div class="leads-toolbar">
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="leadsSearch" placeholder="Buscar lead, segmento, responsável..." type="search"/></div>
+<div class="sep"></div>
+<div class="filter-chips" id="leadsPriorityFilters">
+<button class="chip active" data-lf-priority="">Todos</button><button class="chip" data-lf-priority="Alta">Alta</button><button class="chip" data-lf-priority="Média">Média</button><button class="chip" data-lf-priority="Baixa">Baixa</button>
+</div>
+<div class="sep"></div>
+<div class="filter-chips" id="leadsStageFilters">
+<button class="chip active" data-lf-stage="">Todas etapas</button><button class="chip" data-lf-stage="Lead">Lead</button><button class="chip" data-lf-stage="Contato">Contato</button><button class="chip" data-lf-stage="Proposta">Proposta</button><button class="chip" data-lf-stage="Fechado">Fechado</button><button class="chip" data-lf-stage="Perdido">Perdido</button>
+</div>
+<div style="margin-left:auto;display:flex;gap:6px">
+<button class="btn btn-sm" id="exportCsvBtn"><svg fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-download"></use></svg>CSV</button>
+<button class="btn btn-sm btn-primary" id="openNewLeadBtn2"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Novo lead</button>
+</div>
+</div>
+<div class="bulk-bar" id="bulkBar"><strong id="bulkCount">0</strong> selecionados <button class="btn btn-xs" id="bulkStageBtn">Mover etapa</button><button class="btn btn-xs" id="bulkRespBtn">Alterar responsável</button><button class="btn btn-xs btn-danger" id="bulkDeleteBtn">Excluir</button><button class="btn btn-xs" id="bulkClearBtn" style="margin-left:auto"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div style="overflow-x:auto">
+<table class="data-table">
+<thead><tr>
+<th style="width:36px"><input id="selectAll" style="cursor:pointer" type="checkbox"/></th>
+<th data-sort="score" style="width:60px;text-align:center">Score <span class="sort-arrow">↓</span></th>
+<th data-sort="nome">Nome <span class="sort-arrow">↕</span></th>
+<th data-sort="segmento">Segmento <span class="sort-arrow">↕</span></th>
+<th data-sort="etapa">Etapa <span class="sort-arrow">↕</span></th>
+<th data-sort="prioridade">Prioridade <span class="sort-arrow">↕</span></th>
+<th>Contato</th>
+<th data-sort="followup">Follow-up <span class="sort-arrow">↕</span></th>
+<th data-sort="valor">Valor <span class="sort-arrow">↕</span></th>
+<th style="width:60px"></th>
+</tr></thead>
+<tbody id="clientTable"></tbody>
+</table>
+</div>
+<div id="ltPaginationWrap"></div>
+</div>
+</section>
+<!-- PIPELINE -->
+<section class="view grid-view" id="pipeline">
+<div class="section-header"><div><div class="section-title-text">Pipeline de vendas</div><div class="section-sub">Funil de oportunidades</div></div></div>
+<div class="pipeline-toolbar">
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="pipelineSearch" placeholder="Buscar lead..." type="search"/></div>
+<div class="filter-chips" id="priorityFilters"><button class="chip active" data-filter-priority="">Todos</button><button class="chip" data-filter-priority="Alta">Alta</button><button class="chip" data-filter-priority="Média">Média</button><button class="chip" data-filter-priority="Baixa">Baixa</button></div>
+<div class="filter-chips" id="originFilters"><button class="chip active" data-filter-origin="">Todas origens</button><button class="chip" data-filter-origin="Inbound">Inbound</button><button class="chip" data-filter-origin="Outbound">Outbound</button><button class="chip" data-filter-origin="Indicação">Indicação</button></div>
+<div class="stagnant-days-row">Alerta após <input id="stagnationDays" max="90" min="1" type="number" value="7"/> dias parado</div>
+</div>
+<div class="pipeline-wrap"><div class="board" id="board"></div></div>
+</section>
+<!-- CLIENTES -->
+<section class="view grid-view" id="clientes">
+<div class="section-header"><div><div class="section-title-text">Clientes</div><div class="section-sub">Relacionamentos cadastrados</div></div></div>
+<div class="card" style="overflow-x:auto">
+<table class="data-table">
+<thead><tr><th>Empresa</th><th>Segmento</th><th>Status</th><th>Responsável</th><th>Valor</th></tr></thead>
+<tbody id="clientTable2"></tbody>
+</table>
+</div>
+</section>
+<!-- FOLLOW-UPS -->
+<section class="view grid-view followups-view" id="cadencias">
+<div class="followups-hero">
+<div>
+<div class="followups-eyebrow">Central operacional</div>
+<h2>Follow-ups</h2>
+<p>Organize próximos contatos, resolva atrasos, priorize oportunidades quentes e transforme a antiga follow-up em uma rotina diária de avanço comercial.</p>
+</div>
+<div class="followups-hero-actions">
+<button class="btn btn-primary" id="fuOpenQuickCreate">+ Novo follow-up</button>
+<button class="btn" id="fuGenerateRoutine">Gerar rotina de hoje</button>
+</div>
+</div>
+<div class="followups-kpi-grid" id="fuKpiGrid">
+<div class="followups-kpi"><span>Vencidos</span><strong id="fuKpiOverdue">0</strong><small>Precisam de contato imediato</small></div>
+<div class="followups-kpi"><span>Hoje</span><strong id="fuKpiToday">0</strong><small>Atividades previstas para hoje</small></div>
+<div class="followups-kpi"><span>Próximos 7 dias</span><strong id="fuKpiWeek">0</strong><small>Follow-ups programados</small></div>
+<div class="followups-kpi"><span>Sem próximo passo</span><strong id="fuKpiNoNext">0</strong><small>Leads abertos sem data</small></div>
+<div class="followups-kpi"><span>Valor em risco</span><strong id="fuKpiRisk">R$ 0</strong><small>Pipeline com atraso</small></div>
+</div>
+<div class="followups-toolbar card">
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="fuSearch" placeholder="Buscar lead, segmento, responsável..." type="search"/></div>
+<div class="filter-chips" id="fuFilters">
+<button class="chip active" data-fu-filter="todos">Todos</button>
+<button class="chip" data-fu-filter="vencidos">Vencidos</button>
+<button class="chip" data-fu-filter="hoje">Hoje</button>
+<button class="chip" data-fu-filter="semana">Semana</button>
+<button class="chip" data-fu-filter="sem-data">Sem data</button>
+<button class="chip" data-fu-filter="alta">Alta prioridade</button>
+</div>
+<select class="followups-select" id="fuSort">
+<option value="date">Ordenar por data</option>
+<option value="score">Ordenar por score</option>
+<option value="value">Ordenar por valor</option>
+<option value="stage">Ordenar por etapa</option>
+</select>
+</div>
+<div class="followups-layout">
+<div class="card followups-main-card">
+<div class="card-header">
+<div><div class="card-title">Fila de follow-ups</div><div class="card-sub">Clique em uma ação para registrar avanço, adiar ou abrir o lead.</div></div>
+<span class="tag tag-neutro" id="fuListCount">0 itens</span>
+</div>
+<div class="followups-list" id="fuList"></div>
+</div>
+<aside class="followups-side">
+<div class="card followups-create-card" id="fuQuickCreateCard">
+<div class="card-header"><div><div class="card-title">Criar follow-up rápido</div><div class="card-sub">Defina o próximo passo sem sair da aba.</div></div></div>
+<div class="card-body followups-form">
+<div class="field"><label>Lead</label><select id="fuLeadSelect"></select></div>
+<div class="field"><label>Tipo de contato</label><select id="fuType"><option>Ligação</option><option>WhatsApp</option><option>E-mail</option><option>Reunião</option><option>Proposta</option><option>Retorno</option></select></div>
+<div class="field"><label>Data</label><input id="fuDate" type="date"/></div>
+<div class="field"><label>Observação</label><textarea id="fuNote" placeholder="Ex: confirmar recebimento da proposta e tirar dúvidas" rows="3"></textarea></div>
+<button class="btn btn-primary" id="fuSaveQuick">Salvar follow-up</button>
+</div>
+</div>
+<div class="card">
+<div class="card-header"><div><div class="card-title">Rotina recomendada</div><div class="card-sub">Ordem sugerida para hoje.</div></div></div>
+<div class="followups-routine" id="fuRoutine"></div>
+</div>
+<div class="card">
+<div class="card-header"><div><div class="card-title">Modelos rápidos</div><div class="card-sub">Mensagens para copiar e adaptar.</div></div></div>
+<div class="followups-templates" id="fuTemplates">
+<button data-fu-template="whatsapp">WhatsApp curto</button>
+<button data-fu-template="proposta">Proposta enviada</button>
+<button data-fu-template="breakup">Break-up educado</button>
+<button data-fu-template="reuniao">Confirmar reunião</button>
+</div>
+</div>
+</aside>
+</div>
+</section>
+<!-- AUTOMACOES -->
+<section class="view grid-view" id="automacoes">
+<div class="section-header">
+<div><div class="section-title-text">Automações de funil</div><div class="section-sub">Regras que disparam ações quando um lead muda de etapa</div></div>
+<button class="btn btn-primary btn-sm" id="autoNewBtn"></button>
+</div>
+<div class="card hidden" id="autoEmptyState" style="padding:40px 20px;text-align:center;color:var(--text-3)">
+<p style="font-size:13px;margin-bottom:10px">Nenhuma automação criada ainda</p>
+<button class="btn btn-sm btn-primary" id="autoEmptyNewBtn">Criar primeira automação</button>
+</div>
+<div id="autoList" style="display:grid;gap:10px"></div>
+</section>
+<!-- AUTOMACAO MODAL -->
+<div class="modal-overlay hidden" id="autoBackdrop">
+<div class="modal-box" style="max-width:460px">
+<div class="modal-head"><h3 id="autoModalTitle">Nova automação</h3><button class="modal-close" id="autoModalClose"></button></div>
+<div class="modal-body">
+<div class="field full"><label>Nome da regra</label><input id="autoNome" placeholder="Ex: Preparar contrato ao fechar"/></div>
+<div class="field full"><label>Quando o lead entrar na etapa</label><select id="autoEtapa"><option>Lead</option><option>Contato</option><option>Proposta</option><option>Fechado</option><option>Perdido</option></select></div>
+<div class="field full"><label>Ação</label><select id="autoAcao">
+<option value="compromisso">Criar compromisso na agenda</option>
+<option value="prioridade">Definir prioridade do lead</option>
+<option value="nota">Adicionar nota na atividade do lead</option>
+</select></div>
+<div class="hidden" id="autoParamsCompromisso" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Tipo de compromisso</label><select id="autoCompTipo"><option>Ligação</option><option>E-mail</option><option>WhatsApp</option><option>Reunião</option><option>Follow-up</option></select></div>
+<div class="field"><label>Prazo</label><select id="autoCompPrazo"><option value="0">No mesmo dia</option><option value="1">Em 1 dia</option><option selected="" value="2">Em 2 dias</option><option value="3">Em 3 dias</option><option value="7">Em 7 dias</option></select></div>
+<div class="field full"><label>Observação do compromisso</label><input id="autoCompNota" placeholder="Ex: Preparar e enviar contrato"/></div>
+</div>
+<div class="hidden field full" id="autoParamsPrioridade"><label>Nova prioridade</label><select id="autoPriValor"><option value="Alta">Alta</option><option value="Média">Média</option><option value="Baixa">Baixa</option></select></div>
+<div class="hidden field full" id="autoParamsNota"><label>Texto da nota</label><textarea id="autoNotaTexto" placeholder="Ex: Entrou em Proposta — revisar histórico antes de ligar" rows="2"></textarea></div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-danger btn-sm hidden" id="autoDelete">Excluir</button>
+<button class="btn" id="autoCancelBtn">Cancelar</button>
+<button class="btn btn-primary" id="autoSave">Salvar</button>
+</div>
+</div>
+</div>
+<!-- AGENDA -->
+<section class="view grid-view" id="agenda">
+<div class="section-header"><div><div class="section-title-text">Agenda</div><div class="section-sub">Planejamento e follow-ups</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn btn-sm" id="gcalConnectBtn" style="border-color:#4285f4;color:#4285f4;gap:7px"><svg fill="none" height="13" viewbox="0 0 24 24" width="13"><rect height="18" rx="2" stroke="#4285f4" stroke-width="1.8" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18" stroke="#4285f4" stroke-width="1.8"></path><text fill="#4285f4" font-size="7" font-weight="700" x="8" y="19">G</text></svg>Google Calendar</button><button class="btn btn-primary btn-sm" id="agNewBtn"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Novo compromisso</button></div></div>
+<!-- Google Calendar Connect Modal -->
+<div class="modal-overlay hidden" id="gcalBackdrop">
+<div class="modal-box" style="max-width:440px">
+<div class="modal-head"><h3>Conectar Google Calendar</h3><button class="modal-close" id="gcalClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body" id="gcalBody">
+<div id="gcalDisconnected">
+<div style="text-align:center;padding:16px 0 20px">
+<div style="width:56px;height:56px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+<svg fill="none" height="28" viewbox="0 0 24 24" width="28"><rect height="18" rx="2" stroke="#4285f4" stroke-width="1.8" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18" stroke="#4285f4" stroke-width="1.8"></path></svg>
+</div>
+<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Sincronizar com Google Calendar</div>
+<div style="font-size:12.5px;color:var(--text-3);line-height:1.6;max-width:32ch;margin:0 auto">Exporte seus compromissos da Agenda direto para o Google Calendar com um clique.</div>
+</div>
+<div style="background:var(--surface-2);border-radius:10px;padding:14px;margin-bottom:16px">
+<div style="font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:8px">O que será sincronizado:</div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Compromissos agendados</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Follow-ups e reuniões</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Notas e objetivos do compromisso</div>
+</div>
+</div>
+<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:11.5px;color:#856404">
+<strong>Como conectar:</strong> Clique em "Autorizar com Google", faça login e permita o acesso ao Calendar. Os compromissos serão exportados automaticamente.
+          </div>
+<button class="btn btn-primary" id="gcalAuthBtn" style="width:100%;justify-content:center;gap:8px;background:#4285f4;border-color:#4285f4">
+<svg fill="currentColor" height="15" viewbox="0 0 24 24" width="15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9V8h2v9zm4 0h-2V8h2v9z" fill="none" stroke="currentColor" stroke-width="0"></path></svg>
+<svg fill="currentColor" height="14" viewbox="0 0 488 512" width="14"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+            Autorizar com Google
+          </button>
+</div>
+<div class="hidden" id="gcalConnected">
+<div style="text-align:center;padding:16px 0">
+<div style="width:48px;height:48px;border-radius:999px;background:#f0fdf4;border:2px solid #16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><svg fill="none" height="22" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="22"><use href="#ic-check"></use></svg></div>
+<div style="font-size:14px;font-weight:700;color:var(--success)">Google Calendar conectado!</div>
+<div id="gcalEmailLabel" style="font-size:12px;color:var(--text-3);margin-top:4px"></div>
+</div>
+<div style="display:grid;gap:8px;margin-bottom:16px">
+<button class="btn" id="gcalExportBtn" style="justify-content:center;gap:8px">
+<svg fill="none" height="14" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="14"><use href="#ic-download"></use></svg>
+              Exportar todos os compromissos agora
+            </button>
+<button class="btn btn-danger btn-sm" id="gcalDisconnectBtn" style="justify-content:center">Desconectar conta</button>
+</div>
+<div id="gcalSyncLog" style="background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:11.5px;color:var(--text-3)">Nenhuma sincronização realizada ainda.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="agenda-kpis">
+<div class="ag-kpi"><div class="val" id="agKpiChamadas">0</div><div class="lbl">Chamadas hoje</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiReunioes">0</div><div class="lbl">Reuniões</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiFollowups">0</div><div class="lbl">Follow-ups</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiAtrasados">0</div><div class="lbl">Atrasados</div></div>
+<div class="ag-kpi timer"><div class="val" id="agTimer">00:00:00</div><div class="lbl">Tempo de foco</div><div class="timer-btns"><button class="timer-btn" id="timerStart">▶</button><button class="timer-btn" id="timerPause">⏸</button><button class="timer-btn" id="timerStop">⏹</button></div></div>
+</div>
+<div class="card">
+<div class="card-header">
+<div class="view-tabs"><button class="view-tab active" id="agViewList">Lista</button><button class="view-tab" id="agViewCal">Calendário</button></div>
+<div class="agenda-toolbar" style="margin-left:12px">
+<div class="filter-chips agenda-filters"><button class="chip active" data-ag-priority="">Todos</button><button class="chip" data-ag-priority="Alta">Alta</button><button class="chip" data-ag-priority="Média">Média</button><button class="chip" data-ag-priority="Baixa">Baixa</button></div>
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="agSearch" placeholder="Buscar..." style="min-width:140px" type="search"/></div>
+</div>
+</div>
+<div class="card-body">
+<div id="agListView"><div id="agListToday"></div><div id="agListUpcoming"></div></div>
+<div class="hidden" id="agCalView">
+<div class="cal-header"><button class="btn btn-sm" id="calPrev">‹</button><div class="cal-month" id="calTitle"></div><button class="btn btn-sm" id="calNext">›</button></div>
+<div class="cal-grid" id="calGrid"></div>
+</div>
+</div>
+</div>
+<!-- SPIN Detail -->
+<div class="modal-overlay hidden" id="agDetailBackdrop">
+<div class="modal-box" style="width:min(560px,100%)">
+<div class="modal-head"><div><h3 id="agdNome">—</h3><div id="agdTagsRow" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"></div></div><button class="modal-close" id="agDetailClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div class="dp-field"><label>Data</label><p id="agdData">—</p></div>
+<div class="dp-field"><label>Hora</label><p id="agdHora">—</p></div>
+<div class="dp-field"><label>Tipo</label><p id="agdTipo">—</p></div>
+<div class="dp-field"><label>Valor do negócio</label><p id="agdValor" style="font-weight:700;color:var(--blue)">—</p></div>
+<div class="dp-field" style="grid-column:1/-1"><label>Notas</label><p id="agdNotas" style="white-space:pre-wrap;font-size:13px">—</p></div>
+<div class="quick-actions" style="grid-column:1/-1">
+<a class="qa-btn qa-whatsapp" href="#" id="agdWhatsapp" target="_blank"><svg fill="currentColor" height="13" viewbox="0 0 24 24" width="13"><use href="#ic-icon-20"></use></svg>WhatsApp</a>
+<a class="qa-btn qa-call" href="#" id="agdLigar"><svg fill="none" height="13" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="13"><use href="#ic-phone"></use></svg>Ligar</a>
+<a class="qa-btn qa-email" href="#" id="agdEmail"><svg fill="none" height="13" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="13"><rect height="16" rx="2" width="20" x="2" y="4"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>E-mail</a>
+</div>
+<div class="spin-card" style="grid-column:1/-1">
+<div class="spin-title">Preparação SPIN Selling</div>
+<div class="spin-group"><div class="spin-badge spin-s">S — Situação</div><textarea class="spin-textarea" id="spinS" placeholder="Situação atual do cliente..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-p">P — Problema</div><textarea class="spin-textarea" id="spinP" placeholder="Problemas e dores que enfrenta..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-i">I — Implicação</div><textarea class="spin-textarea" id="spinI" placeholder="Consequências do problema..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-n">N — Necessidade</div><textarea class="spin-textarea" id="spinN" placeholder="Como nossa solução resolve..."></textarea></div>
+<button class="btn btn-primary btn-sm" id="spinSave" style="width:100%;justify-content:center;margin-top:4px">Salvar preparação SPIN</button>
+</div>
+</div>
+</div>
+</div>
+<!-- New/Edit event -->
+<div class="modal-overlay hidden" id="agEventBackdrop">
+<div class="modal-box">
+<div class="modal-head"><h3 id="agEventTitle">Novo compromisso</h3><button class="modal-close" id="agEventClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div class="field full"><label>Lead *</label><select id="agEvLead"><option value="">Selecione um lead...</option></select></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Data *</label><input id="agEvData" type="date"/></div>
+<div class="field"><label>Hora</label><input id="agEvHora" type="time" value="09:00"/></div>
+</div>
+<div class="field full"><label>Tipo</label><select id="agEvTipo"><option>Ligação</option><option>WhatsApp</option><option>E-mail</option><option>Demo / Vídeo</option><option>Reunião</option><option>Follow-up</option><option>Sequência de follow-up</option></select></div>
+<div class="field full"><label>Prioridade</label><select id="agEvPrioridade"><option>Alta</option><option selected="">Média</option><option>Baixa</option></select></div>
+<div class="field full"><label>Notas / Objetivo</label><textarea id="agEvNotas" placeholder="O que você quer alcançar?" rows="3"></textarea></div>
+</div>
+<div class="modal-foot">
+<button class="btn" id="agEventCancel">Cancelar</button>
+<button class="btn btn-danger btn-sm hidden" id="agEventDelete">Excluir</button>
+<button class="btn btn-primary" id="agEventSave">Salvar</button>
+</div>
+</div>
+</div>
+</section>
+<!-- MÉTRICAS -->
+<section class="view grid-view" id="metricas">
+<div class="section-header"><div><div class="section-title-text">Métricas</div><div class="section-sub">Indicadores de desempenho comercial</div></div></div>
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+<div class="stat-card blue"><div class="stat-icon blue"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-users"></use></svg></div><div class="stat-value" id="mKpiLeads">0</div><div class="stat-label">Leads ativos</div></div>
+<div class="stat-card amber"><div class="stat-icon amber"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div><div class="stat-value" id="mKpiProp">0</div><div class="stat-label">Propostas abertas</div></div>
+<div class="stat-card green"><div class="stat-icon green"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-check"></use></svg></div><div class="stat-value" id="mKpiClose">0</div><div class="stat-label">Fechamentos</div></div>
+<div class="stat-card purple"><div class="stat-icon purple"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-activity"></use></svg></div><div class="stat-value" id="mKpiConv">0%</div><div class="stat-label">Taxa de conversão</div></div>
+<div class="stat-card red"><div class="stat-icon red"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" x2="9" y1="9" y2="15"></line><line x1="9" x2="15" y1="9" y2="15"></line></svg></div><div class="stat-value" id="mKpiPerdidos">0</div><div class="stat-label">Perdidos</div></div>
+<div class="stat-card blue"><div class="stat-icon sky"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-icon-23"></use></svg></div><div class="stat-value" id="mKpiValor">R$0</div><div class="stat-label">Valor no pipeline</div></div>
+<div class="stat-card amber"><div class="stat-icon orange"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><div class="stat-value" id="mKpiTicket">R$0</div><div class="stat-label">Ticket médio</div></div>
+<div class="stat-card green"><div class="stat-icon teal"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-calendar"></use></svg></div><div class="stat-value" id="mKpiAtivs">0</div><div class="stat-label">Atividades agendadas</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px">
+<div class="card"><div class="card-header"><div class="card-title">Funil de conversão</div></div><div class="card-body" id="funnelChart"></div></div>
+<div class="card"><div class="card-header"><div class="card-title">Motivos de perda</div></div><div class="card-body" id="lossChart"></div></div>
+</div>
+<div class="card"><div class="card-header"><div class="card-title">Leads por origem</div></div><div class="card-body" id="originChart"></div></div>
+</section>
+<!-- PLAYBOOKS -->
+<section class="view grid-view" id="playbooks">
+<div class="section-header">
+<div><div class="section-title-text">Playbooks</div><div class="section-sub">Scripts, checklists e materiais de vendas</div></div>
+<button class="btn btn-primary btn-sm" id="pbNewBtn"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Novo playbook</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+<button class="chip active" data-pb-cat="">Todos</button>
+<button class="chip" data-pb-cat="Outbound">Outbound</button>
+<button class="chip" data-pb-cat="Inbound">Inbound</button>
+<button class="chip" data-pb-cat="Fechamento">Fechamento</button>
+<button class="chip" data-pb-cat="Reativação">Reativação</button>
+</div>
+<div class="pb-grid" id="pbGrid"></div>
+</section>
+<!-- PLAYBOOK DETAIL MODAL -->
+<div class="modal-overlay hidden" id="pbDetailBackdrop">
+<div class="modal-box" style="width:min(700px,100%);max-height:92vh">
+<div class="modal-head">
+<div><h3 id="pbDetailTitle"></h3><div id="pbDetailMeta" style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap"></div></div>
+<button class="modal-close" id="pbDetailClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button>
+</div>
+<div class="modal-body" style="padding:0">
+<div style="padding:14px 18px;border-bottom:1px solid var(--border)">
+<div class="pb-section-tabs">
+<button class="pb-section-tab active" data-pb-tab="checklist">✅ Checklist</button>
+<button class="pb-section-tab" data-pb-tab="scripts">💬 Scripts</button>
+<button class="pb-section-tab" data-pb-tab="materiais">📎 Materiais</button>
+<button class="pb-section-tab" data-pb-tab="automacoes">⚡ Automações</button>
+</div>
+<div id="pbTabChecklist">
+<div id="pbChecklistItems"></div>
+</div>
+<div class="hidden" id="pbTabScripts">
+<div id="pbScriptItems"></div>
+</div>
+<div class="hidden" id="pbTabMateriais">
+<div id="pbMateriaisItems"></div>
+</div>
+<div class="hidden" id="pbTabAutomacoes">
+<div id="pbAutomacoesItems"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- PLAYBOOK NEW/EDIT MODAL -->
+<div class="modal-overlay hidden" id="pbModalBackdrop">
+<div class="modal-box" style="width:min(560px,100%)">
+<div class="modal-head"><h3 id="pbModalTitle">Novo playbook</h3><button class="modal-close" id="pbModalClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div class="field full"><label>Nome *</label><input id="pbNome" placeholder="Ex: Cold Outbound Agronegócio"/></div>
+<div class="field full"><label>Objetivo</label><textarea id="pbObjetivo" placeholder="Qual o resultado esperado deste playbook?" rows="2"></textarea></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Categoria</label><select id="pbCategoria"><option>Outbound</option><option>Inbound</option><option>Fechamento</option><option>Reativação</option><option>Outro</option></select></div>
+<div class="field"><label>Responsável</label><input id="pbResponsavel" placeholder="Nome do responsável"/></div>
+</div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-danger btn-sm hidden" id="pbModalDelete">Excluir</button>
+<button class="btn" id="pbModalCancel">Cancelar</button>
+<button class="btn btn-primary" id="pbModalSave">Salvar</button>
+</div>
+</div>
+</div>
+<!-- OBJEÇÕES -->
+<section class="view grid-view" id="objecoes">
+<div class="section-header">
+<div><div class="section-title-text">Biblioteca de Objeções</div><div class="section-sub">Respostas prontas para superar objeções de vendas</div></div>
+<button class="btn btn-primary btn-sm" id="objNewBtn"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Nova objeção</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="objSearch" placeholder="Buscar objeção..." style="min-width:200px"/></div>
+<button class="chip active" data-obj-cat="">Todas</button>
+<button class="chip" data-obj-cat="Preço">Preço</button>
+<button class="chip" data-obj-cat="Tempo">Tempo</button>
+<button class="chip" data-obj-cat="Concorrência">Concorrência</button>
+<button class="chip" data-obj-cat="Necessidade">Necessidade</button>
+<button class="chip" data-obj-cat="Autoridade">Autoridade</button>
+</div>
+<div class="obj-grid" id="objGrid"></div>
+</section>
+<!-- OBJEÇÃO MODAL -->
+<div class="modal-overlay hidden" id="objModalBackdrop">
+<div class="modal-box" style="width:min(620px,100%)">
+<div class="modal-head"><h3 id="objModalTitle">Nova objeção</h3><button class="modal-close" id="objModalClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div class="field full"><label>Objeção *</label><input id="objTexto" placeholder='Ex: "Está muito caro"'/></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+<div class="field"><label>Categoria</label><select id="objCat"><option>Preço</option><option>Tempo</option><option>Concorrência</option><option>Necessidade</option><option>Autoridade</option><option>Outro</option></select></div>
+<div class="field"><label>Frequência</label><select id="objFreq"><option value="alta">Alta</option><option selected="" value="media">Média</option><option value="baixa">Baixa</option></select></div>
+<div class="field"><label>Prioridade</label><select id="objPri"><option value="alta">Alta</option><option selected="" value="media">Média</option><option value="baixa">Baixa</option></select></div>
+</div>
+<div class="field full"><label>Resposta principal *</label><textarea id="objResp" placeholder="Como você normalmente responde a esta objeção?" rows="3"></textarea></div>
+<div class="field full"><label>Resposta alternativa</label><textarea id="objRespAlt" placeholder="Outra abordagem para a mesma objeção..." rows="2"></textarea></div>
+<div class="field full"><label>Argumentos (separados por vírgula)</label><input id="objArgs" placeholder="Ex: ROI comprovado, Garantia de 30 dias, Suporte incluso"/></div>
+<div class="field full"><label>Caso de sucesso / Exemplo</label><textarea id="objExemplo" placeholder="Cite um cliente que superou esta mesma objeção..." rows="2"></textarea></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Taxa de sucesso (%)</label><input id="objTaxa" max="100" min="0" placeholder="75" type="number"/></div>
+<div class="field"><label>Melhor abordagem</label><input id="objAbord" placeholder="Ex: Mostrar ROI em 30 dias"/></div>
+</div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-danger btn-sm hidden" id="objModalDelete">Excluir</button>
+<button class="btn" id="objModalCancel">Cancelar</button>
+<button class="btn btn-primary" id="objModalSave">Salvar</button>
+</div>
+</div>
+</div>
+<!-- MOTIVOS DE PERDA -->
+<section class="view grid-view" id="perdas">
+<div class="section-header">
+<div><div class="section-title-text">Motivos de Perda</div><div class="section-sub">Análise e reativação de negócios perdidos</div></div>
+<button class="btn btn-primary btn-sm" id="perdaNewBtn"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Registrar perda</button>
+</div>
+<!-- KPIs perdas -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<div class="stat-card red"><div class="stat-icon red"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-x-circle"></use></svg></div><div class="stat-value" id="perdaKpiTotal">0</div><div class="stat-label">Total de perdas</div></div>
+<div class="stat-card amber"><div class="stat-icon amber"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-icon-23"></use></svg></div><div class="stat-value" id="perdaKpiValor">R$0</div><div class="stat-label">Valor perdido</div></div>
+<div class="stat-card green"><div class="stat-icon green"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-refresh"></use></svg></div><div class="stat-value" id="perdaKpiReativ">0</div><div class="stat-label">Em reativação</div></div>
+<div class="stat-card purple"><div class="stat-icon purple"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-activity"></use></svg></div><div class="stat-value" id="perdaKpiPrincipal">—</div><div class="stat-label">Motivo principal</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="card"><div class="card-header"><div class="card-title">Motivos mais frequentes</div></div><div class="card-body" id="perdaFreqChart"></div></div>
+<div class="card"><div class="card-header"><div class="card-title">Para reativar em breve</div></div><div class="card-body" id="perdaReativList"></div></div>
+</div>
+<div id="perdaList" style="display:grid;gap:12px"></div>
+</section>
+<!-- PERDA MODAL -->
+<div class="modal-overlay hidden" id="perdaModalBackdrop">
+<div class="modal-box" style="width:min(620px,100%)">
+<div class="modal-head"><h3 id="perdaModalTitle">Registrar perda</h3><button class="modal-close" id="perdaModalClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Lead / Empresa *</label><input id="perdaLead" placeholder="Nome do lead"/></div>
+<div class="field"><label>Responsável</label><input id="perdaResp" placeholder="Vendedor responsável"/></div>
+<div class="field"><label>Motivo principal *</label><select id="perdaMotivo"><option>Preço alto</option><option>Escolheu concorrente</option><option>Sem orçamento</option><option>Sem necessidade</option><option>Timing errado</option><option>Sem resposta</option><option>Outro</option></select></div>
+<div class="field"><label>Submotivo</label><input id="perdaSubmotivo" placeholder="Detalhe o motivo..."/></div>
+<div class="field"><label>Categoria</label><select id="perdaCat"><option>Preço</option><option>Concorrência</option><option>Timing</option><option>Produto</option><option>Relacionamento</option><option>Outro</option></select></div>
+<div class="field"><label>Concorrente escolhido</label><input id="perdaConcorrente" placeholder="Nome do concorrente"/></div>
+<div class="field"><label>Valor perdido (R$)</label><input id="perdaValor" placeholder="0" type="number"/></div>
+<div class="field"><label>Etapa em que perdeu</label><select id="perdaEtapa"><option>Lead</option><option>Contato</option><option>Proposta</option><option>Fechamento</option></select></div>
+</div>
+<div class="field full"><label>Comentários / Aprendizados</label><textarea id="perdaComentarios" placeholder="O que aconteceu? O que você aprendeu?" rows="2"></textarea></div>
+<div class="field full"><label>Melhorias sugeridas</label><textarea id="perdaMelhorias" placeholder="O que poderia ter sido diferente?" rows="2"></textarea></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+<div class="field"><label>Data para reativar</label><input id="perdaDataReativ" type="date"/></div>
+<div class="field"><label>Prob. de retorno</label><select id="perdaProb"><option value="alta">Alta</option><option selected="" value="media">Média</option><option value="baixa">Baixa</option></select></div>
+<div class="field"><label>Estratégia futura</label><input id="perdaEstrategia" placeholder="Ex: Reduzir preço em 10%"/></div>
+</div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-danger btn-sm hidden" id="perdaModalDelete">Excluir</button>
+<button class="btn" id="perdaModalCancel">Cancelar</button>
+<button class="btn btn-primary" id="perdaModalSave">Salvar</button>
+</div>
+</div>
+</div>
+<!-- DASHBOARD COMERCIAL -->
+<section class="view grid-view" id="dashboard">
+<div class="section-header">
+<div><div class="section-title-text">Dashboard Comercial</div><div class="section-sub">Visão completa de indicadores e performance</div></div>
+<div style="display:flex;gap:8px">
+<select class="btn btn-sm" id="dashPeriod" style="cursor:pointer">
+<option value="7">Últimos 7 dias</option>
+<option selected="" value="30">Últimos 30 dias</option>
+<option value="90">Últimos 90 dias</option>
+<option value="365">Este ano</option>
+</select>
+<button class="btn btn-sm" id="dashRefresh"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-refresh"></use></svg>Atualizar</button>
+</div>
+</div>
+<!-- KPIs Row 1 - Leads -->
+<div>
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:10px">Leads</div>
+<div class="dash-kpi-grid">
+<div class="dash-kpi"><div class="dash-kpi-val" id="dkLeadsCad">0</div><div class="dash-kpi-lbl">Leads cadastrados</div><div class="dash-kpi-delta up" id="dkLeadsCadD">—</div></div>
+<div class="dash-kpi"><div class="dash-kpi-val" id="dkLeadsAtivos">0</div><div class="dash-kpi-lbl">Leads ativos</div><div class="dash-kpi-delta up" id="dkLeadsAtivosD">—</div></div>
+<div class="dash-kpi"><div class="dash-kpi-val" id="dkLeadsNovos">0</div><div class="dash-kpi-lbl">Novos leads</div><div class="dash-kpi-delta up" id="dkLeadsNovosD">—</div></div>
+<div class="dash-kpi"><div class="dash-kpi-val" id="dkLeadsPerdidos">0</div><div class="dash-kpi-lbl">Leads perdidos</div><div class="dash-kpi-delta down" id="dkLeadsPerdidosD">—</div></div>
+<div class="dash-kpi"><div class="dash-kpi-val" id="dkConvGeral">0%</div><div class="dash-kpi-lbl">Conversão geral</div><div class="dash-kpi-delta up" id="dkConvGeralD">—</div></div>
+</div>
+</div>
+<!-- KPIs Row 2 - Resultados -->
+<div>
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:10px">Resultados</div>
+<div class="dash-kpi-grid">
+<div class="dash-kpi" style="border-top:3px solid #2563eb"><div class="dash-kpi-val" id="dkPropostas">0</div><div class="dash-kpi-lbl">Propostas enviadas</div></div>
+<div class="dash-kpi" style="border-top:3px solid #16a34a"><div class="dash-kpi-val" id="dkContratos">0</div><div class="dash-kpi-lbl">Contratos fechados</div></div>
+<div class="dash-kpi" style="border-top:3px solid #7c3aed"><div class="dash-kpi-val" id="dkRecPrev">R$0</div><div class="dash-kpi-lbl">Receita prevista</div></div>
+<div class="dash-kpi" style="border-top:3px solid #0d9488"><div class="dash-kpi-val" id="dkTicket">R$0</div><div class="dash-kpi-lbl">Ticket médio</div></div>
+<div class="dash-kpi" style="border-top:3px solid #d97706"><div class="dash-kpi-val" id="dkTempFech">0d</div><div class="dash-kpi-lbl">Tempo médio fechamento</div></div>
+</div>
+</div>
+<!-- Charts row -->
+<div class="dash-chart-grid">
+<div class="card">
+<div class="card-header"><div class="card-title">Receita mensal</div><div style="font-size:12px;color:var(--text-3)">Valor de pipeline + fechamentos</div></div>
+<div class="card-body">
+<div class="dash-bar-chart" id="dashBarChart"></div>
+<div id="dashBarLabels" style="display:flex;justify-content:space-between;margin-top:4px"></div>
+</div>
+</div>
+<div class="card">
+<div class="card-header"><div class="card-title">Origem dos leads</div></div>
+<div class="card-body" style="display:flex;align-items:center;justify-content:center">
+<div class="dash-donut-wrap">
+<svg height="110" id="dashDonut" viewbox="0 0 110 110" width="110"></svg>
+<div class="dash-legend" id="dashDonutLegend"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pipeline por etapa + Atividades -->
+<div class="dash-chart-grid-3">
+<div class="card">
+<div class="card-header"><div class="card-title">Pipeline por etapa</div></div>
+<div class="card-body" id="dashPipeline"></div>
+</div>
+<div class="card">
+<div class="card-header"><div class="card-title">Atividades</div></div>
+<div class="card-body" id="dashAtividades"></div>
+</div>
+<div class="card">
+<div class="card-header"><div class="card-title">Conversão entre etapas</div></div>
+<div class="card-body" id="dashConversao"></div>
+</div>
+</div>
+<!-- Performance -->
+<div class="card">
+<div class="card-header"><div class="card-title">Performance &amp; Destaques</div></div>
+<div class="card-body" id="dashPerformance" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px"></div>
+</div>
+</section>
+<!-- CHAT -->
+<section class="view" id="chat" style="display:none">
+<div id="chatLayout" style="display:grid;grid-template-columns:300px 1fr;height:100%;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+<!-- Sidebar de conversas -->
+<div style="border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface)">
+<!-- Header WA connect -->
+<div style="padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+<div style="font-family:'Inter Tight','Inter',sans-serif;font-size:14px;font-weight:700;color:var(--text)">Chat</div>
+<div id="waStatusDot" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-3)">
+<span id="waDot" style="width:8px;height:8px;border-radius:999px;background:#6b7280;display:inline-block"></span>
+<span id="waStatusLabel">Desconectado</span>
+</div>
+</div>
+<button class="btn" id="waConnectBtn" style="width:100%;justify-content:center;gap:7px;border-color:#25d366;color:#25d366;font-size:12px">
+<svg fill="currentColor" height="14" style="color:#25d366" viewbox="0 0 24 24" width="14"><use href="#ic-icon-20"></use></svg>
+          Conectar WhatsApp
+        </button>
+</div>
+<!-- Busca -->
+<div style="padding:10px 12px;border-bottom:1px solid var(--border)">
+<div class="search-wrap" style="background:var(--surface-2)"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="chatSearch" placeholder="Buscar contato..." style="background:transparent" type="search"/></div>
+</div>
+<!-- Lista de conversas -->
+<div id="chatConversationList" style="flex:1;overflow-y:auto"></div>
+</div>
+<!-- Área principal de chat -->
+<div id="chatMain" style="display:flex;flex-direction:column;background:var(--surface-2)">
+<!-- Estado vazio / QR Code -->
+<div id="chatEmpty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px">
+<div id="chatWaDisconnected" style="text-align:center">
+<div style="width:72px;height:72px;border-radius:20px;background:#f0fdf4;border:2px solid #25d366;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+<svg fill="#25d366" height="36" viewbox="0 0 24 24" width="36"><use href="#ic-icon-25"></use></svg>
+</div>
+<div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px">Conecte seu WhatsApp</div>
+<div style="font-size:13px;color:var(--text-3);line-height:1.7;max-width:34ch;margin:0 auto 20px">Gerencie todas as suas conversas com leads e clientes diretamente no CRM.</div>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;max-width:340px;margin:0 auto;text-align:left">
+<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Como conectar:</div>
+<div style="display:grid;gap:8px">
+<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2)"><span style="min-width:20px;height:20px;border-radius:999px;background:#25d366;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">1</span>Clique em "Conectar WhatsApp"</div>
+<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2)"><span style="min-width:20px;height:20px;border-radius:999px;background:#25d366;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">2</span>Abra o WhatsApp no celular → Dispositivos conectados</div>
+<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2)"><span style="min-width:20px;height:20px;border-radius:999px;background:#25d366;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">3</span>Escaneie o QR Code exibido na tela</div>
+</div>
+</div>
+<div style="margin-top:16px;font-size:11px;color:var(--text-3);background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;max-width:340px;margin:16px auto 0">
+<strong>Dica:</strong> Use a API oficial do WhatsApp Business ou ferramentas como <strong>Z-API</strong>, <strong>Evolution API</strong> ou <strong>WPPConnect</strong> para integração real.
+          </div>
+</div>
+<div class="hidden" id="chatSelectContact" style="text-align:center">
+<svg fill="none" height="48" stroke="var(--text-3)" stroke-width="1.5" style="margin-bottom:12px" viewbox="0 0 24 24" width="48"><use href="#ic-message-square"></use></svg>
+<div style="font-size:14px;font-weight:600;color:var(--text-3)">Selecione uma conversa</div>
+</div>
+</div>
+<!-- Área de mensagens (ativa) -->
+<div class="hidden" id="chatConversationArea" style="display:flex;flex-direction:column;height:100%">
+<!-- Header do contato -->
+<div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px">
+<div id="chatContactAvatar" style="width:38px;height:38px;border-radius:999px;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0"></div>
+<div style="flex:1;min-width:0">
+<div id="chatContactName" style="font-size:13.5px;font-weight:700;color:var(--text)"></div>
+<div id="chatContactSub" style="font-size:11px;color:var(--text-3)"></div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn btn-xs" id="chatCallBtn" style="gap:5px"><svg fill="none" height="12" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="12"><use href="#ic-phone"></use></svg>Ligar</button>
+<button class="btn btn-xs" id="chatViewLeadBtn" style="gap:5px"><svg fill="none" height="12" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="12"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle></svg>Ver lead</button>
+</div>
+</div>
+<!-- Mensagens -->
+<div id="chatMessages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--surface-2)"></div>
+<!-- Input de mensagem -->
+<div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:8px;align-items:flex-end">
+<div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;align-items:flex-end;gap:8px">
+<textarea id="chatInput" placeholder="Mensagem..." rows="1" style="flex:1;border:none;background:transparent;outline:none;font:inherit;font-size:13px;color:var(--text);resize:none;max-height:100px;line-height:1.5"></textarea>
+<button class="btn btn-xs" id="chatQuickReplies" style="flex-shrink:0;padding:4px 7px" title="Respostas rápidas"><svg fill="none" height="13" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="13"><use href="#ic-zap"></use></svg></button>
+</div>
+<button class="btn btn-primary btn-sm" id="chatSendBtn" style="flex-shrink:0;padding:8px 14px"><svg fill="none" height="14" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="14"><line x1="22" x2="11" y1="2" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- WA Connect Modal -->
+<div class="modal-overlay hidden" id="waConnectBackdrop">
+<div class="modal-box" style="max-width:420px">
+<div class="modal-head"><h3>Conectar WhatsApp</h3><button class="modal-close" id="waConnectClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div id="waStep1">
+<div style="font-size:12.5px;color:var(--text-2);margin-bottom:14px;line-height:1.6">Escolha como deseja integrar o WhatsApp. Para uso pessoal, use <strong>WhatsApp Web</strong>. Para produção, configure uma API.</div>
+<div style="display:grid;gap:8px;margin-bottom:16px">
+<button class="btn" id="waOptionWeb" style="justify-content:flex-start;gap:12px;padding:12px 14px;text-align:left">
+<div style="width:36px;height:36px;border-radius:9px;background:#f0fdf4;border:1px solid #86efac;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg fill="#25d366" height="18" viewbox="0 0 24 24" width="18"><use href="#ic-icon-25"></use></svg></div>
+<div><div style="font-size:13px;font-weight:600">WhatsApp Web</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">Abre o WhatsApp Web em nova aba — use para testes e uso pessoal</div></div>
+</button>
+<button class="btn" id="waOptionApi" style="justify-content:flex-start;gap:12px;padding:12px 14px;text-align:left">
+<div style="width:36px;height:36px;border-radius:9px;background:#eff6ff;border:1px solid #93c5fd;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg fill="none" height="18" stroke="#2563eb" stroke-width="1.8" viewbox="0 0 24 24" width="18"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg></div>
+<div><div style="font-size:13px;font-weight:600">API / Webhook <span style="font-size:10px;background:#eff6ff;color:#1d4ed8;border-radius:4px;padding:1px 5px;font-weight:700">PRO</span></div><div style="font-size:11px;color:var(--text-3);margin-top:2px">Configure Z-API, Evolution API ou WPPConnect para integração completa</div></div>
+</button>
+</div>
+</div>
+<div class="hidden" id="waStep2Api">
+<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:12px">Configuração da API</div>
+<div style="display:grid;gap:10px">
+<div class="field"><label>Provedor</label><select id="waProvider"><option value="zapi">Z-API</option><option value="evolution">Evolution API</option><option value="wppconnect">WPPConnect</option><option value="custom">Personalizado</option></select></div>
+<div class="field"><label>URL do servidor</label><input id="waApiUrl" placeholder="https://api.seuservidor.com" type="url"/></div>
+<div class="field"><label>Token / API Key</label><input id="waApiToken" placeholder="seu-token-aqui" type="password"/></div>
+<div class="field"><label>Instância / ID</label><input id="waApiInstance" placeholder="minha-instancia"/></div>
+</div>
+<div style="margin-top:12px;background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:11.5px;color:var(--text-3);line-height:1.6">
+<strong style="color:var(--text)">Webhook de recebimento:</strong><br/>
+<code id="waWebhookUrl" style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface-3);padding:2px 5px;border-radius:4px">https://seu-crm.com/api/webhook/whatsapp</code>
+</div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<button class="btn btn-sm" id="waBackBtn">← Voltar</button>
+<button class="btn btn-primary btn-sm" id="waSaveApiBtn" style="flex:1;justify-content:center">Salvar e conectar</button>
+</div>
+</div>
+</div>
+<div class="modal-foot" id="waStep1Foot">
+<button class="btn" id="waConnectCancelBtn">Cancelar</button>
+</div>
+</div>
+</div>
+<!-- Quick Replies Modal -->
+<div class="modal-overlay hidden" id="quickRepliesBackdrop">
+<div class="modal-box" style="max-width:400px">
+<div class="modal-head"><h3>Respostas rápidas</h3><button class="modal-close" id="qrClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body" style="padding:0">
+<div id="qrList" style="display:flex;flex-direction:column"></div>
+</div>
+</div>
+</div>
+<!-- IMPORTAR -->
+<section class="view grid-view" id="importar">
+<div class="section-header"><div><div class="section-title-text">Importar / Exportar</div><div class="section-sub">Gerencie seus dados</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="card"><div class="card-header"><div class="card-title">Importar leads via CSV</div></div><div class="card-body">
+<div class="import-zone" id="importZone"><svg fill="none" height="30" stroke="currentColor" stroke-width="1.6" style="color:var(--text-3);margin-bottom:10px" viewbox="0 0 24 24" width="30"><use href="#ic-upload"></use></svg><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Arraste um CSV aqui</div><div style="font-size:12px;color:var(--text-3)">ou clique para selecionar</div><input accept=".csv" id="csvFileInput" style="display:none" type="file"/></div>
+<div style="margin-top:14px;font-size:12px;color:var(--text-3);line-height:1.6"><strong style="color:var(--text)">Colunas esperadas:</strong><br/>nome, segmento, responsavel, telefone, email, etapa, prioridade, valor, dataEntrada, origem, followup, obs</div>
+<div id="importResult" style="margin-top:10px"></div>
+</div></div>
+<div class="card"><div class="card-header"><div class="card-title">Exportar dados</div></div><div class="card-body" style="display:grid;gap:10px">
+<button class="btn" id="exportCsvBtn2" style="justify-content:flex-start;gap:12px"><svg fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;color:#16a34a" viewbox="0 0 24 24"><use href="#ic-icon-26"></use></svg><div><div style="font-size:13px;font-weight:600">Exportar como CSV</div><div style="font-size:11px;color:var(--text-3)">Todos os leads em planilha</div></div></button>
+<button class="btn" id="exportJsonBtn" style="justify-content:flex-start;gap:12px"><svg fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;color:#2563eb" viewbox="0 0 24 24"><use href="#ic-icon-26"></use></svg><div><div style="font-size:13px;font-weight:600">Exportar como JSON</div><div style="font-size:11px;color:var(--text-3)">Backup completo dos dados</div></div></button>
+<button class="btn btn-danger btn-sm" id="clearAllBtn" style="margin-top:8px">Limpar todos os dados</button>
+</div></div>
+</div>
+</section>
+<!-- NOVO LEAD -->
+<section class="view grid-view" id="novo-lead">
+<div class="section-header"><div><div class="section-title-text">Novo lead</div><div class="section-sub">Cadastro rápido de oportunidade</div></div></div>
+<div class="form-card">
+<div class="form-section">
+<div class="form-section-title">Informações do lead</div>
+<form class="form-grid" id="leadForm">
+<div class="field full"><label>Nome da empresa / cliente *</label><input name="nome" placeholder="Ex: Fazenda Aurora" required=""/></div>
+<div class="field"><label>Segmento *</label><input name="segmento" placeholder="Ex: Agronegócio" required=""/></div>
+<div class="field"><label>Responsável</label><input name="responsavel" placeholder="Ex: Ana Silva"/></div>
+<div class="field"><label>Telefone / WhatsApp</label><input name="telefone" placeholder="(00) 00000-0000"/></div>
+<div class="field"><label>E-mail</label><input name="email" placeholder="contato@empresa.com" type="email"/></div>
+<div class="field"><label>Etapa</label><select name="etapa"><option>Lead</option><option>Contato</option><option>Proposta</option><option>Fechado</option></select></div>
+<div class="field"><label>Prioridade</label><select name="prioridade"><option value="Alta">Alta</option><option selected="" value="Média">Média</option><option value="Baixa">Baixa</option></select></div>
+<div class="field"><label>Valor potencial (R$)</label><input name="valor" placeholder="0" type="number"/></div>
+<div class="field"><label>Origem</label><select name="origem"><option value="">Não informado</option><option value="Inbound">Inbound</option><option value="Outbound">Outbound</option><option value="Indicação">Indicação</option><option value="Outro">Outro</option></select></div>
+<div class="field"><label>Follow-up</label><input name="followup" type="date"/></div>
+<div class="field full"><label>Observações</label><textarea name="obs" placeholder="Anotações, próximos passos..." rows="3"></textarea></div>
+<div class="field full"><button class="btn btn-primary" style="width:fit-content" type="submit">Cadastrar lead</button></div>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- MODALS -->
+<!-- Lead Modal -->
+<div class="modal-overlay hidden" id="modalBackdrop">
+<div class="modal-box">
+<div class="modal-head"><h3 id="modalTitle">Novo lead</h3><button class="modal-close" id="modalCancel"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<div class="modal-grid">
+<div class="field full"><label>Nome *</label><input id="mNome" placeholder="Ex: Fazenda Aurora"/></div>
+<div class="field"><label>Segmento</label><input id="mSegmento" placeholder="Ex: Agronegócio"/></div>
+<div class="field"><label>Responsável</label><input id="mResponsavel" placeholder="Ex: Ana Silva"/></div>
+<div class="field"><label>Telefone / WhatsApp</label><input id="mTelefone" placeholder="(00) 00000-0000"/></div>
+<div class="field"><label>E-mail</label><input id="mEmail" placeholder="contato@empresa.com" type="email"/></div>
+<div class="field"><label>Etapa</label><select id="mEtapa"><option>Lead</option><option>Contato</option><option>Proposta</option><option>Fechado</option></select></div>
+<div class="field"><label>Prioridade</label><select id="mPrioridade"><option value="Alta">Alta</option><option selected="" value="Média">Média</option><option value="Baixa">Baixa</option></select></div>
+<div class="field"><label>Valor (R$)</label><input id="mValor" placeholder="0" type="number"/></div>
+<div class="field"><label>Data de entrada</label><input id="mData" type="date"/></div>
+<div class="field"><label>Origem</label><select id="mOrigem"><option value="">Não informado</option><option value="Inbound">Inbound</option><option value="Outbound">Outbound</option><option value="Indicação">Indicação</option><option value="Outro">Outro</option></select></div>
+<div class="field"><label>Follow-up</label><input id="mFollowup" type="date"/></div>
+<div class="field full"><label>Observações</label><textarea id="mObs" placeholder="Anotações..." rows="3"></textarea></div>
+</div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-danger btn-sm" id="modalDelete" style="display:none">Excluir</button>
+<button class="btn" id="modalCancelBtn">Cancelar</button>
+<button class="btn btn-primary" id="modalSave">Salvar</button>
+</div>
+</div>
+</div>
+<!-- Loss Modal -->
+<div class="modal-overlay hidden" id="lossBackdrop">
+<div class="modal-box" style="max-width:420px">
+<div class="modal-head"><h3>Motivo da perda</h3><button class="modal-close" id="lossCancel"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body">
+<p style="font-size:13px;color:var(--text-3);margin-bottom:12px">Selecione o principal motivo para mover para <strong>Perdido</strong>:</p>
+<div class="loss-grid" id="lossReasonBtns">
+<button class="loss-btn" data-reason="Preço">Preço</button>
+<button class="loss-btn" data-reason="Concorrente">Concorrente</button>
+<button class="loss-btn" data-reason="Sem fit">Sem fit</button>
+<button class="loss-btn" data-reason="Timing errado">Timing errado</button>
+<button class="loss-btn" data-reason="Sem resposta">Sem resposta</button>
+<button class="loss-btn" data-reason="Orçamento">Orçamento</button>
+</div>
+<div class="field" style="margin-top:12px"><label>Outro motivo</label><input id="lossOther" placeholder="Descreva o motivo..."/></div>
+</div>
+<div class="modal-foot"><button class="btn" id="lossCancelBtn">Cancelar</button><button class="btn btn-danger" id="lossConfirm">Confirmar perda</button></div>
+</div>
+</div>
+<!-- Bulk Stage Modal -->
+<div class="modal-overlay hidden" id="bulkStageBackdrop">
+<div class="modal-box" style="max-width:340px">
+<div class="modal-head"><h3>Mover para etapa</h3><button class="modal-close" id="bulkStageClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body"><div class="field full"><label>Etapa destino</label><select id="bulkStageSelect"><option>Lead</option><option>Contato</option><option>Proposta</option><option>Fechado</option><option>Perdido</option></select></div></div>
+<div class="modal-foot"><button class="btn" id="bulkStageCancelBtn">Cancelar</button><button class="btn btn-primary" id="bulkStageConfirm">Mover</button></div>
+</div>
+</div>
+<!-- Bulk Resp Modal -->
+<div class="modal-overlay hidden" id="bulkRespBackdrop">
+<div class="modal-box" style="max-width:340px">
+<div class="modal-head"><h3>Alterar responsável</h3><button class="modal-close" id="bulkRespClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="modal-body"><div class="field full"><label>Nome do responsável</label><input id="bulkRespInput" placeholder="Ex: Pedro Santos"/></div></div>
+<div class="modal-foot"><button class="btn" id="bulkRespCancelBtn">Cancelar</button><button class="btn btn-primary" id="bulkRespConfirm">Alterar</button></div>
+</div>
+</div>
+<!-- Detail Panel -->
+<div class="detail-overlay hidden" id="detailBackdrop">
+<div class="detail-panel">
+<div class="dp-hero">
+<div class="dp-hero-top"><div><div class="dp-name" id="dNome"></div><div id="dEtapaTag" style="margin-top:6px"></div></div><button class="modal-close" id="detailClose"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px" viewbox="0 0 24 24"><use href="#ic-close"></use></svg></button></div>
+<div class="dp-tags"><span id="dPriorityBadge"></span><span id="dDataEntrada" style="font-size:12px;color:var(--text-3)"></span></div>
+</div>
+<div class="dp-body">
+<div class="dp-row"><div class="dp-field"><label>Segmento</label><p id="dSegmento"></p></div><div class="dp-field"><label>Responsável</label><p id="dResponsavel"></p></div></div>
+<div class="dp-row"><div class="dp-field"><label>Telefone</label><p id="dTelefone"></p></div><div class="dp-field"><label>E-mail</label><p id="dEmail"></p></div></div>
+<div class="dp-row"><div class="dp-field"><label>Valor potencial</label><p id="dValor" style="font-size:16px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace"></p></div><div class="dp-field"><label>Etapa</label><p id="dEtapa"></p></div></div>
+<div class="dp-field full"><label>Observações</label><p id="dObs" style="white-space:pre-wrap;font-size:13px;line-height:1.6;color:var(--text-2)"></p></div>
+<div id="dExtra" style="display:contents"></div>
+<div class="tl-section">
+<div class="tl-section-label">Registrar atividade</div>
+<div class="tl-quick" id="tlQuickBtns"></div>
+<div class="tl-input-row">
+<textarea id="tlInput" placeholder="Descreva o que aconteceu..."></textarea>
+<button class="tl-send" id="tlSendBtn" title="Registrar"></button>
+</div>
+<div class="tl-section-label">Histórico</div>
+<div class="tl-list" id="tlList"></div>
+</div>
+</div>
+<div class="dp-footer"><button class="btn btn-primary" id="dEditBtn" style="flex:1;justify-content:center"><svg fill="none" height="13" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Editar</button><button class="btn btn-danger" id="dDeleteBtn"><svg fill="none" height="14" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="14"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg></button></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
 
-  <div id="toastRoot" class="toast-root" aria-live="polite"></div>
-  <script type="module" src="./src/core/app.js"></script>
-</body>
+
+<!-- CRM PRO V4 — Funil executivo + modais inteligentes -->
+
+
+
+<!-- CRM PRO V5 FINAL PATCH: navegação, metas, playbook IA, painel configurável -->
+
+<!-- CRM PRO V6 — Camada profissional por abas: navegação, metas, funil, playbooks, automações, clientes e relatórios -->
+
+
+<!-- CRM PRO V7: Garimpo de Leads -->
+
+<!-- CRM PRO V8: correção de visibilidade das abas Garimpo/Funil -->
+
+
+
+
+<!-- PATCH V18 — Painel estável + abas superiores personalizáveis sem quebrar botões -->
+
+
+<!-- PATCH V18.1 — limpeza de sobras antigas do painel -->
+
+<!-- PATCH V19 — Gestão de Leads profissional, sem filtros avançados/duplicados/sem próximo passo -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- CRM PRO V29: Metas comerciais profissionais -->
+
+
+<!-- CRM PRO V30: rotina automática + metas conectadas com aba de ligações -->
+
+
+<!-- CRM PRO V31: correção definitiva de navegação — metas não aparece fora da aba -->
+
+
+<!-- CRM PRO V32: Metas organizadas, botões estáveis e blocos configuráveis -->
+
+
+<!-- CRM PRO V33: estabilidade geral após correção de sintaxe e navegação -->
+
+
+<!-- CRM PRO V34: Playbook Builder + IA Local de scripts sem API -->
+
+
+<!-- CRM PRO V35 — Layout geral + aba Follow-ups operacional -->
+
+
+<!-- CRM PRO V36 FINAL PATCH -->
+
+
+<!-- CRM V41 CLEAN FIX: sem código visível na tela -->
+
+<!-- CRM PRO V45 — Continuação estável da v41: sem tela branca, sem apagar funções, layout personalizável -->
+
+
+<!-- CRM PRO V46 — Configurações, filtros profissionais e modo leve seguro -->
+
+
+</div><script src="assets/js/modules/00-nucleo-dados-base.js"></script><script src="assets/js/modules/01-central-acoes-relatorios.js"></script><script src="assets/js/modules/02-funil-lead-scoring.js"></script><script src="assets/js/modules/03-fix-chat-topbar.js"></script><script src="assets/js/modules/04-metas-dashboard-ia-inicial.js"></script><script src="assets/js/modules/05-integracao-geral-v6.js"></script><script src="assets/js/modules/06-garimpo-leads.js"></script><script src="assets/js/modules/07-fix-visibilidade-topbar.js"></script><script src="assets/js/modules/08-modulo-ligacoes.js"></script><script src="assets/js/modules/09-painel-widgets.js"></script><script src="assets/js/modules/10-leads-tabela-colunas-v19.js"></script><script src="assets/js/modules/11-pipeline-board-completo.js"></script><script src="assets/js/modules/13-funil-legado-e-relatorios.js"></script><script src="assets/js/modules/17-metas-modulo-completo.js"></script><script src="assets/js/modules/21-navegacao-boot.js"></script><script src="assets/js/modules/22-playbook-builder-ia-v34.js"></script><script src="assets/js/modules/23-followups-modulo-core.js"></script><script src="assets/js/modules/24-agenda-automacoes-completo.js"></script><script src="assets/js/modules/26-layout-limpeza-codigo-v45.js"></script><script src="assets/js/modules/27-configuracoes-v46.js"></script><script src="assets/js/crm-ui-profissional.js"></script></body>
 </html>
