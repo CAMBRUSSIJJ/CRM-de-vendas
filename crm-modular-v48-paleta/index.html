@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outbounder CRM Modular</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+</head>
+<body>
+  <aside id="appSidebar" class="sidebar" aria-label="Menu principal"></aside>
+
+  <header class="topbar">
+    <div>
+      <h1 id="pageTitle">Início</h1>
+      <p id="pageSubtitle">CRM modularizado, sem backend e sem Vite.</p>
+    </div>
+    <div class="topbar-actions">
+      <button id="globalNewLeadBtn" class="btn btn-primary" type="button">Novo lead</button>
+      <button id="themeToggleBtn" class="btn" type="button">Tema</button>
+    </div>
+  </header>
+
+  <main id="appMain" class="main" tabindex="-1">
+    <section class="loading-card">
+      <strong>Carregando CRM...</strong>
+      <span>Preparando módulos e dados locais.</span>
+    </section>
+  </main>
+
+  <div id="toastRoot" class="toast-root" aria-live="polite"></div>
+  <script type="module" src="./src/core/app.js"></script>
+</body>
+</html>
