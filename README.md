@@ -1,4 +1,4 @@
-# CRM Modular v48 — sem backend e sem Vite
+# CRM Modular v48 — paleta aplicada
 
 Esta versão organiza o CRM em arquivos por domínio, mantendo tudo client-side e usando `localStorage` centralizado. Não inclui Supabase/Firebase e não usa Vite/build, conforme solicitado.
 
@@ -70,3 +70,14 @@ Também funciona com Live Server do VS Code ou GitHub Pages.
 4. Mover follow-ups para `src/modules/followups.js`.
 5. Mover agenda e automações para seus módulos.
 6. Deixar métricas apenas lendo dados centralizados.
+
+## Paleta aplicada no layout
+
+Esta versão usa a paleta informada:
+
+- Verde profundo: `#04342C`
+- Verde destaque: `#1D9E75`
+- Creme de fundo: `#F1EFE8`
+- Texto/carvão: `#2C2C2A`
+
+As cores foram centralizadas em `styles/base.css` como variáveis CSS para facilitar futuras alterações.

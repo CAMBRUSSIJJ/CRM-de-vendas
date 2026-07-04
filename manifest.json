@@ -1,5 +1,5 @@
 {
-  "name": "crm-modular-v48-sem-backend-sem-vite",
+  "name": "crm-modular-v48-paleta",
   "excludes": [
     "Supabase/Firebase",
     "Vite/build"
