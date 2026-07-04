@@ -1,0 +1,15 @@
+{
+  "name": "crm-modular-v48-sem-backend-sem-vite",
+  "excludes": [
+    "Supabase/Firebase",
+    "Vite/build"
+  ],
+  "includes": [
+    "modularizacao",
+    "storage centralizado",
+    "icons reaproveitados",
+    "botoes robustos",
+    "paginas/componentes html"
+  ],
+  "entry": "index.html"
+}
