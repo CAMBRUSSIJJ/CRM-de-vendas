@@ -1,0 +1,3 @@
+styles extraidos: 24
+scripts extraidos: 28
+texto tecnico visivel detectado: 0

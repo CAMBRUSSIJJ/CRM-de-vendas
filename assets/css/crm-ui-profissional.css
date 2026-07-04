@@ -1,0 +1,71 @@
+/* ===== CRM v47 — camada profissional de layout, filtros e performance ===== */
+:root{--crm-filter-h:58px}
+body.crm-ui-ready .crm-v47-settings-btn{display:inline-flex}
+.crm-v47-settings-btn{align-items:center;gap:8px;width:100%;justify-content:flex-start}
+.crm-v47-drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.32);backdrop-filter:blur(4px);z-index:900;display:none}
+.crm-v47-drawer-backdrop.open{display:block}
+.crm-v47-drawer{position:fixed;top:0;right:0;height:100vh;width:min(430px,92vw);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);z-index:901;transform:translateX(105%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow:auto}
+.crm-v47-drawer.open{transform:translateX(0)}
+.crm-v47-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2}
+.crm-v47-drawer-title{font-family:'Inter Tight','Inter',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+.crm-v47-drawer-sub{font-size:12px;color:var(--text-3);margin-top:2px}
+.crm-v47-close{width:34px;height:34px;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--text-3)}
+.crm-v47-close:hover{background:var(--surface-2);color:var(--text)}
+.crm-v47-section{padding:18px 20px;border-bottom:1px solid var(--border)}
+.crm-v47-section h4{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px}
+.crm-v47-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.crm-v47-option{padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);cursor:pointer;text-align:left;transition:var(--transition)}
+.crm-v47-option:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.crm-v47-option.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);background:var(--blue-light)}
+.crm-v47-option b{display:block;font-size:13px;color:var(--text);font-weight:800;margin-bottom:3px}
+.crm-v47-option span{display:block;font-size:11.5px;color:var(--text-3);line-height:1.35}
+.crm-v47-toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0}
+.crm-v47-toggle:not(:last-child){border-bottom:1px solid var(--border)}
+.crm-v47-toggle strong{font-size:13px;color:var(--text)}
+.crm-v47-toggle small{display:block;font-size:11.5px;color:var(--text-3);line-height:1.35;margin-top:1px}
+.crm-v47-switch{width:42px;height:24px;border-radius:999px;background:var(--surface-3);border:1px solid var(--border);position:relative;cursor:pointer;flex-shrink:0;transition:var(--transition)}
+.crm-v47-switch::after{content:'';position:absolute;width:18px;height:18px;top:2px;left:2px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:var(--transition)}
+.crm-v47-switch.on{background:var(--blue);border-color:var(--blue)}
+.crm-v47-switch.on::after{left:20px}
+.crm-v47-note{border:1px solid var(--border);background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--text-2);line-height:1.55}
+.crm-v47-note b{color:var(--text)}
+/* Filtros profissionais globais */
+.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,#v29Filters,#v37FollowupFilters,.v29-filters,[id*="Filters"],[id*="Toolbar"]{border:1px solid var(--border);background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-radius:14px;padding:10px 12px;box-shadow:var(--shadow-xs);gap:8px!important;align-items:center!important}
+[data-theme="dark"] .crm-filterbar,[data-theme="dark"] .pipeline-toolbar,[data-theme="dark"] .leads-toolbar,[data-theme="dark"] .agenda-toolbar,[data-theme="dark"] #v29Filters,[data-theme="dark"] #v37FollowupFilters,[data-theme="dark"] .v29-filters,[data-theme="dark"] [id*="Filters"],[data-theme="dark"] [id*="Toolbar"]{background:rgba(17,24,39,.86)}
+.crm-filterbar input,.pipeline-toolbar input,.leads-toolbar input,.agenda-toolbar input,#v29Filters input,#v37FollowupFilters input,[id*="Filters"] input,
+.crm-filterbar select,.pipeline-toolbar select,.leads-toolbar select,.agenda-toolbar select,#v29Filters select,#v37FollowupFilters select,[id*="Filters"] select{height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface);padding:0 11px;font-size:12.5px;outline:none;transition:var(--transition)}
+.crm-filterbar input:focus,.pipeline-toolbar input:focus,.leads-toolbar input:focus,.agenda-toolbar input:focus,#v29Filters input:focus,#v37FollowupFilters input:focus,[id*="Filters"] input:focus,
+.crm-filterbar select:focus,.pipeline-toolbar select:focus,.leads-toolbar select:focus,.agenda-toolbar select:focus,#v29Filters select:focus,#v37FollowupFilters select:focus,[id*="Filters"] select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.11)}
+.crm-filter-count{display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:24px;padding:0 8px;border-radius:999px;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:800;border:1px solid #bfdbfe;margin-left:auto}
+.crm-filter-clear{height:30px;padding:0 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text-3);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.crm-filter-clear:hover{background:var(--surface-2);color:var(--text)}
+body.crm-filters-sticky .crm-filterbar,body.crm-filters-sticky .pipeline-toolbar,body.crm-filters-sticky .leads-toolbar,body.crm-filters-sticky .agenda-toolbar,body.crm-filters-sticky #v29Filters,body.crm-filters-sticky #v37FollowupFilters{position:sticky;top:calc(var(--topbar-h) + 8px);z-index:25}
+/* Layouts globais */
+body.crm-layout-simple .topbar-tabs{display:none!important}
+body.crm-layout-simple .card-sub,body.crm-layout-simple .section-sub,body.crm-layout-simple .module-desc{font-size:11.5px;line-height:1.35}
+body.crm-layout-simple .home-welcome p,body.crm-layout-simple .crm-dashboard-note{display:none!important}
+body.crm-layout-compact{font-size:13px}
+body.crm-layout-compact .main{gap:14px;padding-top:calc(var(--topbar-h) + 16px)}
+body.crm-layout-compact .card-body{padding:14px}
+body.crm-layout-compact .card-header{padding:12px 16px}
+body.crm-layout-compact .stat-card{padding:15px 16px}
+body.crm-layout-compact .data-table td{padding:9px 12px}
+body.crm-layout-focus .topbar-tabs,body.crm-layout-focus .home-welcome p,body.crm-layout-focus .brand-sub{display:none!important}
+body.crm-layout-focus [data-view="chat"],body.crm-layout-focus [data-view="importar"],body.crm-layout-focus [data-view="perdas"],body.crm-layout-focus [data-view="objecoes"]{opacity:.55}
+body.crm-centered .main{max-width:1540px;margin:0 auto;width:100%}
+/* Sidebar */
+body.crm-sidebar-fixed .sidebar{transform:translateX(0)!important;box-shadow:12px 0 40px rgba(0,0,0,.18)}
+body.crm-sidebar-fixed .topbar{left:var(--sidebar-w)}
+body.crm-sidebar-fixed .main{padding-left:calc(var(--sidebar-w) + 24px)}
+body.crm-sidebar-icons .sidebar{transform:translateX(calc(-1*(var(--sidebar-w) - var(--rail-w))))!important;box-shadow:none!important}
+body.crm-sidebar-icons .sidebar:hover{transform:translateX(calc(-1*(var(--sidebar-w) - var(--rail-w))))!important}
+body.crm-sidebar-icons .topbar{left:var(--rail-w)}
+/* Performance */
+body.crm-lite *,body.crm-reduce-motion *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+body.crm-lite .card,body.crm-lite .stat-card,body.crm-lite .kanban-card,body.crm-lite .auto-card,body.crm-lite .ag-item{box-shadow:none!important}
+body.crm-lite .card,body.crm-lite .stat-card,body.crm-lite .kanban-card,body.crm-lite .auto-card,body.crm-lite .ag-item,body.crm-lite .module-btn{content-visibility:auto;contain-intrinsic-size:180px;contain:layout paint style}
+body.crm-lite .view:not(.active){display:none!important;content-visibility:hidden}
+/* Cleaner buttons */
+.btn,.tab,.nav-item,.chip,.view-tab{letter-spacing:-.01em}
+.tab{border:1px solid transparent}.tab.active{box-shadow:0 1px 2px rgba(0,0,0,.08)}
+@media(max-width:900px){body.crm-sidebar-fixed .topbar{left:var(--rail-w)}body.crm-sidebar-fixed .main{padding-left:16px}.crm-v47-options{grid-template-columns:1fr}}
