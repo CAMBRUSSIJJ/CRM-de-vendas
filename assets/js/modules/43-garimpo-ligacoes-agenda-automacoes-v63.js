@@ -94,18 +94,9 @@
   }
 
   function injectGarimpoMainTab(){
-    const nav=$('.sidebar-nav'); if(!nav) return;
-    if(!$('.v63-garimpo-main-tab',nav)){
-      const group=document.createElement('div');
-      group.className='v60-nav-group v63-garimpo-main-tab';
-      group.dataset.area='garimpo';
-      group.innerHTML=`<button type="button" class="nav-item v60-nav-item" data-v63-view="garimpo" title="Garimpo" aria-label="Garimpo de Leads"><span class="v60-icon" aria-hidden="true">${icons.search}</span><span class="v60-nav-text">Garimpo</span></button><div class="v60-flyout" role="menu" aria-label="Sub-abas de Garimpo"><div class="v60-flyout-title"><span class="v60-sub-icon">${icons.search}</span><span>Garimpo</span></div><div class="v60-flyout-list"><button type="button" class="v60-subitem" data-v63-view="garimpo"><span class="v60-sub-icon">${icons.search}</span><span>Buscar leads</span></button><button type="button" class="v60-subitem" data-v63-view="garimpo"><span class="v60-sub-icon">${icons.plus}</span><span>Importar lista</span></button></div></div>`;
-      const leadsGroup=$('.v60-nav-group[data-area="leads"]',nav);
-      if(leadsGroup) leadsGroup.insertAdjacentElement('afterend',group); else nav.insertBefore(group,nav.children[2]||null);
-    }
-    const oldGar=$('.sidebar-nav [data-view="garimpo"]');
-    if(oldGar) oldGar.classList.remove('crm-tab-hidden');
-    updateV63Active($('.view.active')?.id||'inicio');
+    /* V64 assume a navegação principal. Mantido apenas para compatibilidade com scripts antigos,
+       sem criar uma aba Garimpo extra por cima das outras. */
+    try{ updateV63Active($('.view.active')?.id||'inicio'); }catch(e){}
   }
   function updateV63Active(view){
     $$('.v63-garimpo-main-tab').forEach(g=>g.classList.toggle('v60-active',view==='garimpo'));
