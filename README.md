@@ -119,3 +119,15 @@ Arquivos principais da v55:
 - `RELATORIO-V55-BUGS.md`
 
 A Agenda possui visualizações de Mês, Dia, Ano e Lista, criação por clique no dia/horário e painel lateral de evento. Os Follow-ups usam layout tipo Pipeline, com etapas e cards arrastáveis. A aba Ligações possui links `tel:+55...` para abrir o discador do computador/celular conectado.
+
+## Atualização v56 — Agenda e Sidebar
+
+- Sidebar sem botão de recolher: agora abre no hover e fecha automaticamente.
+- Abas/sub-abas com ícones e tooltips no modo recolhido.
+- Agenda com acabamento visual mais profissional: calendário mais suave, botão de compromisso melhorado, campos de criação/edição mais bonitos e painel lateral refinado.
+
+Arquivos novos:
+
+- `assets/css/crm-v56-agenda-sidebar-polido.css`
+- `assets/js/modules/36-agenda-sidebar-polido-v56.js`
+
