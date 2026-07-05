@@ -163,3 +163,21 @@ A v58 corrige um conflito de classes antigas que podia fazer a barra lateral des
 ## v59 — correção de carregamento infinito
 
 A v59 substitui a camada v58 da sidebar por uma correção segura sem `MutationObserver` permanente. Ela força o CRM a sair de estados de carregamento, estabiliza a barra lateral e evita loops causados por classes antigas salvas no navegador.
+
+
+## Atualização v60 — Sidebar compacta profissional
+
+Esta versão simplifica a barra lateral para um modelo mais profissional:
+
+- 10 áreas principais;
+- sub-abas escondidas em flyout;
+- ícones SVG lineares;
+- sem botão de recolher;
+- sem setas;
+- lateral recolhida com ícones e expansão ao passar o mouse.
+
+Arquivos principais da v60:
+
+- `assets/css/crm-v60-sidebar-compacta-profissional.css`
+- `assets/js/modules/40-sidebar-compacta-profissional-v60.js`
+- `RELATORIO-V60-SIDEBAR-COMPACTA.md`
