@@ -131,3 +131,26 @@ Arquivos novos:
 - `assets/css/crm-v56-agenda-sidebar-polido.css`
 - `assets/js/modules/36-agenda-sidebar-polido-v56.js`
 
+
+## Versão v57 — limpeza estrutural e layout definitivo
+
+Esta versão aplica uma camada oficial única para Sidebar, Agenda, Follow-ups, Ligações, Inteligência Comercial e Automações.
+
+O objetivo foi parar as sobreposições de versões antigas que estavam causando botões sem funcionar, agenda duplicada, layout inconsistente e páginas por cima umas das outras.
+
+Arquivos novos:
+
+- `assets/css/crm-v57-limpeza-estrutural.css`
+- `assets/js/modules/37-limpeza-estrutural-layout-definitivo-v57.js`
+- `RELATORIO-V57-LIMPEZA-ESTRUTURAL.md`
+
+Principais mudanças:
+
+- Sidebar sem botão e sem setas, expandindo no hover.
+- Agenda com Dia, Semana, Mês, Ano e Lista.
+- Criação de compromisso por clique no dia ou horário.
+- Drawer profissional de criar/editar/excluir compromisso.
+- Follow-ups com layout tipo Pipeline e cards arrastáveis.
+- Ligações com telefone clicável usando `tel:+55...`.
+- Inteligência Comercial unificada.
+- Automações com criador visual.
