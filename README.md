@@ -158,3 +158,8 @@ Principais mudanças:
 ## v58 — correção da sidebar invisível
 
 A v58 corrige um conflito de classes antigas que podia fazer a barra lateral desaparecer. A sidebar agora é forçada a permanecer visível, recolhida por padrão e expandida apenas ao passar o mouse, sem botão de abrir/recolher.
+
+
+## v59 — correção de carregamento infinito
+
+A v59 substitui a camada v58 da sidebar por uma correção segura sem `MutationObserver` permanente. Ela força o CRM a sair de estados de carregamento, estabiliza a barra lateral e evita loops causados por classes antigas salvas no navegador.
