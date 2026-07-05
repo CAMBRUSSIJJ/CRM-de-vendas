@@ -83,3 +83,8 @@ Arquivos novos:
 assets/css/crm-v52-sidebar-calendar-calls.css
 assets/js/modules/32-sidebar-calendar-ligacoes.js
 ```
+
+## Atualização v53
+- Barra lateral sem setas/chevrons: recolhimento por botão discreto e handle lateral profissional.
+- Agenda com visualização Mês, Dia, Ano e Lista, navegação Hoje/Anterior/Próximo e criação de compromisso ao clicar no dia/horário.
+- Ligações com números clicáveis usando `tel:+55...` para funcionar com celular conectado ao Windows.
