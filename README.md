@@ -65,3 +65,21 @@ Arquivos principais adicionados:
 - `assets/js/modules/31-agenda-ligacoes-playbook-automacoes.js`
 
 Também foi exposta uma API leve no `00-nucleo-dados-base.js` para que os módulos novos consigam usar leads, agenda e automações sem duplicar estado.
+
+
+## Atualização v52 — Sidebar, Agenda e Ligações
+
+Esta versão adiciona uma camada de melhoria sem remover as funções antigas:
+
+- Recolhimento profissional da barra lateral com animação suave, tooltip nos ícones e sub-abas quando expandida.
+- Agenda em visual de calendário inspirado no Google Calendar, com visualizações de Mês, Dia, Ano e Lista.
+- Eventos do calendário abrem em painel lateral para editar data, hora, tipo, prioridade, lead e notas.
+- Telefones na aba Ligações e no detalhe do lead viram links `tel:+55...`, para abrir o app padrão de chamadas do Windows/celular conectado.
+- Aviso técnico: gravação automática não é possível com `tel:`/Vincular ao Celular; para gravação real é necessário VoIP/API com consentimento.
+
+Arquivos novos:
+
+```txt
+assets/css/crm-v52-sidebar-calendar-calls.css
+assets/js/modules/32-sidebar-calendar-ligacoes.js
+```
