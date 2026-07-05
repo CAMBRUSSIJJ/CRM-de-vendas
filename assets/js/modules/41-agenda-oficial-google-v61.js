@@ -8,9 +8,25 @@
   const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
   const LS_EVENTS = 'outbounder_agenda_v1';
   const LS_UI = 'outbounder_agenda_v61_ui';
+  const LS_AGENDAS = 'outbounder_agendas_v63';
   const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const TYPES = ['Ligação','Reunião','Follow-up','Tarefa','Proposta','Pessoal'];
-  const AGENDAS = ['Comercial','Follow-ups','Reuniões','Pessoal'];
+  const DEFAULT_AGENDAS = [
+    {id:'comercial',name:'Comercial',color:'#1D9E75',active:true},
+    {id:'followups',name:'Follow-ups',color:'#9333EA',active:true},
+    {id:'reunioes',name:'Reuniões',color:'#2563EB',active:true},
+    {id:'pessoal',name:'Pessoal',color:'#64748B',active:true}
+  ];
+  function agendaDefs(){
+    try{
+      const raw = JSON.parse(localStorage.getItem(LS_AGENDAS)||'null');
+      if(Array.isArray(raw) && raw.length) return raw.map((a,i)=>({id:a.id||('agenda_'+i),name:a.name||a.nome||'Agenda',color:a.color||a.cor||'#1D9E75',active:a.active!==false}));
+    }catch(e){}
+    return DEFAULT_AGENDAS.slice();
+  }
+  function saveAgendaDefs(list){ try{ localStorage.setItem(LS_AGENDAS, JSON.stringify(list)); }catch(e){} }
+  function agendaNames(){ return agendaDefs().filter(a=>a.active!==false).map(a=>a.name); }
+  function agendaColor(name){ const found=agendaDefs().find(a=>a.name===name); return found?.color || '#1D9E75'; }
   const HOURS = Array.from({length:15},(_,i)=>i+7);
   const pad = n => String(n).padStart(2,'0');
   const today = () => dateKey(new Date());
@@ -26,7 +42,7 @@
     anchor:today(),
     miniAnchor:today(),
     visibleTypes:TYPES.slice(),
-    visibleAgendas:AGENDAS.slice(),
+    visibleAgendas:agendaNames(),
     density:'comfort',
     drawer:null
   }, loadUI());
@@ -54,6 +70,7 @@
       status: e.status || 'Agendado',
       notas: e.notas || e.notes || e.objetivo || '',
       local: e.local || '',
+      cor: e.cor || e.color || agendaColor(e.agenda || 'Comercial'),
       criadoEm: e.criadoEm || new Date().toISOString()
     };
   }
@@ -100,7 +117,7 @@
       <aside class="v61-cal-sidebar">
         <div class="v61-mini-head"><button class="v61-icon-btn" data-v61-mini-prev type="button" aria-label="Mês anterior">‹</button><div class="v61-mini-title" id="v61MiniTitle">Mini calendário</div><button class="v61-icon-btn" data-v61-mini-next type="button" aria-label="Próximo mês">›</button></div>
         <div class="v61-mini-grid" id="v61MiniCalendar"></div>
-        <div class="v61-side-block"><div class="v61-side-title">Minhas agendas</div><div class="v61-check-list">${AGENDAS.map(a=>`<label class="v61-check"><input type="checkbox" data-v61-agenda-filter="${esc(a)}" ${state.visibleAgendas.includes(a)?'checked':''}/> ${esc(a)}</label>`).join('')}</div></div>
+        <div class="v61-side-block"><div class="v61-side-title">Minhas agendas</div><div class="v61-check-list">${agendaNames().map(a=>`<label class="v61-check"><input type="checkbox" data-v61-agenda-filter="${esc(a)}" ${state.visibleAgendas.includes(a)?'checked':''}/> <span class="v61-type-dot" style="background:${esc(agendaColor(a))}"></span>${esc(a)}</label>`).join('')}</div></div>
         <div class="v61-side-block"><div class="v61-side-title">Tipos de evento</div><div class="v61-check-list">${TYPES.map(t=>`<label class="v61-check"><input type="checkbox" data-v61-type-filter="${esc(t)}" ${state.visibleTypes.includes(t)?'checked':''}/> <span class="v61-type-dot v61-color-${typeKey(t)}"></span>${esc(t)}</label>`).join('')}</div></div>
         <div class="v61-side-block"><div class="v61-side-title">Densidade</div><div class="v61-seg" style="display:inline-flex"><button type="button" data-v61-density="comfort" class="${state.density==='comfort'?'active':''}">Conforto</button><button type="button" data-v61-density="compact" class="${state.density==='compact'?'active':''}">Compacto</button></div></div>
         <div class="v61-side-block"><div class="v61-hint"><strong>Dica:</strong> clique em qualquer dia, horário ou espaço vazio para criar um compromisso naquele ponto da agenda.</div></div>
@@ -207,7 +224,7 @@
     return `<div class="v61-list">${evs.slice(0,80).map(e=>`<div class="v61-list-row" data-v61-event="${esc(e.id)}"><div class="v61-list-date">${formatDate(e.data)}<br>${esc(e.hora)}–${esc(e.fim)}</div><div><div class="v61-list-title">${esc(e.title)}</div><div class="v61-list-meta">${esc(e.tipo)} · ${esc(e.leadNome || 'Sem lead vinculado')} · ${esc(e.agenda)}</div></div><span class="v61-status-pill">${esc(e.status)}</span></div>`).join('')}</div>`;
   }
   function formatDate(ds){ return parseDate(ds).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.', ''); }
-  function eventChip(e){ return `<button type="button" class="v61-event-chip v61-color-${typeKey(e.tipo)}" data-v61-event="${esc(e.id)}"><span class="v61-event-time">${esc(e.hora)}</span>${esc(e.title)}</button>`; }
+  function eventChip(e){ const c=e.cor || agendaColor(e.agenda); return `<button type="button" class="v61-event-chip v61-color-${typeKey(e.tipo)}" style="--v61-event-color:${esc(c)}" data-v61-event="${esc(e.id)}"><span class="v61-event-time">${esc(e.hora)}</span>${esc(e.title)}</button>`; }
   function bindBody(root){
     $$('[data-v61-event]',root).forEach(el=>el.addEventListener('click',ev=>{ ev.preventDefault(); ev.stopPropagation(); const item=events().find(x=>x.id===el.dataset.v61Event); if(item) openDrawer(item); }));
     $$('[data-v61-date]',root).forEach(el=>el.addEventListener('click',ev=>{ if(ev.target.closest('[data-v61-event]')) return; const ds=el.dataset.v61Date; const hour=el.dataset.v61Hour || '09:00'; state.anchor=ds; saveUI(); openDrawer({data:ds,hora:hour,fim:defaultEnd(hour),tipo:'Reunião'}); }));
@@ -224,13 +241,14 @@
         <div class="v61-field full"><label>Título do compromisso *</label><input id="v61Title" value="${esc(ev.title==='Compromisso sem título'?'':ev.title)}" placeholder="Ex: Reunião de diagnóstico, retorno da proposta..." required></div>
         <div class="v61-form-grid">
           <div class="v61-field"><label>Data *</label><input id="v61Data" type="date" value="${esc(ev.data)}" required></div>
-          <div class="v61-field"><label>Agenda</label><select id="v61Agenda">${AGENDAS.map(a=>`<option ${ev.agenda===a?'selected':''}>${esc(a)}</option>`).join('')}</select></div>
+          <div class="v61-field"><label>Agenda</label><select id="v61Agenda">${agendaNames().map(a=>`<option ${ev.agenda===a?'selected':''}>${esc(a)}</option>`).join('')}</select></div>
           <div class="v61-field"><label>Início</label><input id="v61Hora" type="time" value="${esc(ev.hora)}"></div>
           <div class="v61-field"><label>Fim</label><input id="v61Fim" type="time" value="${esc(ev.fim)}"></div>
           <div class="v61-field"><label>Tipo</label><select id="v61Tipo">${TYPES.map(t=>`<option ${ev.tipo===t?'selected':''}>${esc(t)}</option>`).join('')}</select></div>
           <div class="v61-field"><label>Prioridade</label><select id="v61Prioridade">${['Alta','Média','Baixa'].map(p=>`<option ${ev.prioridade===p?'selected':''}>${p}</option>`).join('')}</select></div>
           <div class="v61-field"><label>Status</label><select id="v61Status">${['Agendado','Concluído','Remarcado','Cancelado'].map(s=>`<option ${ev.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
           <div class="v61-field"><label>Local / Link</label><input id="v61Local" value="${esc(ev.local)}" placeholder="Sala, Google Meet, endereço..."></div>
+          <div class="v61-field"><label>Cor do compromisso</label><input id="v61Cor" type="color" value="${esc(ev.cor || agendaColor(ev.agenda))}"></div>
           <div class="v61-field full"><label>Lead vinculado</label><input id="v61Lead" list="v61LeadOptions" value="${esc(ev.leadNome)}" placeholder="Digite ou selecione um lead"><datalist id="v61LeadOptions">${leadNames.map(n=>`<option value="${esc(n)}"></option>`).join('')}</datalist></div>
           <div class="v61-field full"><label>Notas / objetivo</label><textarea id="v61Notas" placeholder="Objetivo, contexto, pontos para tratar, próxima ação...">${esc(ev.notas)}</textarea></div>
         </div>
@@ -257,6 +275,7 @@
       agenda: $('#v61Agenda')?.value || 'Comercial',
       status: $('#v61Status')?.value || 'Agendado',
       local: $('#v61Local')?.value || '',
+      cor: $('#v61Cor')?.value || agendaColor($('#v61Agenda')?.value || 'Comercial'),
       leadNome: $('#v61Lead')?.value || '',
       notas: $('#v61Notas')?.value || ''
     }));
