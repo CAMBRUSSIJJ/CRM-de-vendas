@@ -154,3 +154,7 @@ Principais mudanças:
 - Ligações com telefone clicável usando `tel:+55...`.
 - Inteligência Comercial unificada.
 - Automações com criador visual.
+
+## v58 — correção da sidebar invisível
+
+A v58 corrige um conflito de classes antigas que podia fazer a barra lateral desaparecer. A sidebar agora é forçada a permanecer visível, recolhida por padrão e expandida apenas ao passar o mouse, sem botão de abrir/recolher.
