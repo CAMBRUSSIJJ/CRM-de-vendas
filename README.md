@@ -88,3 +88,22 @@ assets/js/modules/32-sidebar-calendar-ligacoes.js
 - Barra lateral sem setas/chevrons: recolhimento por botão discreto e handle lateral profissional.
 - Agenda com visualização Mês, Dia, Ano e Lista, navegação Hoje/Anterior/Próximo e criação de compromisso ao clicar no dia/horário.
 - Ligações com números clicáveis usando `tel:+55...` para funcionar com celular conectado ao Windows.
+
+
+## V54 — correção estrutural de Agenda, Ligações e Sidebar
+
+Esta versão corrige a sobreposição de páginas que fazia a Agenda e Ligações não aparecerem corretamente. A correção oficial está em:
+
+- `assets/css/crm-v54-correcao-estrutural.css`
+- `assets/js/modules/34-correcao-estrutural-agenda-ligacoes-sidebar.js`
+
+Também foi incluído o relatório `RELATORIO-V54-BUGS.md` com os bugs encontrados.
+
+Principais mudanças:
+
+- Sidebar recolhe/expande sem setas, com animação suave e grip profissional.
+- Agenda com visualizações Mês, Dia, Ano e Lista.
+- Clique em dia/horário cria compromisso em painel lateral.
+- Clique em evento abre edição em painel lateral.
+- Ligações com telefone clicável usando `tel:+55...`, ideal para celular conectado ao Windows.
+- Overlays antigos v52/v53 foram removidos do carregamento para evitar conflito.
