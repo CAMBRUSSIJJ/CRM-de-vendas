@@ -181,3 +181,13 @@ Arquivos principais da v60:
 - `assets/css/crm-v60-sidebar-compacta-profissional.css`
 - `assets/js/modules/40-sidebar-compacta-profissional-v60.js`
 - `RELATORIO-V60-SIDEBAR-COMPACTA.md`
+
+## v61 — Agenda oficial
+
+A v61 substitui a agenda antiga por uma agenda oficial com visual profissional inspirado em calendários modernos. A aba Agenda agora tem visualizações Dia, Semana, Mês, Ano e Lista, clique direto nos dias/horários para criar compromissos, mini calendário lateral e painel lateral de criação/edição.
+
+Arquivos principais da v61:
+
+- `assets/css/crm-v61-agenda-oficial-google.css`
+- `assets/js/modules/41-agenda-oficial-google-v61.js`
+- `RELATORIO-V61-AGENDA-OFICIAL.md`

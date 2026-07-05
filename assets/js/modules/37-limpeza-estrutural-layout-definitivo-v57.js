@@ -102,7 +102,7 @@
 
   function handleSubAction(view,label){
     setTimeout(()=>{
-      if(view==='agenda') setAgendaView(label.toLowerCase());
+      if(view==='agenda') return; // v61 agenda oficial assume as visualizações
       if(view==='cadencias') setFollowView(label.toLowerCase());
       if(view==='ligacoes') renderCalls(label.toLowerCase());
       if(view==='playbooks') setIntelTab(label.toLowerCase());
@@ -113,7 +113,7 @@
   function renderOfficial(view){
     bindNav();
     updateActiveNav(view);
-    if(view === 'agenda') renderAgenda();
+    if(view === 'agenda') return; // v61 agenda oficial assume a renderização
     if(view === 'cadencias') renderFollowups();
     if(view === 'ligacoes') renderCalls();
     if(view === 'playbooks' || view === 'objecoes') renderIntelligence(view === 'objecoes' ? 'objeções' : null);
