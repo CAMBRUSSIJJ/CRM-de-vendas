@@ -107,3 +107,15 @@ Principais mudanças:
 - Clique em evento abre edição em painel lateral.
 - Ligações com telefone clicável usando `tel:+55...`, ideal para celular conectado ao Windows.
 - Overlays antigos v52/v53 foram removidos do carregamento para evitar conflito.
+
+## Atualização v55
+
+Esta versão corrige a sobreposição de Agenda, Ligações e Follow-ups. A Agenda agora é renderizada diretamente dentro da aba oficial `#agenda`, as Ligações dentro de `#ligacoes` e os Follow-ups dentro de `#cadencias`, evitando páginas duplicadas por cima.
+
+Arquivos principais da v55:
+
+- `assets/css/crm-v55-agenda-followups-ligacoes-sidebar.css`
+- `assets/js/modules/35-agenda-followups-ligacoes-sidebar-v55.js`
+- `RELATORIO-V55-BUGS.md`
+
+A Agenda possui visualizações de Mês, Dia, Ano e Lista, criação por clique no dia/horário e painel lateral de evento. Os Follow-ups usam layout tipo Pipeline, com etapas e cards arrastáveis. A aba Ligações possui links `tel:+55...` para abrir o discador do computador/celular conectado.
