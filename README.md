@@ -47,3 +47,21 @@ Arquivos adicionados:
 Arquivo atualizado:
 
 - `index.html`
+
+## Atualização v51 — Agenda, Ligações, Playbooks, Automações e lateral
+
+Esta versão adiciona uma camada de UX profissional sem remover os módulos existentes:
+
+- barra lateral redesenhada com recolher/expandir e sub-abas;
+- remoção visual das abas duplicadas do topo/rail;
+- agenda com comando compacto, filtro lateral, kanban, painel lateral do compromisso, concluir/remarcar/criar próximo follow-up;
+- ligações com modo discagem, configuração do discador em painel lateral e ações inteligentes pós-ligação;
+- inteligência comercial com playbooks, scripts, objeções, materiais e gerador local de script;
+- automações com modelos prontos, construtor visual, simulação e histórico.
+
+Arquivos principais adicionados:
+
+- `assets/css/crm-v51-agenda-ligacoes-playbook-automacoes.css`
+- `assets/js/modules/31-agenda-ligacoes-playbook-automacoes.js`
+
+Também foi exposta uma API leve no `00-nucleo-dados-base.js` para que os módulos novos consigam usar leads, agenda e automações sem duplicar estado.

@@ -10,6 +10,12 @@ const SK='outbounder_leads_v5',EK='outbounder_agenda_v1',NK='outbounder_notes',A
 function loadLeads(){try{const s=localStorage.getItem(SK);return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_LEADS));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_LEADS));}}
 function saveLeads(){try{localStorage.setItem(SK,JSON.stringify(leads));}catch(e){}}
 const leads=loadLeads();
+// API leve para módulos posteriores sem duplicar estado.
+window.crmGetLeads=()=>leads;
+window.crmSaveLeads=()=>{try{saveLeads();}catch(e){} try{renderAll();}catch(e){}};
+window.crmOpenLead=(ref)=>{try{return openDetail(ref);}catch(e){}};
+window.crmOpenLeadModal=(lead,stage)=>{try{return openModal(lead,stage);}catch(e){}};
+window.crmToast=(msg,type)=>{try{return showToast(msg,type);}catch(e){console.log(msg);}};
 const stages=['Lead','Contato','Proposta','Fechado','Perdido'];
 
 // ══ HELPERS ══
@@ -491,6 +497,14 @@ function processCSV(file){
 function loadEvents(){try{const s=localStorage.getItem(EK);return s?JSON.parse(s):[];}catch(e){return[];}}
 function saveEvents(){localStorage.setItem(EK,JSON.stringify(agEvents));}
 let agEvents=loadEvents();
+window.crmAgendaAPI={
+  get:()=>agEvents,
+  set:(arr)=>{agEvents=Array.isArray(arr)?arr:agEvents;try{saveEvents();renderAgenda();renderKPIs();}catch(e){}},
+  save:()=>{try{saveEvents();renderAgenda();renderKPIs();}catch(e){}},
+  render:()=>{try{renderAgenda();}catch(e){}},
+  openDetail:(id)=>{try{return openAgDetail(id);}catch(e){}},
+  openModal:(id)=>{try{return openAgEventModal(id);}catch(e){}}
+};
 if(!agEvents.length){
   const t=todayStr(),tom=new Date();tom.setDate(tom.getDate()+1);const ts=tom.toISOString().slice(0,10);
   agEvents=[
@@ -622,6 +636,13 @@ const DEFAULT_AUTOMATIONS=[
 function loadAutomations(){try{const s=localStorage.getItem(AK);return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_AUTOMATIONS));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_AUTOMATIONS));}}
 function saveAutomations(){try{localStorage.setItem(AK,JSON.stringify(automations));}catch(e){}}
 let automations=loadAutomations();
+window.crmAutomationAPI={
+  get:()=>automations,
+  set:(arr)=>{automations=Array.isArray(arr)?arr:automations;try{saveAutomations();renderAutomations();}catch(e){}},
+  save:()=>{try{saveAutomations();renderAutomations();}catch(e){}},
+  open:(id)=>{try{return openAutoModal(id);}catch(e){}},
+  render:()=>{try{return renderAutomations();}catch(e){}}
+};
 const ACAO_LABEL={compromisso:'Criar compromisso',prioridade:'Definir prioridade',nota:'Adicionar nota'};
 function runAutomations(lead,novaEtapa){
   const regras=automations.filter(a=>a.ativo&&a.etapa===novaEtapa);
