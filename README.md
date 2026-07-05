@@ -191,3 +191,12 @@ Arquivos principais da v61:
 - `assets/css/crm-v61-agenda-oficial-google.css`
 - `assets/js/modules/41-agenda-oficial-google-v61.js`
 - `RELATORIO-V61-AGENDA-OFICIAL.md`
+
+
+## v62 — Garimpo de Leads e personalização visual
+
+- Página oficial de Garimpo de Leads dentro da área Leads.
+- Garimpo com critérios por segmento/cidade, score, importação por lista, links para Google Maps/Google Search e envio para o CRM.
+- Painel de aparência em Configurações para trocar cores do sistema.
+- Correção estável do tema claro/escuro, sem depender do toggle antigo.
+- Nova camada: `assets/js/modules/42-garimpo-temas-v62.js` e `assets/css/crm-v62-garimpo-temas.css`.
