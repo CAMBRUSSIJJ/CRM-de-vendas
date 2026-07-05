@@ -22,3 +22,28 @@ Esta versão preserva a base da v41/v46 e organiza o projeto para facilitar manu
 Esta é a versão segura/modular preservando as funções antigas. Ela não removeu seus scripts antigos; apenas separou e organizou para evitar código aparecendo na tela e facilitar próximas manutenções.
 
 Para melhorar ainda mais a velocidade no futuro, o próximo passo é reescrever cada módulo em arquivos independentes de verdade: leads, pipeline, follow-ups, ligações, metas, agenda e automações.
+
+
+## Atualização v49 — Layout unificado e compacto
+
+Esta versão adiciona uma camada de experiência mais compacta e profissional sem remover as ferramentas existentes.
+
+Principais mudanças:
+
+- Sidebar reorganizada em áreas: Painel, Leads, Pipeline, Follow-ups, Agenda, Atendimento, Inteligência, Gestão, Automações e Configurações.
+- Botão global **+ Criar** para lead, follow-up, ligação, compromisso, automação, playbook, objeção e perda.
+- Busca global no topo para encontrar leads, telefones, etapas e telas do CRM.
+- Densidade de layout: confortável, compacto e super compacto.
+- Áreas unificadas: Atendimento, Inteligência Comercial, Gestão Comercial e Configurações.
+- Modo execução de follow-ups para trabalhar um contato por vez.
+- Painel inicial mais direto com hoje, atrasados, leads quentes, propostas e pipeline aberto.
+- Ferramentas de contexto adicionadas em Agenda, Automações, Playbooks, Objeções, Métricas/Gestão e Atendimento.
+
+Arquivos adicionados:
+
+- `assets/css/crm-ux-unificado-compacto.css`
+- `assets/js/modules/29-layout-unificado-ferramentas.js`
+
+Arquivo atualizado:
+
+- `index.html`

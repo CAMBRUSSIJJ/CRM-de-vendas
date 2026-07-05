@@ -1,0 +1,24 @@
+CRM v49 — Conferência da atualização
+
+Arquivos adicionados:
+- assets/css/crm-ux-unificado-compacto.css
+- assets/js/modules/29-layout-unificado-ferramentas.js
+
+Arquivo alterado:
+- index.html
+- README.md
+
+Conferências realizadas:
+- Todos os scripts JavaScript passaram em node --check.
+- O index.html carrega o novo CSS e o novo módulo após os módulos anteriores.
+- A atualização não remove as views existentes; apenas compacta a navegação e adiciona camadas de UX.
+
+Principais implementações:
+- Sidebar unificada por áreas.
+- Topbar com busca global.
+- Botão global + Criar.
+- Menu de densidade de layout.
+- Modo execução de follow-ups.
+- Subnavegação interna para Atendimento, Inteligência, Gestão e Configurações.
+- Cards de orientação/ferramentas por área.
+- Painel inicial compacto.
