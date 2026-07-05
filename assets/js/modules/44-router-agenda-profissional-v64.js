@@ -49,7 +49,7 @@
     {key:'followups',label:'Follow-ups',view:'cadencias',icon:'follow',match:['cadencias'],subs:[['Kanban','cadencias','kanban','kanban'],['Lista','cadencias','list','lista'],['Modo execução','cadencias','zap','execucao'],['Etapas','cadencias','pipeline','etapas']]},
     {key:'agenda',label:'Agenda',view:'agenda',icon:'calendar',match:['agenda'],subs:[['Dia','agenda','calendar','day'],['Semana','agenda','calendar','week'],['Mês','agenda','calendar','month'],['Ano','agenda','calendar','year'],['Lista','agenda','list','list'],['Configurações da agenda','agenda','settings','settings']]},
     {key:'atendimento',label:'Atendimento',view:'ligacoes',icon:'phone',match:['ligacoes','chat'],subs:[['Ligações','ligacoes','phone'],['Chat','chat','list'],['Histórico','leads','list','historico']]},
-    {key:'inteligencia',label:'Inteligência',view:'playbooks',icon:'brain',match:['playbooks','objecoes'],subs:[['Playbooks','playbooks','brain','playbooks'],['Scripts','playbooks','list','scripts'],['Objeções','objecoes','list'],['IA local','playbooks','zap','ia']]},
+    {key:'inteligencia',label:'Inteligência',view:'playbooks',icon:'brain',match:['playbooks','objecoes'],subs:[['Playbooks','playbooks','brain','playbooks'],['Scripts','playbooks','list','scripts'],['Objeções','objecoes','list'],['Assistente de scripts','playbooks','zap','ia']]},
     {key:'gestao',label:'Gestão',view:'dashboard',icon:'chart',match:['dashboard','metricas','perdas'],subs:[['Resumo','dashboard','chart'],['Métricas','metricas','chart'],['Perdas','perdas','list'],['Metas','dashboard','dot','metas']]},
     {key:'automacoes',label:'Automações',view:'automacoes',icon:'zap',match:['automacoes'],subs:[['Modelos prontos','automacoes','zap','modelos'],['Criador visual','automacoes','settings','criador'],['Regras salvas','automacoes','list','regras'],['Histórico','automacoes','list','historico']]},
     {key:'configuracoes',label:'Configurações',view:'importar',icon:'settings',match:['importar'],subs:[['Importar / Exportar','importar','upload'],['Aparência e cores','importar','settings','aparencia'],['Backup e dados','importar','upload','backup']]}
@@ -118,7 +118,7 @@
   }
   function areaFor(view){ return AREAS.find(a=>(a.match||[]).includes(view)) || AREAS.find(a=>a.view===view) || AREAS[0]; }
   function updateTopbar(view){
-    const titles={inicio:['Painel','Resumo do dia e próximos passos'],leads:['Leads','Gestão de leads cadastrados'],garimpo:['Garimpo de Leads','Buscar, validar e enviar oportunidades para o CRM'],pipeline:['Pipeline','Funil e oportunidades'],clientes:['Clientes','Relacionamentos cadastrados'],cadencias:['Follow-ups','Rotina de acompanhamento comercial'],agenda:['Agenda','Compromissos com agendas, cores e visualizações'],ligacoes:['Ligações','Fila de chamadas e histórico por lead'],chat:['Chat','Conversas e WhatsApp'],playbooks:['Playbooks','Scripts, objeções e IA local'],objecoes:['Objeções','Respostas e argumentos'],perdas:['Perdas','Motivos e análise de perdas'],dashboard:['Dashboard','Indicadores comerciais'],metricas:['Métricas','Análises e evolução'],automacoes:['Automações','Regras, modelos e histórico'],importar:['Configurações','Importar, exportar, tema e backup'],['novo-lead']:['Novo lead','Cadastro rápido']};
+    const titles={inicio:['Painel','Resumo do dia e próximos passos'],leads:['Leads','Gestão de leads cadastrados'],garimpo:['Garimpo de Leads','Buscar, validar e enviar oportunidades para o CRM'],pipeline:['Pipeline','Funil e oportunidades'],clientes:['Clientes','Relacionamentos cadastrados'],cadencias:['Follow-ups','Rotina de acompanhamento comercial'],agenda:['Agenda','Compromissos com agendas, cores e visualizações'],ligacoes:['Ligações','Fila de chamadas e histórico por lead'],chat:['Chat','Conversas e WhatsApp'],playbooks:['Playbooks','Scripts, objeções e assistente comercial'],objecoes:['Objeções','Respostas e argumentos'],perdas:['Perdas','Motivos e análise de perdas'],dashboard:['Dashboard','Indicadores comerciais'],metricas:['Métricas','Análises e evolução'],automacoes:['Automações','Regras, modelos e histórico'],importar:['Configurações','Importar, exportar, tema e backup'],['novo-lead']:['Novo lead','Cadastro rápido']};
     const [t,s]=titles[view]||[view,''];
     const topTitle=$('.topbar-title'), topSub=$('.topbar-sub');
     if(topTitle) topTitle.textContent=t;
@@ -153,7 +153,7 @@
     document.body.classList.remove('crm-sidebar-icons','crm-sidebar-fixed','crm-sidebar-pinned','crm-sidebar-collapsed','crm-v58-sidebar-auto');
     sidebar.classList.add('v64-sidebar');
     nav.className='sidebar-nav v64-sidebar-nav';
-    nav.innerHTML=AREAS.map(areaMarkup).join('')+'<div class="v64-nav-note">V64 ativo: cada clique abre só uma página, sem aba antiga por cima.</div>';
+    nav.innerHTML=AREAS.map(areaMarkup).join('')+'<div class="v64-nav-note">Navegação estável: cada clique abre somente a página escolhida.</div>';
     updateNav($('.view.active')?.id || load(LS_VIEW,'inicio'));
   }
   function cleanupLayers(){

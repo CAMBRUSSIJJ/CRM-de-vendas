@@ -70,7 +70,7 @@
       {label:'Scripts', view:'playbooks', action:'scripts', icon:'list'},
       {label:'Objeções', view:'objecoes', icon:'message'},
       {label:'Materiais', view:'playbooks', action:'materiais', icon:'upload'},
-      {label:'IA local', view:'playbooks', action:'ia', icon:'zap'}
+      {label:'Assistente de scripts', view:'playbooks', action:'ia', icon:'zap'}
     ]},
     {key:'gestao', label:'Gestão', view:'dashboard', icon:'chart', match:['dashboard','metricas','perdas'], subs:[
       {label:'Resumo', view:'dashboard', icon:'chart'},

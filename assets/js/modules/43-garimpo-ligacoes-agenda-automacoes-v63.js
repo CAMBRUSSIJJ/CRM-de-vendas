@@ -1,8 +1,8 @@
 /* CRM v63 — Garimpo como aba principal, Ligações avançadas, Agenda personalizável e Automações ampliadas */
 (function(){
   'use strict';
-  if(window.__CRM_V63_GARIMPO_LIGACOES_AGENDA_AUTOMACOES__) return;
-  window.__CRM_V63_GARIMPO_LIGACOES_AGENDA_AUTOMACOES__ = true;
+  if(window.__CRM__GARIMPO_LIGACOES_AGENDA_AUTOMACOES__) return;
+  window.__CRM__GARIMPO_LIGACOES_AGENDA_AUTOMACOES__ = true;
 
   const $=(s,r=document)=>r.querySelector(s);
   const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -66,7 +66,7 @@
   }
 
   function afterView(view){
-    updateV63Active(view);
+    updateActive(view);
     if(view==='ligacoes') setTimeout(renderCalls,30);
     if(view==='automacoes') setTimeout(renderAutomationPage,30);
     if(view==='agenda') setTimeout(enhanceAgendaManager,140);
@@ -75,8 +75,8 @@
 
   function installNavigationHooks(){
     const previous=window.setView;
-    if(!window.__CRM_V63_SET_VIEW_WRAPPED__){
-      window.__CRM_V63_SET_VIEW_WRAPPED__=true;
+    if(!window.__CRM__SET_VIEW_WRAPPED__){
+      window.__CRM__SET_VIEW_WRAPPED__=true;
       window.setView=function(view){ const res=typeof previous==='function'?previous.apply(this,arguments):undefined; setTimeout(()=>afterView(view),80); return res; };
     }
     document.addEventListener('click',function(e){
@@ -96,9 +96,9 @@
   function injectGarimpoMainTab(){
     /* V64 assume a navegação principal. Mantido apenas para compatibilidade com scripts antigos,
        sem criar uma aba Garimpo extra por cima das outras. */
-    try{ updateV63Active($('.view.active')?.id||'inicio'); }catch(e){}
+    try{ updateActive($('.view.active')?.id||'inicio'); }catch(e){}
   }
-  function updateV63Active(view){
+  function updateActive(view){
     $$('.v63-garimpo-main-tab').forEach(g=>g.classList.toggle('v60-active',view==='garimpo'));
     $$('.v63-garimpo-main-tab .v60-nav-item').forEach(b=>b.classList.toggle('active',view==='garimpo'));
   }
