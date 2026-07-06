@@ -124,3 +124,15 @@ tela por tela, não em uma única tacada automática.
    juntar — não é uma tarefa mecânica, por isso não foi feita nesta etapa.
 4. `assets/css/app.css` tem 224 KB — vale uma análise de CSS não utilizado
    como próximo passo (ferramentas como PurgeCSS ajudam nisso).
+
+## Atualização V61 — sidebar/configurações
+
+A documentação antiga acima registra o histórico do projeto. Na V61, a configuração ativa mudou:
+
+| Arquivo ativo | Área principal | Observação |
+|---|---|---|
+| `27-configuracoes-v61.js` | Central de configurações | Substitui `27-configuracoes-v46.js`, mantém alias `crmV46Settings` por compatibilidade |
+| `39-sidebar-profissional-v61.js` | Sidebar profissional | Substitui `39-emergencia-carregamento-sidebar-v59.js` e renderiza a lateral com ícones SVG |
+| `crm-v61-sidebar-configuracoes.css` | Estilo da lateral e do modal | Substitui `crm-v59-emergencia-carregamento.css` e remove a disputa com o CSS de sidebar da v57 |
+
+Arquivos v46/v59 antigos de sidebar/configurações não são mais carregados nem enviados no ZIP V61.

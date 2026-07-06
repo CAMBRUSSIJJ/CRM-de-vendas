@@ -140,22 +140,12 @@
   }
 
   function installLayout(){
-    if($('#crmV45LayoutBtn')) return;
-    const actions = $('.topbar-actions') || $('.topbar');
-    if(!actions) return;
-    const btn = doc.createElement('button');
-    btn.id = 'crmV45LayoutBtn'; btn.type = 'button'; btn.className = 'btn'; btn.textContent = 'Layout';
-    actions.insertBefore(btn, actions.firstChild);
-    doc.body.insertAdjacentHTML('beforeend', layoutPanel());
-    const panel = $('#crmV45LayoutPanel');
-    btn.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopPropagation(); panel.classList.toggle('open'); panel.setAttribute('aria-hidden', panel.classList.contains('open')?'false':'true'); });
-    doc.addEventListener('click', function(ev){ if(panel && !panel.contains(ev.target) && ev.target !== btn) panel.classList.remove('open'); });
-    $$('.crm-v45-choice', panel).forEach(b => b.addEventListener('click', () => applyMode(b.dataset.crmV45Mode)));
-    const sw = $('#crmV45CenterSwitch');
-    const centered = localStorage.getItem(STORE_CENTER) === '1';
-    doc.body.classList.toggle('crm-v45-centered', centered); if(sw) sw.classList.toggle('on', centered);
-    sw && sw.addEventListener('click', () => { const on = !doc.body.classList.contains('crm-v45-centered'); doc.body.classList.toggle('crm-v45-centered', on); sw.classList.toggle('on', on); localStorage.setItem(STORE_CENTER, on?'1':'0'); });
-    $('#crmV45CleanBtn')?.addEventListener('click', () => { const n = cleanLooseCode(); try{ if(typeof window.showToast === 'function') window.showToast(n ? 'Textos de código removidos.' : 'Nenhum código visível encontrado.','success'); }catch(e){} });
+    // V61: o painel antigo de Layout foi removido para não duplicar a nova central de Configurações.
+    // Mantemos apenas o motor de classes, usado pela configuração profissional.
+    const existingBtn = $('#crmV45LayoutBtn');
+    if(existingBtn) existingBtn.remove();
+    const existingPanel = $('#crmV45LayoutPanel');
+    if(existingPanel) existingPanel.remove();
     applyMode(localStorage.getItem(STORE_MODE) || 'complete');
   }
 

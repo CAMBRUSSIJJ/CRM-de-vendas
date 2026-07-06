@@ -1,0 +1,10 @@
+Removidos/substituídos na V61:
+- assets/css/crm-v59-emergencia-carregamento.css
+- assets/js/modules/27-configuracoes-v46.js
+- assets/js/modules/39-emergencia-carregamento-sidebar-v59.js
+
+Desativado visualmente:
+- Botão/painel antigo Layout da v45.
+
+Observação:
+A lógica de compatibilidade foi mantida onde necessário para não quebrar chamadas antigas, mas a UI ativa de sidebar/configurações agora é V61.

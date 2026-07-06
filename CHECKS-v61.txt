@@ -1,0 +1,7 @@
+V61 checks realizados:
+- index.html atualizado para carregar CSS/JS V61.
+- arquivos v59/v46 antigos removidos do carregamento e do ZIP.
+- CSS v57 não contém mais regras de sidebar.
+- módulo v45 não cria mais botão/painel Layout duplicado.
+- JS V61 passou no node --check.
+- ZIP gerado sem criar cópia de página por cima.
