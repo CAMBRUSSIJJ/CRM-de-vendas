@@ -1,0 +1,6 @@
+REMOVIDOS NA V62
+
+assets/js/modules/10-leads-tabela-colunas-v19.js
+
+Motivo:
+Substituído pelo módulo único assets/js/modules/10-central-leads-profissional-v62.js para evitar sobreposição de renderização na aba Leads.

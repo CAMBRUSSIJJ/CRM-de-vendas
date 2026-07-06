@@ -88,7 +88,7 @@
     exportJsonBtn:'Exportar JSON'
   };
 
-  const CLOSE_IDS = new Set(['autoModalClose','gcalClose','agDetailClose','agEventClose','pbDetailClose','pbModalClose','objModalClose','perdaModalClose','waConnectClose','qrClose','modalCancel','lossCancel','bulkStageClose','bulkRespClose','detailClose','v19ColsClose','v19ExportClose']);
+  const CLOSE_IDS = new Set(['autoModalClose','gcalClose','agDetailClose','agEventClose','pbDetailClose','pbModalClose','objModalClose','perdaModalClose','waConnectClose','qrClose','modalCancel','lossCancel','bulkStageClose','bulkRespClose','detailClose','v62ColumnsClose','v62ExportClose']);
 
   function visibleText(el){ return (el.textContent || '').replace(/\s+/g,' ').trim(); }
 
@@ -230,7 +230,7 @@
 
   function leadsUx(){
     const page=$('#leads'); if(!page) return;
-    const ref=$('#v19LeadKpis') || $('#v19LeadsHero') || page.querySelector('.section-header');
+    const ref=$('#v62LeadKpis') || $('#v62LeadsHero') || page.querySelector('.section-header');
     ensureAfter(ref,'crmUxLeadsCommand',
       '<div class="crm-ux-command" id="crmUxLeadsCommand"><div><strong>Central de ação dos leads</strong><span>Use a tabela como operação: atualize etapa, prioridade, responsável, follow-up e valor direto na linha.</span></div><div class="crm-ux-actions">'+
       btn('Leads quentes','data-ux-kpi="hot"')+
@@ -389,7 +389,7 @@
       const goBtn=e.target.closest('[data-ux-go]'); if(goBtn){ e.preventDefault(); go(goBtn.dataset.uxGo); return; }
       if(e.target.closest('[data-ux-new-lead]')){ e.preventDefault(); try{ if(typeof window.openModal === 'function') window.openModal(null); else go('novo-lead'); }catch(err){ go('novo-lead'); } return; }
       const click=e.target.closest('[data-ux-click]'); if(click){ e.preventDefault(); clickSelector(click.dataset.uxClick); return; }
-      const kpi=e.target.closest('[data-ux-kpi]'); if(kpi){ e.preventDefault(); clickSelector('[data-v19-kpi="'+kpi.dataset.uxKpi+'"]'); return; }
+      const kpi=e.target.closest('[data-ux-kpi]'); if(kpi){ e.preventDefault(); clickSelector('[data-v62-kpi="'+kpi.dataset.uxKpi+'"]'); return; }
       const fu=e.target.closest('[data-ux-fu-filter]'); if(fu){ e.preventDefault(); clickSelector('[data-fu-filter="'+fu.dataset.uxFuFilter+'"]'); return; }
       const pv=e.target.closest('[data-ux-pipe-view]'); if(pv){ e.preventDefault(); clickSelector('[data-v23-view="'+pv.dataset.uxPipeView+'"]') || clickSelector('[data-v41-agenda-view="'+pv.dataset.uxPipeView+'"]'); return; }
       const chip=e.target.closest('[data-ux-chip-text]'); if(chip){ e.preventDefault(); const txt=chip.dataset.uxChipText.toLowerCase(); const target=$$('.chip,.v41-chip').find(c=>(c.textContent||'').trim().toLowerCase()===txt); if(target) target.click(); return; }

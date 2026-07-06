@@ -28,7 +28,7 @@ Este arquivo documenta a reorganização feita em `assets/js/`.
 | 07 | `07-fix-visibilidade-topbar.js` | Correção de visibilidade da topbar | Patch pequeno |
 | 08 | `08-modulo-ligacoes.js` | Discador, fila de chamadas, histórico de ligações | |
 | 09 | `09-painel-widgets.js` | Painel inicial e widgets configuráveis | |
-| 10 | `10-leads-tabela-colunas-v19.js` | Tabela de leads: colunas, filtros, ações em massa (v19) | |
+| 10 | `10-central-leads-profissional-v62.js` | Central de Leads profissional: KPIs, filtros, colunas, edição rápida, duplicados e próxima ação | |
 | 11 | `11-pipeline-board-modais.js` | Board do pipeline (drag&drop, modal de motivo de perda, config de etapas) | |
 | 12 | `12-pipeline-calendario-v23.js` | Pipeline: visão calendário/gantt (v23) | |
 | 13 | `13-disable-funil-v25.js` | **Flag que desativa** uma versão antiga do funil (v25) | 2 linhas — código morto, ver nota abaixo |
@@ -112,7 +112,7 @@ tela por tela, não em uma única tacada automática.
    só setam uma flag `window.__crmFunilVXX_disabled = true`. São restos de
    versões desativadas. Dá pra manter (documentam histórico) ou remover se
    nada mais checar essas flags — vale um grep antes de apagar.
-2. Os números de versão nos nomes (`v6`, `v19`, `v23`, `v25`... `v46`) mostram
+2. Os números de versão nos nomes (`v6`, `v23`, `v25`... `v46` e `v62`) mostram
    que o app foi construído como uma sequência de **patches incrementais**,
    não como módulos desenhados desde o início. Isso é normal em apps que
    crescem rápido, mas explica por que várias áreas (agenda, automações,
@@ -136,3 +136,27 @@ A documentação antiga acima registra o histórico do projeto. Na V61, a config
 | `crm-v61-sidebar-configuracoes.css` | Estilo da lateral e do modal | Substitui `crm-v59-emergencia-carregamento.css` e remove a disputa com o CSS de sidebar da v57 |
 
 Arquivos v46/v59 antigos de sidebar/configurações não são mais carregados nem enviados no ZIP V61.
+
+## V63 — Follow-ups com Cadências
+
+- Módulo ativo: `assets/js/modules/14-followups-cadencias-v63.js`
+- CSS ativo: `assets/css/crm-v63-followups-cadencias.css`
+- Aba controlada: `#cadencias`
+- Renderizadores antigos de Follow-ups:
+  - V57 delega para `window.CRMV63Followups`.
+  - V6 não cria mais construtor de cadências.
+
+## V64 — Agenda integrada com Leads
+
+Ativos:
+- `assets/js/modules/15-agenda-integrada-leads-v64.js`
+- `assets/css/crm-v64-agenda-integrada-leads.css`
+
+Responsabilidade:
+- Única camada oficial para renderizar a aba `#agenda`.
+- Integra eventos da agenda com leads, follow-ups, histórico e próxima ação.
+
+Camadas delegadas/desativadas:
+- Agenda visual antiga do núcleo: não acionada pela navegação oficial.
+- Agenda V57: delega para `window.CRMV64Agenda`.
+- Agenda V6: bloco `v6AgendaPro` não é mais chamado.

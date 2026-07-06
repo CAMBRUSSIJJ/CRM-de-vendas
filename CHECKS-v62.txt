@@ -1,0 +1,15 @@
+CHECKS V62 — CENTRAL DE LEADS
+
+[OK] index.html carrega 10-central-leads-profissional-v62.js.
+[OK] O arquivo antigo 10-leads-tabela-colunas-v19.js foi removido.
+[OK] Nenhum script do index.html aponta para arquivo inexistente.
+[OK] Não há IDs duplicados no index.html.
+[OK] node --check passou nos módulos alterados:
+     - 00-nucleo-dados-base.js
+     - 05-integracao-geral-v6.js
+     - 10-central-leads-profissional-v62.js
+     - 28-botoes-sidebar-ux-areas.js
+[OK] A V6 não chama mais painel/filtro/tabela paralela de Leads.
+[OK] Os KPIs e atalhos da UX apontam para data-v62-kpi.
+[OK] A Central V62 usa a mesma chave de dados existente: outbounder_leads_v5.
+[INFO] Teste visual por navegador headless foi limitado pelo ambiente, mas os checks estáticos e de sintaxe foram executados.

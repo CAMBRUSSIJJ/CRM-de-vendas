@@ -162,16 +162,15 @@
   }
   function setAgendaView(v){
     const map={mês:'month',mes:'month',month:'month',dia:'day',day:'day',semana:'week',week:'week',ano:'year',year:'year',lista:'list',list:'list'};
-    agendaState.view = map[v] || v || 'month'; saveUI(); renderAgenda();
+    const next = map[v] || v || 'month';
+    // Agenda assumida pela V64. Mantemos esta função apenas como ponte para os submenus antigos.
+    if(window.CRMV64Agenda && typeof window.CRMV64Agenda.setView === 'function') return window.CRMV64Agenda.setView(next);
+    setTimeout(()=>window.CRMV64Agenda?.setView?.(next),80);
   }
   function renderAgenda(){
-    const sec = $('#agenda'); if(!sec) return;
-    seedEventsIfEmpty();
-    sec.innerHTML = buildAgendaShell();
-    sec.classList.toggle('v57-compact', agendaState.density==='compact');
-    bindAgendaEvents();
-    renderMiniCalendar();
-    renderAgendaBody();
+    // V57 não renderiza mais a agenda para evitar duas implementações disputando o mesmo DOM.
+    if(window.CRMV64Agenda && typeof window.CRMV64Agenda.render === 'function') return window.CRMV64Agenda.render();
+    setTimeout(()=>window.CRMV64Agenda?.render?.(),80);
   }
   function buildAgendaShell(){
     const d=parseDate(agendaState.anchor);
@@ -341,47 +340,20 @@
   }
   function deleteEvent(id){ if(!id) return; saveEvents(loadEvents().filter(e=>e.id!==id)); closeEventDrawer(); renderAgenda(); notify('Compromisso excluído','success'); }
 
-  /* ===== Follow-ups em layout Pipeline ===== */
-  const followStages=['Primeiro contato','Tentativa 2','Nutrição','Proposta enviada','Negociação','Reativação','Break-up','Concluído'];
-  let followView='kanban', followSearch='';
-  function setFollowView(v){ if(/lista/.test(v)) followView='list'; else if(/exec/.test(v)) followView='exec'; else followView='kanban'; renderFollowups(); }
-  function leadFollowStage(l){ return l.etapaFollowup || (l.etapa==='Proposta'?'Proposta enviada': l.etapa==='Perdido'?'Reativação':'Primeiro contato'); }
+  /* ===== Follow-ups delegados para CRM V63 ===== */
+  let followView='execucao';
+  function setFollowView(v){
+    const txt=String(v||'').toLowerCase();
+    if(/kanban/.test(txt)) followView='kanban';
+    else if(/lista|exec/.test(txt)) followView='execucao';
+    else if(/cad/.test(txt)) followView='cadencias';
+    else followView='execucao';
+    if(window.CRMV63Followups && typeof window.CRMV63Followups.setTab === 'function') window.CRMV63Followups.setTab(followView);
+    else setTimeout(()=>window.CRMV63Followups?.setTab?.(followView),80);
+  }
   function renderFollowups(){
-    const sec=$('#cadencias'); if(!sec) return;
-    const leads=getLeads();
-    sec.innerHTML = `<div class="v57-shell"><div class="v57-card v57-board-toolbar"><div><div class="v57-cal-title">Follow-ups</div><div class="v57-cal-sub">Mesmo padrão visual do Pipeline, mas focado na rotina de contato e próximas ações.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="v57-input" style="width:260px" id="v57FuSearch" placeholder="Buscar lead, etapa ou responsável" value="${esc(followSearch)}"><div class="v57-seg"><button data-fu-view="kanban" class="${followView==='kanban'?'active':''}">Kanban</button><button data-fu-view="list" class="${followView==='list'?'active':''}">Lista</button><button data-fu-view="exec" class="${followView==='exec'?'active':''}">Execução</button></div><button class="v57-btn primary" data-fu-new>+ Novo follow-up</button></div></div><div id="v57FollowBody"></div></div>`;
-    $('#v57FuSearch')?.addEventListener('input',e=>{followSearch=e.target.value; renderFollowBody();});
-    $$('[data-fu-view]').forEach(b=>b.addEventListener('click',()=>{followView=b.dataset.fuView; renderFollowups();}));
-    $('[data-fu-new]')?.addEventListener('click',()=>notify('Escolha um lead e arraste para a etapa desejada. A criação rápida será integrada ao formulário de lead.','info'));
-    renderFollowBody();
-  }
-  function filteredFollowLeads(){
-    const q=norm(followSearch); return getLeads().filter(l=>!q || norm([l.nome,l.segmento,l.responsavel,l.etapa,leadFollowStage(l)].join(' ')).includes(q));
-  }
-  function renderFollowBody(){
-    const body=$('#v57FollowBody'); if(!body) return;
-    const leads=filteredFollowLeads();
-    if(followView==='list') { body.innerHTML = `<div class="v57-list-mode">${leads.map(fuCard).join('') || '<div class="v57-empty">Nenhum follow-up encontrado.</div>'}</div>`; bindFuCards(); return; }
-    if(followView==='exec') { const l=leads.find(x=>leadFollowStage(x)!=='Concluído') || leads[0]; body.innerHTML = `<div class="v57-exec"><div>${l?fuCard(l,true):'<div class="v57-empty">Sem leads para execução.</div>'}</div><div class="v57-card" style="padding:18px"><div style="font-weight:950;color:var(--v57-green);font-size:18px;margin-bottom:8px">Modo execução</div><p style="font-size:13px;color:rgba(44,44,42,.62);line-height:1.6">Trabalhe um contato por vez. Ligue, envie WhatsApp, registre resultado e avance a etapa de follow-up.</p>${l?`<div class="v57-card-actions"><a class="v57-btn primary" href="${telHref(l.telefone)}">Ligar</a><a class="v57-btn" href="${waHref(l.telefone)}" target="_blank">WhatsApp</a><button class="v57-btn" data-open-lead="${esc(l.nome)}">Abrir lead</button></div>`:''}</div></div>`; bindFuCards(); return; }
-    body.innerHTML = `<div class="v57-board">${followStages.map(stage=>{ const items=leads.filter(l=>leadFollowStage(l)===stage); return `<section class="v57-col" data-fu-stage="${esc(stage)}"><div class="v57-col-head"><div class="v57-col-title">${esc(stage)}</div><span class="v57-col-count">${items.length}</span></div>${items.map(fuCard).join('') || '<div class="v57-empty" style="padding:18px">Solte leads aqui.</div>'}</section>`; }).join('')}</div>`;
-    bindFuCards();
-  }
-  function fuCard(l,large=false){
-    const due = l.followup ? (l.followup < today() ? 'Atrasado' : l.followup===today() ? 'Hoje' : l.followup) : 'Sem data';
-    return `<article class="v57-fu-card" draggable="true" data-lead-name="${esc(l.nome)}"><div class="v57-fu-name">${esc(l.nome)}</div><div style="font-size:12px;color:rgba(44,44,42,.58);font-weight:700">${esc(l.segmento||'Sem segmento')} • ${esc(l.responsavel||'Sem responsável')}</div><div class="v57-fu-meta"><span class="v57-pill">${esc(l.etapa||'Lead')}</span><span class="v57-pill">${esc(leadFollowStage(l))}</span><span class="v57-pill">${esc(due)}</span>${l.valor?`<span class="v57-pill">${money(l.valor)}</span>`:''}</div><div class="v57-card-actions"><a class="v57-mini-btn" href="${telHref(l.telefone)}">Ligar</a><a class="v57-mini-btn" href="${waHref(l.telefone)}" target="_blank">WhatsApp</a><button class="v57-mini-btn" data-fu-done="${esc(l.nome)}">Concluir</button><button class="v57-mini-btn" data-open-lead="${esc(l.nome)}">Lead</button></div></article>`;
-  }
-  function bindFuCards(){
-    $$('[data-open-lead]').forEach(b=>b.addEventListener('click',()=>openLead(b.dataset.openLead)));
-    $$('[data-fu-done]').forEach(b=>b.addEventListener('click',()=>{ const l=getLeads().find(x=>x.nome===b.dataset.fuDone); if(l){l.etapaFollowup='Concluído'; saveLeads(); renderFollowups(); notify('Follow-up concluído','success');} }));
-    let dragged=null;
-    $$('.v57-fu-card[draggable="true"]').forEach(c=>{
-      c.addEventListener('dragstart',()=>{dragged=c.dataset.leadName; c.classList.add('dragging');});
-      c.addEventListener('dragend',()=>c.classList.remove('dragging'));
-    });
-    $$('.v57-col').forEach(col=>{
-      col.addEventListener('dragover',e=>e.preventDefault());
-      col.addEventListener('drop',e=>{e.preventDefault(); const l=getLeads().find(x=>x.nome===dragged); if(l){l.etapaFollowup=col.dataset.fuStage; l.ultimaAtualizacao=today(); saveLeads(); renderFollowups(); notify('Etapa de follow-up atualizada','success');}});
-    });
+    if(window.CRMV63Followups && typeof window.CRMV63Followups.render === 'function') window.CRMV63Followups.render();
+    else setTimeout(()=>window.CRMV63Followups?.render?.(),80);
   }
 
   /* ===== Ligações definitiva ===== */

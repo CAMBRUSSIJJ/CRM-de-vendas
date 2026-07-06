@@ -1,0 +1,15 @@
+V64 — Itens desativados/substituídos sem excluir dados do usuário
+
+1. Agenda antiga do núcleo
+- O setView('agenda') não chama mais o renderAgenda antigo.
+- A API antiga crmAgendaAPI é substituída pela API V64 durante o boot.
+
+2. Agenda V57
+- renderAgenda() e setAgendaView() viraram ponte para CRMV64Agenda.
+- A implementação visual antiga da V57 não é mais acionada.
+
+3. Bloco extra da camada V6
+- ensureAgendaPro() e renderAgendaPro() não são mais chamados.
+- Isso impede que um painel antigo de reunião seja injetado por cima da Agenda oficial.
+
+Nenhum dado de agenda foi removido. A chave de eventos continua sendo outbounder_agenda_v1.

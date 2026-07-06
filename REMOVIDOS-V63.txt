@@ -1,0 +1,13 @@
+REMOVIDOS/DESATIVADOS NA V63
+
+1. Renderização antiga de Follow-ups dentro de 37-limpeza-estrutural-layout-definitivo-v57.js
+   - Substituída por delegação para CRMV63Followups.
+
+2. Construtor parcial de cadência da camada V6 em 05-integracao-geral-v6.js
+   - Removido para evitar duplicação com a nova Central de Follow-ups.
+
+3. Chamadas antigas dentro da V6:
+   - ensureCadenceBuilder()
+   - renderCadenceList()
+
+Nada foi removido das demais áreas do CRM.

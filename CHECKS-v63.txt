@@ -1,0 +1,10 @@
+CHECKS V63 — FOLLOW-UPS COM CADÊNCIAS
+
+[OK] node --check executado em todos os JS ativos.
+[OK] index.html verificado: nenhum script/css referenciado está ausente.
+[OK] index.html verificado: nenhum id duplicado encontrado.
+[OK] v57 não renderiza mais a tela antiga de Follow-ups; apenas delega para a V63.
+[OK] v6 não chama mais ensureCadenceBuilder nem renderCadenceList.
+[OK] módulo V63 incluído depois das camadas antigas, para assumir a versão final da aba.
+[OK] CSS V63 separado e carregado após os estilos anteriores.
+[AVISO] Teste visual via Chromium headless foi tentado, mas o ambiente bloqueou a renderização/saída do navegador com erro de sandbox/dbus/crashpad. A checagem estática e de sintaxe passou.

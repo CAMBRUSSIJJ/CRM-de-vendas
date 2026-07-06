@@ -1,0 +1,21 @@
+Checks V64 — Agenda integrada com Leads
+
+1. Sintaxe JavaScript
+- node --check em todos os arquivos JS ativos: OK.
+
+2. Referências do index.html
+- Scripts referenciados: 21.
+- CSS referenciados: 8.
+- Arquivos ausentes: 0.
+- IDs duplicados no index.html: 0.
+- Referência para assets/js/modules/15-agenda-integrada-leads-v64.js: 1.
+- Referência para assets/css/crm-v64-agenda-integrada-leads.css: 1.
+
+3. Anti-sobreposição
+- 00-nucleo-dados-base.js: navegação para agenda delega para CRMV64Agenda.
+- 37-limpeza-estrutural-layout-definitivo-v57.js: agenda delegada para CRMV64Agenda.
+- 05-integracao-geral-v6.js: bloco v6AgendaPro não é mais chamado.
+
+4. Teste visual headless
+- Tentativa com Chromium headless foi bloqueada/encerrada pelo ambiente antes de gerar DOM.
+- Por isso, validação visual final deve ser feita abrindo o index.html localmente no navegador.
