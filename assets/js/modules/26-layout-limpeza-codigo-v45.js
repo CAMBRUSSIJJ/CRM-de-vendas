@@ -80,17 +80,10 @@
   }
 
   function bindTabs(){
+    // V60: a navegação fica centralizada no módulo 21.
+    // Este módulo mantém apenas o painel de layout/limpeza para não duplicar roteadores.
     if(doc.__crmV45TabsBound) return;
     doc.__crmV45TabsBound = true;
-    doc.addEventListener('click', function(ev){
-      const btn = ev.target.closest('[data-view],[data-go],[data-go-view]');
-      if(!btn) return;
-      const id = btn.dataset.view || btn.dataset.go || btn.dataset.goView;
-      if(!id) return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      safeShow(id);
-    }, true);
   }
 
   function layoutPanel(){
@@ -171,9 +164,8 @@
     bindTabs();
     installLayout();
     cleanLooseCode();
-    const start = localStorage.getItem(STORE_VIEW) || currentView();
-    safeShow(start);
-    setTimeout(() => { cleanLooseCode(); safeShow(currentView()); }, 300);
+    // V60: não força a aba inicial por uma chave antiga; evita reabrir uma tela obsoleta.
+    setTimeout(() => { cleanLooseCode(); }, 300);
   }
 
   window.crmV45Show = safeShow;

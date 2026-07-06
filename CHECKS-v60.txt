@@ -1,0 +1,11 @@
+CHECKS V60
+
+[OK] index.html não referencia arquivos inexistentes.
+[OK] node --check executado em todos os JS restantes.
+[OK] 03-fix-chat-topbar.js e 07-fix-visibilidade-topbar.js removidos do carregamento.
+[OK] 06-garimpo-leads.js sem MutationObserver próprio.
+[OK] localStorage do Garimpo migra v7 -> v62.
+[OK] Sidebar v57 inclui Garimpo.
+[OK] Funil é criado no boot do módulo.
+[OK] Módulo v45 não disputa mais navegação por clique.
+[OK] Arquivos órfãos removidos e listados em REMOVIDOS-V60.txt.

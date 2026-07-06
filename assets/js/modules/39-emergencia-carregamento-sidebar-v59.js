@@ -42,7 +42,7 @@
       $$('.v56-sidebar-toggle,.sidebar-toggle,[data-sidebar-toggle]').forEach(el => el.remove());
       $$('.rail,.topbar-tabs').forEach(el => el.classList.add('v57-disabled-layer'));
 
-      const iconMap = {inicio:'⌂',leads:'◉',pipeline:'▦',clientes:'◎',playbooks:'✦',objecoes:'?',perdas:'×',dashboard:'◍',cadencias:'↻',automacoes:'⚡',agenda:'□',ligacoes:'☎',chat:'✉',metricas:'▥',importar:'⚙','novo-lead':'+'};
+      const iconMap = {inicio:'⌂',leads:'◉',garimpo:'⌕',pipeline:'▦',clientes:'◎',playbooks:'✦',objecoes:'?',perdas:'×',dashboard:'◍',cadencias:'↻',automacoes:'⚡',agenda:'□',ligacoes:'☎',chat:'✉',metricas:'▥',importar:'⚙','novo-lead':'+'};
       $$('.sidebar .nav-item').forEach(btn=>{
         const view = btn.dataset.view || '';
         const label = btn.dataset.label || btn.getAttribute('title') || btn.textContent.trim() || view || 'Menu';

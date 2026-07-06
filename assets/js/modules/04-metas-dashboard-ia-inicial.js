@@ -21,7 +21,7 @@
     pipeline:{title:'Pipeline',sub:'Kanban operacional de oportunidades'},
     funil:{title:'Funil de vendas',sub:'Etapas, conversão, forecast e gargalos por lead'},
     clientes:{title:'Clientes',sub:'Relacionamentos cadastrados'},
-    playbooks:{title:'Playbooks',sub:'Scripts com Gerador local, checklists e materiais de vendas'},
+    playbooks:{title:'Playbooks',sub:'Scripts com IA local, checklists e materiais de vendas'},
     objecoes:{title:'Biblioteca de Objeções',sub:'Respostas prontas para superar objeções'},
     perdas:{title:'Motivos de Perda',sub:'Análise e reativação de negócios perdidos'},
     dashboard:{title:'Dashboard Comercial',sub:'Indicadores e performance'},
@@ -153,7 +153,7 @@
   function ensureScriptLab(){
     const page=$('#playbooks'); if(!page || $('#scriptLab')) return;
     const lab=document.createElement('div');lab.id='scriptLab';lab.className='script-lab';
-    lab.innerHTML=`<div class="script-lab-head"><div><h3>Criador de scripts com Gerador local</h3><p>Gere scripts para ligação, WhatsApp, e-mail e reunião usando estruturas inspiradas em prospecção direta, diagnóstico consultivo e melhoria contínua de outbound.</p></div><span class="pb-ai-badge">Gerador local</span></div>
+    lab.innerHTML=`<div class="script-lab-head"><div><h3>Criador de scripts com IA local</h3><p>Gere scripts para ligação, WhatsApp, e-mail e reunião usando estruturas inspiradas em prospecção direta, diagnóstico consultivo e melhoria contínua de outbound.</p></div><span class="pb-ai-badge">IA local</span></div>
       <div class="script-lab-body"><div class="script-lab-form">
         <div class="field"><label>Base do script</label><select id="aiBase"><option value="hibrido">Híbrido: Jeb + Thiago Reis</option><option value="jeb">Jeb Blount: abertura direta</option><option value="thiago">Thiago Reis: IA + hipótese de dor</option></select></div>
         <div class="field"><label>Canal</label><select id="aiCanal"><option value="todos">Todos</option><option value="ligacao">Ligação</option><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="reuniao">Reunião</option></select></div>

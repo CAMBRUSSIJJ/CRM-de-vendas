@@ -78,7 +78,7 @@
     document.addEventListener('click',e=>{if(e.target.closest('[data-view="funil"],[data-go="funil"]')){setTimeout(render,80);setTimeout(render,220)}},true);
     /* render interval removido para evitar piscar */
   }
-  function init(){patch(); if($('#funil')) render();}
+  function init(){patch(); render();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 /* Script original 16 */

@@ -1,11 +1,14 @@
-/* Script original 06 */
+/* CRM V60 — Garimpo estável: módulo único, sem MutationObserver e com migração v7 -> v62 */
 (function(){
   'use strict';
-  if(window.__crmGarimpoLeadsV7) return;
-  window.__crmGarimpoLeadsV7 = true;
+  if(window.__crmGarimpoLeadsStable) return;
+  window.__crmGarimpoLeadsStable = true;
+  if(window.__crmGarimpoV62Active || window.__crmGarimpoTemasV62){ return; }
 
-  const GAR_KEY='outbounder_garimpo_leads_v7';
-  const GAR_CFG='outbounder_garimpo_config_v7';
+  const GAR_KEY='outbounder_garimpo_leads_v62';
+  const GAR_CFG='outbounder_garimpo_config_v62';
+  const GAR_OLD_KEY='outbounder_garimpo_leads_v7';
+  const GAR_OLD_CFG='outbounder_garimpo_config_v7';
   const $=(s,root=document)=>root.querySelector(s);
   const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
   const esc=(v)=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -17,9 +20,16 @@
   const toast=(msg,type='success')=>{try{typeof showToast==='function'?showToast(msg,type):alert(msg)}catch(e){console.log(msg)}};
   const getLeads=()=>{try{return Array.isArray(leads)?leads:[]}catch(e){return []}};
   const persistLeads=()=>{try{typeof saveLeads==='function'&&saveLeads()}catch(e){}};
-  const rerender=()=>{try{typeof renderAll==='function'&&renderAll()}catch(e){};try{typeof renderGarimpoLeadsV7==='function'&&renderGarimpoLeadsV7()}catch(e){}};
+  const rerender=()=>{try{typeof renderAll==='function'&&renderAll()}catch(e){};try{typeof window.renderGarimpoLeads==='function'&&window.renderGarimpoLeads()}catch(e){}};
   const load=(k,d)=>{try{const raw=localStorage.getItem(k);return raw?JSON.parse(raw):d}catch(e){return d}};
   const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+  function migrateGarimpoStorage(){
+    try{
+      if(!localStorage.getItem(GAR_KEY) && localStorage.getItem(GAR_OLD_KEY)) localStorage.setItem(GAR_KEY, localStorage.getItem(GAR_OLD_KEY));
+      if(!localStorage.getItem(GAR_CFG) && localStorage.getItem(GAR_OLD_CFG)) localStorage.setItem(GAR_CFG, localStorage.getItem(GAR_OLD_CFG));
+    }catch(e){}
+  }
+  migrateGarimpoStorage();
   let mined=load(GAR_KEY,[]);
   let selected=new Set();
   let garSearch='';
@@ -144,8 +154,8 @@
   }
 
   function ensureStyle(){
-    if($('#garimpoStyleV7'))return;
-    const style=document.createElement('style');style.id='garimpoStyleV7';style.textContent=`
+    if($('#garimpoStyleV60'))return;
+    const style=document.createElement('style');style.id='garimpoStyleV60';style.textContent=`
       .gar-shell{gap:18px}.gar-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-3) 100%);border-radius:var(--radius);padding:24px;color:#fff;box-shadow:var(--shadow-md)}
       .gar-hero h2{font-family:'Inter Tight','Inter',sans-serif;font-size:23px;font-weight:800;letter-spacing:-.025em;margin:0 0 8px}.gar-hero p{opacity:.76;line-height:1.65;max-width:68ch}.gar-hero-panel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px}.gar-hero-panel strong{display:block;font-size:13px;margin-bottom:6px}.gar-hero-panel span{display:block;font-size:12.5px;opacity:.75;line-height:1.55}
       .gar-grid{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}.gar-form{display:grid;gap:12px}.gar-source-tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border);padding:4px;border-radius:11px}.gar-source-tabs button{flex:1;border:none;background:transparent;border-radius:8px;padding:7px 8px;font-size:12px;font-weight:700;color:var(--text-3);cursor:pointer}.gar-source-tabs button.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-xs)}
@@ -185,7 +195,7 @@
     if($('#garimpo'))return;
     const c=cfg();
     const section=document.createElement('section');
-    section.id='garimpo';section.className='view grid-view gar-shell';
+    section.id='garimpo';section.className='view grid-view gar-shell';section.dataset.garimpoVersion='v60-stable';
     section.innerHTML=`
       <div class="section-header"><div><div class="section-title-text">Garimpo de Leads</div><div class="section-sub">Encontre, qualifique e envie oportunidades direto para o CRM.</div></div><div class="crm-report-actions"><button class="btn btn-sm" id="garExportBtn">Exportar garimpo</button><button class="btn btn-sm btn-primary" id="garAddSelectedTop">Adicionar selecionados ao CRM</button></div></div>
       <div class="gar-hero"><div><h2>Prospecção ativa com scoring comercial</h2><p>Use o garimpo para buscar empresas por nicho e cidade, priorizar as melhores oportunidades e evitar que leads frios entrem no funil sem critério.</p><div class="gar-links" id="garHeroLinks" style="margin-top:14px"></div></div><div class="gar-hero-panel"><strong>Como usar de verdade</strong><span>O modo local gera e qualifica uma lista para você operar agora. Para buscar dados reais automaticamente, conecte um endpoint próprio, Google Places/Maps API, planilha enriquecida ou provedor autorizado no bloco de integração.</span></div></div>
@@ -307,11 +317,11 @@ Se fizer sentido, posso te mandar um diagnóstico simples com 2 ou 3 melhorias p
     saveCfg();
     const active=$('#garSourceTabs button.active')?.dataset.garSource||'local';
     if(active==='api'){
-      const ok=await runApiSearch(); if(ok){selected.clear();renderGarimpoLeadsV7();return;}
+      const ok=await runApiSearch(); if(ok){selected.clear();window.renderGarimpoLeads();return;}
     }
     const opts=currentOpts();const generated=createMockResults(opts);
     mined=[...generated,...mined].filter((x,i,arr)=>arr.findIndex(y=>norm(y.nome)===norm(x.nome)&&norm(y.cidade)===norm(x.cidade))===i).slice(0,500);
-    selected.clear();saveMined();renderGarimpoLeadsV7();toast(`${generated.length} leads garimpados e ranqueados`,'success');
+    selected.clear();saveMined();window.renderGarimpoLeads();toast(`${generated.length} leads garimpados e ranqueados`,'success');
   }
   function bindPage(){
     $('#garMineBtn')?.addEventListener('click',mine);
@@ -319,7 +329,7 @@ Se fizer sentido, posso te mandar um diagnóstico simples com 2 ou 3 melhorias p
     $('#garExportBtn')?.addEventListener('click',exportMined);
     $('#garAddSelectedTop')?.addEventListener('click',()=>addToCrm([...selected]));
     $('#garTopBtn')?.addEventListener('click',()=>{filtered().filter(x=>!x.duplicado&&!duplicateOf(x)).slice(0,10).forEach(x=>selected.add(x.id));renderTable();toast('Melhores leads selecionados','success');});
-    $('#garClearBtn')?.addEventListener('click',()=>{if(confirm('Limpar todos os leads garimpados?')){mined=[];selected.clear();saveMined();renderGarimpoLeadsV7();}});
+    $('#garClearBtn')?.addEventListener('click',()=>{if(confirm('Limpar todos os leads garimpados?')){mined=[];selected.clear();saveMined();window.renderGarimpoLeads();}});
     $('#garCopyScriptBtn')?.addEventListener('click',()=>{const t=$('#garScriptBox')?.textContent||'';if(!t||t.includes('Selecione')){toast('Selecione um lead primeiro','warn');return;}navigator.clipboard?.writeText(t).then(()=>toast('Script copiado','success')).catch(()=>toast('Não foi possível copiar','warn'));});
     $('#garSearch')?.addEventListener('input',e=>{garSearch=e.target.value;renderTable();});
     $$('#garFitFilters .chip').forEach(b=>b.addEventListener('click',()=>{$$('#garFitFilters .chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');garFit=b.dataset.garFit||'';renderTable();}));
@@ -332,20 +342,16 @@ Se fizer sentido, posso te mandar um diagnóstico simples com 2 ou 3 melhorias p
     const t=$('#topbarTitle'),s=$('#topbarSub');
     if(t)t.textContent='Garimpo de Leads';
     if(s)s.textContent='Prospecção inteligente, scoring e criação rápida de oportunidades';
-    renderGarimpoLeadsV7();
   }
-  function observeActive(){
-    if(window.__garObserverV7)return;window.__garObserverV7=true;
-    const main=$('main');if(!main)return;
-    new MutationObserver(()=>setTimeout(updateTopbarIfActive,0)).observe(main,{subtree:true,attributes:true,attributeFilter:['class']});
-  }
-  window.renderGarimpoLeadsV7=function(){
+  window.renderGarimpoLeads=function(){
     renderStrategy();
     mined.forEach(x=>{x.duplicado=!!duplicateOf(x);x.score=leadScore(x);x.prioridade=priorityFromScore(x.score);x.links=x.links||buildExternalLinks(x.segmento,x.cidade,'');});
-    renderKpis();renderTable();
+    renderKpis();renderTable();updateTopbarIfActive();
   };
+  window.renderGarimpoLeadsV7=window.renderGarimpoLeads;
+  window.renderGarimpoLeadsV60=window.renderGarimpoLeads;
   function init(){
-    ensureStyle();ensureNavigation();ensurePage();bindPage();observeActive();renderGarimpoLeadsV7();updateTopbarIfActive();
+    ensureStyle();ensureNavigation();ensurePage();bindPage();window.renderGarimpoLeads();updateTopbarIfActive();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

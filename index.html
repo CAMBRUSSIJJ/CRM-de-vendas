@@ -2,18 +2,13 @@
 
 <html data-theme="light" lang="pt-BR">
 <head>
-&lt;!-- CRM v47 modularizado: estilos e scripts foram separados para facilitar manutenção e reduzir risco de código visível na tela. --&gt;
+<!-- CRM v47 modularizado: estilos e scripts foram separados para facilitar manutenção e reduzir risco de código visível na tela. -->
 
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Outbounder CRM</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Inter+Tight:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="assets/css/app.css" rel="stylesheet"/><link href="assets/css/crm-ui-profissional.css" rel="stylesheet"/><link href="assets/css/crm-ux-botoes-areas.css" rel="stylesheet"/><link href="assets/css/crm-v57-limpeza-estrutural.css" rel="stylesheet"/><link href="assets/css/crm-v59-emergencia-carregamento.css" rel="stylesheet"/><link rel="stylesheet" href="assets/css/crm-v60-sidebar-compacta-profissional.css" /><link rel="stylesheet" href="assets/css/crm-v61-agenda-oficial-google.css" />
-<link rel="stylesheet" href="assets/css/crm-v62-garimpo-temas.css" />
-<link rel="stylesheet" href="assets/css/crm-v63-garimpo-ligacoes-agenda-automacoes.css" />
-<link rel="stylesheet" href="assets/css/crm-v64-router-agenda-profissional.css" />
-<link rel="stylesheet" href="assets/css/crm-v65-followups-profissional.css" />
-</head>
+<link href="assets/css/app.css" rel="stylesheet"/><link href="assets/css/crm-ui-profissional.css" rel="stylesheet"/><link href="assets/css/crm-ux-botoes-areas.css" rel="stylesheet"/><link href="assets/css/crm-v57-limpeza-estrutural.css" rel="stylesheet"/><link href="assets/css/crm-v59-emergencia-carregamento.css" rel="stylesheet"/></head>
 <body><svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="ic-zap" viewbox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></symbol><symbol id="ic-home" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></symbol><symbol id="ic-users" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6M23 11h-6"></path></symbol><symbol id="ic-columns" viewbox="0 0 24 24"><rect height="4" width="6" x="2" y="7"></rect><rect height="4" width="6" x="9" y="13"></rect><rect height="4" width="6" x="16" y="7"></rect></symbol><symbol id="ic-icon-05" viewbox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></symbol><symbol id="ic-book" viewbox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol><symbol id="ic-icon-07" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></symbol><symbol id="ic-x-circle" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6M9 9l6 6"></path></symbol><symbol id="ic-grid" viewbox="0 0 24 24"><rect height="9" rx="1" width="9" x="2" y="3"></rect><rect height="9" rx="1" width="9" x="13" y="3"></rect><rect height="7" rx="1" width="9" x="2" y="14"></rect><rect height="7" rx="1" width="9" x="13" y="14"></rect></symbol><symbol id="ic-trending-up" viewbox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"></path></symbol><symbol id="ic-calendar" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></symbol><symbol id="ic-message-square" viewbox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></symbol><symbol id="ic-bar-chart" viewbox="0 0 24 24"><path d="M4 20V9M10 20V4M16 20v-7M22 20v-11"></path></symbol><symbol id="ic-upload" viewbox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></symbol><symbol id="ic-plus" viewbox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="ic-search" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></symbol><symbol id="ic-download" viewbox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></symbol><symbol id="ic-close" viewbox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></symbol><symbol id="ic-check" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></symbol><symbol id="ic-icon-20" viewbox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01zm3.96-5.37c-.22-.11-1.28-.63-1.48-.7-.2-.07-.34-.11-.49.11-.14.22-.56.7-.69.84-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.74-1.08-.64-.57-1.08-1.27-1.2-1.49-.13-.22-.01-.34.11-.45.11-.11.25-.27.37-.41.12-.14.16-.24.24-.4.08-.16.04-.3-.04-.41-.07-.11-.43-1.04-.59-1.43-.16-.39-.32-.34-.44-.34-.11-.01-.25-.01-.38-.01-.13 0-.34.05-.52.25-.18.2-.69.68-.69 1.65 0 .97.7 1.91.8 2.04.1.13 1.36 2.08 3.31 2.83 1.64.62 1.97.5 2.32.47.35-.04 1.12-.46 1.28-.9.16-.45.16-.83.11-.91-.05-.08-.2-.13-.42-.24z"></path></symbol><symbol id="ic-phone" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></symbol><symbol id="ic-activity" viewbox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol><symbol id="ic-icon-23" viewbox="0 0 24 24"><line x1="12" x2="12" y1="1" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></symbol><symbol id="ic-refresh" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></symbol><symbol id="ic-icon-25" viewbox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01z"></path></symbol><symbol id="ic-icon-26" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></symbol></svg>
 <div id="app">
 <!-- SIDEBAR -->
@@ -336,9 +331,127 @@
 </div>
 </div>
 </div>
-<!-- AGENDA OFICIAL V61 -->
+<!-- AGENDA -->
 <section class="view grid-view" id="agenda">
-  <div id="crmAgendaV61Root" class="crm-agenda-v61-placeholder"></div>
+<div class="section-header"><div><div class="section-title-text">Agenda</div><div class="section-sub">Planejamento e follow-ups</div></div><div style="display:flex;gap:8px;align-items:center"><button aria-label="G Google Calendar" class="btn btn-sm" id="gcalConnectBtn" style="border-color:#4285f4;color:#4285f4;gap:7px" type="button"><svg fill="none" height="13" viewbox="0 0 24 24" width="13"><rect height="18" rx="2" stroke="#4285f4" stroke-width="1.8" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18" stroke="#4285f4" stroke-width="1.8"></path><text fill="#4285f4" font-size="7" font-weight="700" x="8" y="19">G</text></svg>Google Calendar</button><button aria-label="Novo compromisso" class="btn btn-primary btn-sm" id="agNewBtn" type="button"><svg fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px" viewbox="0 0 24 24"><use href="#ic-plus"></use></svg>Novo compromisso</button></div></div>
+<!-- Google Calendar Connect Modal -->
+<div class="modal-overlay hidden" id="gcalBackdrop">
+<div class="modal-box" style="max-width:440px">
+<div class="modal-head"><h3>Conectar Google Calendar</h3><button aria-label="Fechar Google Calendar" class="modal-close" id="gcalClose" title="Fechar Google Calendar" type="button"><span aria-hidden="true">×</span></button></div>
+<div class="modal-body" id="gcalBody">
+<div id="gcalDisconnected">
+<div style="text-align:center;padding:16px 0 20px">
+<div style="width:56px;height:56px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+<svg fill="none" height="28" viewbox="0 0 24 24" width="28"><rect height="18" rx="2" stroke="#4285f4" stroke-width="1.8" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18" stroke="#4285f4" stroke-width="1.8"></path></svg>
+</div>
+<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Sincronizar com Google Calendar</div>
+<div style="font-size:12.5px;color:var(--text-3);line-height:1.6;max-width:32ch;margin:0 auto">Exporte seus compromissos da Agenda direto para o Google Calendar com um clique.</div>
+</div>
+<div style="background:var(--surface-2);border-radius:10px;padding:14px;margin-bottom:16px">
+<div style="font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:8px">O que será sincronizado:</div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Compromissos agendados</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Follow-ups e reuniões</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2)"><svg fill="none" height="14" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="14"><use href="#ic-check"></use></svg>Notas e objetivos do compromisso</div>
+</div>
+</div>
+<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:11.5px;color:#856404">
+<strong>Como conectar:</strong> Clique em "Autorizar com Google", faça login e permita o acesso ao Calendar. Os compromissos serão exportados automaticamente.
+          </div>
+<button aria-label="Autorizar com Google" class="btn btn-primary" id="gcalAuthBtn" style="width:100%;justify-content:center;gap:8px;background:#4285f4;border-color:#4285f4" type="button">
+<svg fill="currentColor" height="15" viewbox="0 0 24 24" width="15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9V8h2v9zm4 0h-2V8h2v9z" fill="none" stroke="currentColor" stroke-width="0"></path></svg>
+<svg fill="currentColor" height="14" viewbox="0 0 488 512" width="14"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+            Autorizar com Google
+          </button>
+</div>
+<div class="hidden" id="gcalConnected">
+<div style="text-align:center;padding:16px 0">
+<div style="width:48px;height:48px;border-radius:999px;background:#f0fdf4;border:2px solid #16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><svg fill="none" height="22" stroke="#16a34a" stroke-width="2.5" viewbox="0 0 24 24" width="22"><use href="#ic-check"></use></svg></div>
+<div style="font-size:14px;font-weight:700;color:var(--success)">Google Calendar conectado!</div>
+<div id="gcalEmailLabel" style="font-size:12px;color:var(--text-3);margin-top:4px"></div>
+</div>
+<div style="display:grid;gap:8px;margin-bottom:16px">
+<button aria-label="Exportar todos os compromissos agora" class="btn" id="gcalExportBtn" style="justify-content:center;gap:8px" type="button">
+<svg fill="none" height="14" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="14"><use href="#ic-download"></use></svg>
+              Exportar todos os compromissos agora
+            </button>
+<button aria-label="Desconectar conta" class="btn btn-danger btn-sm" id="gcalDisconnectBtn" style="justify-content:center" type="button">Desconectar conta</button>
+</div>
+<div id="gcalSyncLog" style="background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:11.5px;color:var(--text-3)">Nenhuma sincronização realizada ainda.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="agenda-kpis">
+<div class="ag-kpi"><div class="val" id="agKpiChamadas">0</div><div class="lbl">Chamadas hoje</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiReunioes">0</div><div class="lbl">Reuniões</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiFollowups">0</div><div class="lbl">Follow-ups</div></div>
+<div class="ag-kpi"><div class="val" id="agKpiAtrasados">0</div><div class="lbl">Atrasados</div></div>
+<div class="ag-kpi timer"><div class="val" id="agTimer">00:00:00</div><div class="lbl">Tempo de foco</div><div class="timer-btns"><button aria-label="Iniciar timer" class="timer-btn" id="timerStart" type="button">▶</button><button aria-label="Pausar timer" class="timer-btn" id="timerPause" type="button">⏸</button><button aria-label="Parar timer" class="timer-btn" id="timerStop" type="button">⏹</button></div></div>
+</div>
+<div class="card">
+<div class="card-header">
+<div class="view-tabs"><button aria-label="Lista" class="view-tab active" id="agViewList" type="button">Lista</button><button aria-label="Calendário" class="view-tab" id="agViewCal" type="button">Calendário</button></div>
+<div class="agenda-toolbar" style="margin-left:12px">
+<div class="filter-chips agenda-filters"><button aria-label="Todos" class="chip active" data-ag-priority="" type="button">Todos</button><button aria-label="Alta" class="chip" data-ag-priority="Alta" type="button">Alta</button><button aria-label="Média" class="chip" data-ag-priority="Média" type="button">Média</button><button aria-label="Baixa" class="chip" data-ag-priority="Baixa" type="button">Baixa</button></div>
+<div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-search"></use></svg><input class="search-input" id="agSearch" placeholder="Buscar..." style="min-width:140px" type="search"/></div>
+</div>
+</div>
+<div class="card-body">
+<div id="agListView"><div id="agListToday"></div><div id="agListUpcoming"></div></div>
+<div class="hidden" id="agCalView">
+<div class="cal-header"><button aria-label="Mês anterior" class="btn btn-sm" id="calPrev" type="button">‹</button><div class="cal-month" id="calTitle"></div><button aria-label="Próximo mês" class="btn btn-sm" id="calNext" type="button">›</button></div>
+<div class="cal-grid" id="calGrid"></div>
+</div>
+</div>
+</div>
+<!-- SPIN Detail -->
+<div class="modal-overlay hidden" id="agDetailBackdrop">
+<div class="modal-box" style="width:min(560px,100%)">
+<div class="modal-head"><div><h3 id="agdNome">—</h3><div id="agdTagsRow" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"></div></div><button aria-label="Fechar detalhes do compromisso" class="modal-close" id="agDetailClose" title="Fechar detalhes do compromisso" type="button"><span aria-hidden="true">×</span></button></div>
+<div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div class="dp-field"><label>Data</label><p id="agdData">—</p></div>
+<div class="dp-field"><label>Hora</label><p id="agdHora">—</p></div>
+<div class="dp-field"><label>Tipo</label><p id="agdTipo">—</p></div>
+<div class="dp-field"><label>Valor do negócio</label><p id="agdValor" style="font-weight:700;color:var(--blue)">—</p></div>
+<div class="dp-field" style="grid-column:1/-1"><label>Notas</label><p id="agdNotas" style="white-space:pre-wrap;font-size:13px">—</p></div>
+<div class="quick-actions" style="grid-column:1/-1">
+<a class="qa-btn qa-whatsapp" href="#" id="agdWhatsapp" target="_blank"><svg fill="currentColor" height="13" viewbox="0 0 24 24" width="13"><use href="#ic-icon-20"></use></svg>WhatsApp</a>
+<a class="qa-btn qa-call" href="#" id="agdLigar"><svg fill="none" height="13" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="13"><use href="#ic-phone"></use></svg>Ligar</a>
+<a class="qa-btn qa-email" href="#" id="agdEmail"><svg fill="none" height="13" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="13"><rect height="16" rx="2" width="20" x="2" y="4"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>E-mail</a>
+</div>
+<div class="spin-card" style="grid-column:1/-1">
+<div class="spin-title">Preparação SPIN Selling</div>
+<div class="spin-group"><div class="spin-badge spin-s">S — Situação</div><textarea class="spin-textarea" id="spinS" placeholder="Situação atual do cliente..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-p">P — Problema</div><textarea class="spin-textarea" id="spinP" placeholder="Problemas e dores que enfrenta..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-i">I — Implicação</div><textarea class="spin-textarea" id="spinI" placeholder="Consequências do problema..."></textarea></div>
+<div class="spin-group"><div class="spin-badge spin-n">N — Necessidade</div><textarea class="spin-textarea" id="spinN" placeholder="Como nossa solução resolve..."></textarea></div>
+<button aria-label="Salvar preparação SPIN" class="btn btn-primary btn-sm" id="spinSave" style="width:100%;justify-content:center;margin-top:4px" type="button">Salvar preparação SPIN</button>
+</div>
+</div>
+</div>
+</div>
+<!-- New/Edit event -->
+<div class="modal-overlay hidden" id="agEventBackdrop">
+<div class="modal-box">
+<div class="modal-head"><h3 id="agEventTitle">Novo compromisso</h3><button aria-label="Fechar compromisso" class="modal-close" id="agEventClose" title="Fechar compromisso" type="button"><span aria-hidden="true">×</span></button></div>
+<div class="modal-body">
+<div class="field full"><label>Lead *</label><select id="agEvLead"><option value="">Selecione um lead...</option></select></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div class="field"><label>Data *</label><input id="agEvData" type="date"/></div>
+<div class="field"><label>Hora</label><input id="agEvHora" type="time" value="09:00"/></div>
+</div>
+<div class="field full"><label>Tipo</label><select id="agEvTipo"><option>Ligação</option><option>WhatsApp</option><option>E-mail</option><option>Demo / Vídeo</option><option>Reunião</option><option>Follow-up</option><option>Sequência de follow-up</option></select></div>
+<div class="field full"><label>Prioridade</label><select id="agEvPrioridade"><option>Alta</option><option selected="">Média</option><option>Baixa</option></select></div>
+<div class="field full"><label>Notas / Objetivo</label><textarea id="agEvNotas" placeholder="O que você quer alcançar?" rows="3"></textarea></div>
+</div>
+<div class="modal-foot">
+<button aria-label="Cancelar" class="btn" id="agEventCancel" type="button">Cancelar</button>
+<button aria-label="Excluir" class="btn btn-danger btn-sm hidden" id="agEventDelete" type="button">Excluir</button>
+<button aria-label="Salvar" class="btn btn-primary" id="agEventSave" type="button">Salvar</button>
+</div>
+</div>
+</div>
 </section>
 <!-- MÉTRICAS -->
 <section class="view grid-view" id="metricas">
@@ -858,7 +971,7 @@
 <!-- CRM PRO V4 — Funil executivo + modais inteligentes -->
 <!-- CRM PRO V5 FINAL PATCH: navegação, metas, playbook IA, painel configurável -->
 <!-- CRM PRO V6 — Camada profissional por abas: navegação, metas, funil, playbooks, automações, clientes e relatórios -->
-<!-- CRM PRO V7: Garimpo de Leads -->
+<!-- CRM V60: Garimpo estabilizado como módulo único; sem MutationObserver antigo -->
 <!-- CRM PRO V8: correção de visibilidade das abas Garimpo/Funil -->
 <!-- PATCH V18 — Painel estável + abas superiores personalizáveis sem quebrar botões -->
 <!-- PATCH V18.1 — limpeza de sobras antigas do painel -->
@@ -868,12 +981,11 @@
 <!-- CRM PRO V31: correção definitiva de navegação — metas não aparece fora da aba -->
 <!-- CRM PRO V32: Metas organizadas, botões estáveis e blocos configuráveis -->
 <!-- CRM PRO V33: estabilidade geral após correção de sintaxe e navegação -->
-<!-- CRM PRO: Playbook Builder com scripts comerciais -->
-<!-- CRM PRO: Layout geral e central de follow-ups -->
+<!-- CRM PRO V34: Playbook Builder + IA Local de scripts sem API -->
+<!-- CRM PRO V35 — Layout geral + aba Follow-ups operacional -->
 <!-- CRM PRO V36 FINAL PATCH -->
 <!-- CRM V41 CLEAN FIX: sem código visível na tela -->
-<!-- CRM PRO: Continuação estável, layout personalizável -->
+<!-- CRM PRO V45 — Continuação estável da v41: sem tela branca, sem apagar funções, layout personalizável -->
 <!-- CRM PRO V46 — Configurações, filtros profissionais e modo leve seguro -->
-</div><script src="assets/js/modules/00-nucleo-dados-base.js"></script><script src="assets/js/modules/01-central-acoes-relatorios.js"></script><script src="assets/js/modules/02-funil-lead-scoring.js"></script><script src="assets/js/modules/03-fix-chat-topbar.js"></script><script src="assets/js/modules/04-metas-dashboard-ia-inicial.js"></script><script src="assets/js/modules/05-integracao-geral-v6.js"></script><script src="assets/js/modules/06-garimpo-leads.js"></script><script src="assets/js/modules/07-fix-visibilidade-topbar.js"></script><script src="assets/js/modules/09-painel-widgets.js"></script><script src="assets/js/modules/10-leads-tabela-colunas-v19.js"></script><script src="assets/js/modules/11-pipeline-board-completo.js"></script><script src="assets/js/modules/13-funil-legado-e-relatorios.js"></script><script src="assets/js/modules/17-metas-modulo-completo.js"></script><script src="assets/js/modules/21-navegacao-boot.js"></script><script src="assets/js/modules/22-playbook-builder-ia-v34.js"></script><script src="assets/js/modules/26-layout-limpeza-codigo-v45.js"></script><script src="assets/js/modules/27-configuracoes-v46.js"></script><script src="assets/js/crm-ui-profissional.js"></script><script src="assets/js/modules/28-botoes-sidebar-ux-areas.js"></script><script src="assets/js/modules/37-limpeza-estrutural-layout-definitivo-v57.js"></script><script src="assets/js/modules/39-emergencia-carregamento-sidebar-v59.js"></script>
-<script src="assets/js/modules/40-sidebar-compacta-profissional-v60.js"></script><script src="assets/js/modules/41-agenda-oficial-google-v61.js"></script><script src="assets/js/modules/42-garimpo-temas-v62.js"></script><script src="assets/js/modules/43-garimpo-ligacoes-agenda-automacoes-v63.js"></script><script src="assets/js/modules/44-router-agenda-profissional-v64.js"></script><script src="assets/js/modules/45-followups-central-profissional-v65.js"></script></body>
+</div><script src="assets/js/modules/00-nucleo-dados-base.js"></script><script src="assets/js/modules/01-central-acoes-relatorios.js"></script><script src="assets/js/modules/02-funil-lead-scoring.js"></script><script src="assets/js/modules/04-metas-dashboard-ia-inicial.js"></script><script src="assets/js/modules/05-integracao-geral-v6.js"></script><script src="assets/js/modules/06-garimpo-leads.js"></script><script src="assets/js/modules/09-painel-widgets.js"></script><script src="assets/js/modules/10-leads-tabela-colunas-v19.js"></script><script src="assets/js/modules/11-pipeline-board-completo.js"></script><script src="assets/js/modules/13-funil-legado-e-relatorios.js"></script><script src="assets/js/modules/17-metas-modulo-completo.js"></script><script src="assets/js/modules/21-navegacao-boot.js"></script><script src="assets/js/modules/22-playbook-builder-ia-v34.js"></script><script src="assets/js/modules/26-layout-limpeza-codigo-v45.js"></script><script src="assets/js/modules/27-configuracoes-v46.js"></script><script src="assets/js/crm-ui-profissional.js"></script><script src="assets/js/modules/28-botoes-sidebar-ux-areas.js"></script><script src="assets/js/modules/37-limpeza-estrutural-layout-definitivo-v57.js"></script><script src="assets/js/modules/39-emergencia-carregamento-sidebar-v59.js"></script></body>
 </html>
