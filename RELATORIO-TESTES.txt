@@ -1,0 +1,33 @@
+CRM V98.1 — RELATÓRIO DE TESTES
+
+Estrutura
+- 40 arquivos CSS separados por responsabilidade.
+- 31 arquivos JavaScript carregados na ordem original e separados por núcleo, dados, módulos, navegação, configurações e estabilidade.
+- Nenhum CSS ou JavaScript inline no index.html modular.
+- Todas as 71 referências locais verificadas e presentes.
+- Sintaxe de todos os arquivos JavaScript validada com node --check.
+- Build de produção gerado em dist/.
+
+Navegação e renderização
+- Somente uma view ativa por vez.
+- Nenhum ID duplicado após a inicialização e navegação.
+- Pipeline V65 carregado com Kanban, Tabela e Funil real.
+- Visualização Funil abre internamente no Pipeline.
+- Metas abre sem carregamento infinito.
+- Clientes redireciona internamente para Leads.
+- Objeções redireciona internamente para Playbooks.
+- Dashboard e Perdas redirecionam internamente para Métricas.
+- Importar/Exportar redireciona internamente para Configurações.
+- Agenda e Follow-ups renderizam normalmente.
+
+Resultados automatizados
+- Erros de página: 0
+- Erros de console: 0
+- Falhas de carregamento de arquivos: 0
+- Sobreposição de views: 0
+- IDs duplicados: 0
+
+Também foi testado:
+- Projeto modular de desenvolvimento.
+- Pasta dist pronta para publicação.
+- HTML standalone direto.
