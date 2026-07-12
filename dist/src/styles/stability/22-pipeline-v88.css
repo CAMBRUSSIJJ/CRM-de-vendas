@@ -1,0 +1,5 @@
+/* V88 — Segurança do Pipeline V84: mantém o visual original e só evita tela vazia. */
+#pipeline.v88-pipeline-v84-restaurado{min-height:70vh;align-content:start;}
+#pipeline .v88-pipe-safe-empty{border:1px dashed rgba(15,23,42,.18);background:rgba(248,250,252,.9);border-radius:18px;padding:18px;color:#64748b;display:grid;gap:8px;}
+#pipeline .v88-pipe-safe-empty strong{color:#0f172a;}
+#pipeline .v65-empty-col{min-height:84px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px dashed rgba(15,23,42,.16);border-radius:16px;background:rgba(255,255,255,.55);color:#64748b;font-size:13px;padding:14px;}

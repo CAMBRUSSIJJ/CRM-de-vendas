@@ -1,0 +1,4 @@
+[data-v98-legacy-placeholder]{display:none!important}
+html,body{max-width:100%;overflow-x:hidden}
+main,.main,.main-content,.content,#content,.view{min-width:0;max-width:100%}
+.view.active{overflow-x:auto}

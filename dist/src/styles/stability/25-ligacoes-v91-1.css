@@ -1,0 +1,4 @@
+/* V91.1 — garante que a aba Ligações tenha uma única renderização visível */
+#ligacoes.v91-ligacoes-section{position:relative;z-index:auto;}
+#ligacoes .v91-safe-loading{padding:28px;border:1px solid rgba(15,23,42,.10);border-radius:18px;background:#fff;color:#64748b;}
+body.crm-v911-ligacoes-ready #ligacoes .v91-safe-loading{display:none!important;}
