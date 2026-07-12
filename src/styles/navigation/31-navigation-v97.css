@@ -1,0 +1,18 @@
+/* V97 — Reorganização segura da navegação: somente CSS + HTML, sem novo roteador global. */
+.sidebar-nav.v97-sidebar-nav{gap:8px;padding-right:8px;}
+.v97-nav-section{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+.v97-nav-section .nav-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#7b8794);margin:8px 10px 4px;}
+.v97-sidebar-nav .nav-item{border-radius:12px;min-height:38px;}
+.v97-sidebar-nav .nav-item span:not(.nav-badge){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.v97-nav-archive{margin:8px 8px 14px;border:1px solid rgba(148,163,184,.24);border-radius:14px;background:rgba(15,23,42,.025);overflow:hidden;}
+.v97-nav-archive summary{cursor:pointer;list-style:none;padding:10px 12px;font-size:12px;font-weight:700;color:var(--muted,#64748b);display:flex;align-items:center;justify-content:space-between;}
+.v97-nav-archive summary::-webkit-details-marker{display:none;}
+.v97-nav-archive summary:after{content:'+';font-size:14px;opacity:.75;}
+.v97-nav-archive[open] summary:after{content:'–';}
+.v97-archive-list{display:grid;gap:4px;padding:0 8px 10px;}
+.v97-archive-list button{width:100%;border:0;background:transparent;color:inherit;text-align:left;border-radius:10px;padding:8px 9px;font:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.v97-archive-list button:hover{background:rgba(37,99,235,.08);}
+.v97-archive-list small{color:var(--muted,#64748b);font-size:10px;font-weight:600;}
+.topbar-tabs.v97-topbar-tabs{gap:6px;}
+.topbar-tabs.v97-topbar-tabs .tab{border-radius:999px;padding-inline:12px;}
+@media (max-width:1100px){.topbar-tabs.v97-topbar-tabs .tab:nth-last-child(n+6){display:none;}}

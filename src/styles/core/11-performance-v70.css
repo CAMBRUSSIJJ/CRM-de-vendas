@@ -1,0 +1,11 @@
+/* EMBED: assets/css/crm-v70-performance.css */
+/* CRM v70 — Performance e carregamento por aba */
+.v70-perf-badge{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(22,163,74,.22);background:rgba(22,163,74,.08);color:#166534;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:850;letter-spacing:.01em;cursor:pointer;user-select:none;white-space:nowrap;transition:transform .18s ease,background .18s ease,border-color .18s ease;
+}
+.v70-perf-badge:hover{transform:translateY(-1px);background:rgba(22,163,74,.13);border-color:rgba(22,163,74,.32)}
+[data-theme="dark"] .v70-perf-badge{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.25);color:#bbf7d0}
+body.v70-rendering .view.active{animation:v70SoftPaint .18s ease-out both}
+@keyframes v70SoftPaint{from{opacity:.86;transform:translateY(2px)}to{opacity:1;transform:none}}
+.view[data-v70-loaded="1"]{content-visibility:auto;contain-intrinsic-size:900px}
+@media (prefers-reduced-motion:reduce){body.v70-rendering .view.active{animation:none}.v70-perf-badge{transition:none}}

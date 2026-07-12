@@ -1,0 +1,17 @@
+/* EMBED: assets/css/crm-v73-3-estabilidade.css */
+/* CRM V73.3 — Correção anti-código visível e anti-sobreposição
+   Objetivo: estabilizar navegação e impedir views empilhadas sem redesenhar a V72. */
+html,body{min-height:100%;}
+body.crm-v733-stable .view{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
+body.crm-v733-stable .view.active{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
+body.crm-v733-stable .view.active.grid-view{display:grid!important;}
+body.crm-v733-stable .view.active.flex-view{display:flex!important;}
+body.crm-v733-stable .workspace, body.crm-v733-stable .main, body.crm-v733-stable main{position:relative;}
+body.crm-v733-stable .view{position:relative;z-index:0;}
+body.crm-v733-stable .view.active{z-index:1;}
+/* Conteúdo de fallback: aparece apenas se o render principal não preencher a aba. */
+body.crm-v733-stable .v732-static-fallback:not(.active){display:none!important;}
+body.crm-v733-stable .v733-bug-cleaned{display:none!important;}
+body.crm-v733-stable .v733-error-note{margin:12px 0;padding:12px 14px;border:1px solid rgba(220,38,38,.22);background:#fff7f7;color:#991b1b;border-radius:14px;font-size:13px;}
+body.crm-v733-stable .nav-item.active,[data-theme=dark] body.crm-v733-stable .nav-item.active{outline:0;}
+@media(max-width:980px){body.crm-v733-stable .view.active{min-width:0;overflow-x:hidden;}}

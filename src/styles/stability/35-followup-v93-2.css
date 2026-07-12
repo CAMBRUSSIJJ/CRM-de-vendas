@@ -1,0 +1,11 @@
+/* V93.2 — protege o Follow-up contra tela vazia sem mudar o layout da V92 */
+#cadencias.v92-followup-view:empty::before{
+  content:'Carregando Follow-up ativo...';
+  display:block;
+  padding:28px;
+  border:1px solid rgba(4,52,44,.12);
+  border-radius:22px;
+  background:linear-gradient(180deg,#ffffff,#f8faf9);
+  color:#48615b;
+  font-weight:700;
+}
