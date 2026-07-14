@@ -15,7 +15,6 @@
   --v75-radius:22px;
   --v75-shadow:0 18px 55px rgba(4,52,44,.08);
 }
-body.crm-v75-pro #ligacoes.view.active,
 body.crm-v75-pro #garimpo.view.active{display:block!important;min-height:calc(100vh - 120px)}
 body.crm-v75-pro .view:not(.active){display:none!important}
 .v75-page{display:grid;gap:18px;color:var(--v75-text);padding-bottom:48px;max-width:1500px;margin:0 auto}

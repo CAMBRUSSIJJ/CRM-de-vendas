@@ -149,6 +149,7 @@
     doc.documentElement.style.setProperty('--v61-accent',st.accent);
     doc.documentElement.style.setProperty('--v61-accent-rgb',`${r},${g},${b}`);
     doc.documentElement.style.setProperty('--v71-accent',st.accent);
+    doc.documentElement.style.setProperty('--brand-accent',st.accent);
     doc.documentElement.style.setProperty('--v71-accent-rgb',`${r},${g},${b}`);
     doc.documentElement.dataset.theme=st.theme;
     doc.documentElement.classList.add('crm-ready');
@@ -204,7 +205,7 @@
       <div class="crm-v71-modal" role="dialog" aria-modal="true" aria-label="Configurações e personalização do CRM">
         <div class="crm-v71-head">
           <div>
-            <div class="crm-v71-kicker">V71 · Central oficial</div>
+            <div class="crm-v71-kicker">Central de configurações</div>
             <div class="crm-v71-title">Configurações e Personalização</div>
             <div class="crm-v71-sub">Controle aparência, lateral, abas, botões, campos padrão e modo leve em uma única central, sem módulos duplicados.</div>
           </div>
@@ -241,7 +242,7 @@
           </section>
           <section class="crm-v71-panel" data-v71-panel="sistema">
             <div class="crm-v71-grid two">
-              <div class="crm-v71-card"><h3>Desempenho e segurança</h3><p>Use quando o CRM estiver pesado ou quando quiser um modo mais estável.</p>${switchHTML('reducedMotion','Reduzir animações','Desliga transições pesadas.')}${switchHTML('lightMode','Modo leve','Remove sombras fortes.')}${switchHTML('safeMode','Modo seguro','Ativa modo leve, reduz animações e foca no básico.')}${switchHTML('showPerformanceBadge','Mostrar badge V70/V71','Exibe indicador técnico na topbar.')}${switchHTML('confirmDanger','Confirmar ações perigosas','Mantém confirmações antes de limpar dados.')}</div>
+              <div class="crm-v71-card"><h3>Desempenho e segurança</h3><p>Use quando o CRM estiver pesado ou quando quiser um modo mais estável.</p>${switchHTML('reducedMotion','Reduzir animações','Desliga transições pesadas.')}${switchHTML('lightMode','Modo leve','Remove sombras fortes.')}${switchHTML('safeMode','Modo seguro','Ativa modo leve, reduz animações e foca no básico.')}${switchHTML('showPerformanceBadge','Mostrar indicador de desempenho','Exibe um indicador discreto de desempenho na topbar.')}${switchHTML('confirmDanger','Confirmar ações perigosas','Mantém confirmações antes de limpar dados.')}</div>
               <div class="crm-v71-card"><h3>Backup das configurações</h3><p>Exporte ou importe apenas as preferências visuais, sem mexer nos leads.</p><div class="crm-v71-actions"><button type="button" id="crmV71ExportSettings">Exportar configurações</button><label class="crm-v71-upload">Importar configurações<input type="file" id="crmV71ImportSettings" accept="application/json,.json"></label><button type="button" id="crmV71Reset">Restaurar padrão</button></div><div class="crm-v71-health" id="crmV71Health"></div></div>
             </div>
           </section>
@@ -257,7 +258,6 @@
     if(!$('#crmV71Settings')) doc.body.insertAdjacentHTML('beforeend',modalHTML());
     if(!$('#crmV61SettingsTopBtn')&&!$('#crmV71SettingsTopBtn')){
       const actions=$('.topbar-actions');
-      if(actions){const b=doc.createElement('button');b.id='crmV71SettingsTopBtn';b.type='button';b.className='btn btn-sm';b.setAttribute('data-v71-open-settings','');b.innerHTML='⚙ Personalizar';actions.insertBefore(b,actions.firstChild);}
     }
   }
   function renderColorPresets(st){
@@ -367,7 +367,7 @@
       const quick=ev.target.closest('[data-v71-quick]'); if(quick){toggleArray('quickActionItems',quick.dataset.v71Quick,true);return;}
       if(ev.target.closest('#crmV71SaveOrder')){setAndApply({tabOrder:orderedItems().map(x=>x.id)});notify('Ordem salva.','success');return;}
       if(ev.target.closest('#crmV71ExportSettings')){exportSettings();return;}
-      if(ev.target.closest('#crmV71Reset')){if(!confirm('Restaurar configurações visuais para o padrão?'))return;localStorage.removeItem(STORE);localStorage.removeItem(LEGACY_STORE);apply(save(defaults));notify('Configurações restauradas.','success');return;}
+      if(ev.target.closest('#crmV71Reset')){window.CRMDialog?.confirm('Restaurar configurações visuais para o padrão?',{title:'Restaurar configurações'}).then(ok=>{if(!ok)return;localStorage.removeItem(STORE);localStorage.removeItem(LEGACY_STORE);apply(save(defaults));notify('Configurações restauradas.','success')});return;}
     });
     doc.addEventListener('input',ev=>{
       if(ev.target.id==='crmV71CustomColor') setAndApply({accent:ev.target.value,lastPreset:'custom'});

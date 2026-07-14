@@ -4,32 +4,82 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
-<title>RealTalent CRM — V98.1 Modularização Estrutural</title>
-<link rel="stylesheet" href="./src/styles/core/00-base-original.css"><link rel="stylesheet" href="./src/styles/core/01-ui-profissional.css"><link rel="stylesheet" href="./src/styles/core/02-ux-botoes-areas.css"><link rel="stylesheet" href="./src/styles/core/03-limpeza-estrutural-v57.css"><link rel="stylesheet" href="./src/styles/settings/04-configuracoes-v71.css"><link rel="stylesheet" href="./src/styles/modules/05-followups-v63.css"><link rel="stylesheet" href="./src/styles/modules/06-agenda-v64.css"><link rel="stylesheet" href="./src/styles/modules/07-leads-pipeline-v65.css"><link rel="stylesheet" href="./src/styles/modules/08-dashboard-v67.css"><link rel="stylesheet" href="./src/styles/modules/09-metas-v68.css"><link rel="stylesheet" href="./src/styles/modules/10-importacao-v69.css"><link rel="stylesheet" href="./src/styles/core/11-performance-v70.css"><link rel="stylesheet" href="./src/styles/core/12-layout-v72.css"><link rel="stylesheet" href="./src/styles/stability/13-base-v73-1.css"><link rel="stylesheet" href="./src/styles/stability/14-abas-v73-2.css"><link rel="stylesheet" href="./src/styles/stability/15-estabilidade-v73-3.css"><link rel="stylesheet" href="./src/styles/modules/16-ligacoes-garimpo-v74.css">
-<link rel="stylesheet" id="crm-v75-style" href="./src/styles/modules/17-ligacoes-garimpo-v75.css">
-<link rel="stylesheet" id="crm-v773-preserve-css" href="./src/styles/stability/18-ligacoes-v77-3.css"><meta content="V93 Limpeza de Sobreposição por Abas" name="crm-version"/>
-<link rel="stylesheet" id="crm-v775-garimpo-busca-css" href="./src/styles/modules/19-garimpo-v77-5.css">
-<link rel="stylesheet" id="crm-v781-garimpo-real-css" href="./src/styles/modules/20-garimpo-api-v78-1.css">
-<link rel="stylesheet" id="crm-v79-playbooks-css" href="./src/styles/modules/21-playbooks-v79.css">
-<link rel="stylesheet" id="crm-v88-pipeline-v84-safety-css" href="./src/styles/stability/22-pipeline-v88.css"><!-- V97.5.3: CSS da renderização antiga V88.1/V65 removido --><link rel="stylesheet" id="crm-v891-ligacoes-css" href="./src/styles/modules/23-ligacoes-v89-1.css">
-<link rel="stylesheet" id="crm-v91-operational-style" href="./src/styles/stability/24-operacional-v91.css"><link rel="stylesheet" id="crm-v911-ligacoes-guard-css" href="./src/styles/stability/25-ligacoes-v91-1.css">
-<link rel="stylesheet" id="crm-v914-ligacoes-polished-css" href="./src/styles/modules/26-ligacoes-v91-4.css">
-<link rel="stylesheet" id="crm-v92-followup-css" href="./src/styles/modules/27-followup-v92.css">
-<link rel="stylesheet" id="crm-v93-clean-tabs-css" href="./src/styles/stability/28-clean-tabs-v93.css"><link rel="stylesheet" id="crm-v94-official-css" href="./src/styles/core/29-oficial-v94.css">
-<link rel="stylesheet" id="crm-v952-automations-engine-css" href="./src/styles/modules/30-automacoes-v95-2.css">
-<link rel="stylesheet" id="crm-v97-navigation-css" href="./src/styles/navigation/31-navigation-v97.css">
-<link rel="stylesheet" id="crm-v97-2-configuracoes-seguras-css" href="./src/styles/settings/32-configuracoes-v97-2.css">
-<link rel="stylesheet" id="crm-v973-layout-premium-css" href="./src/styles/core/33-layout-premium-v97-3.css">
+<title>RealTalent CRM</title>
 
+
+<meta content="CRM V99.0 modular e Supabase Ready" name="crm-version"/>
+
+
+
+<!-- V97.5.3: CSS da renderização antiga V88.1/V65 removido -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="./src/styles/core/00-base-original.css">
+<link rel="stylesheet" href="./src/styles/core/01-ui-profissional.css">
+<link rel="stylesheet" href="./src/styles/core/02-ux-botoes-areas.css">
+<link rel="stylesheet" href="./src/styles/core/03-limpeza-estrutural-v57.css">
+<link rel="stylesheet" href="./src/styles/settings/04-configuracoes-v71.css">
+<link rel="stylesheet" href="./src/styles/modules/05-followups-v63.css">
+<link rel="stylesheet" href="./src/styles/modules/06-agenda-v64.css">
+<link rel="stylesheet" href="./src/styles/modules/07-leads-pipeline-v65.css">
+<link rel="stylesheet" href="./src/styles/modules/08-dashboard-v67.css">
+<link rel="stylesheet" href="./src/styles/modules/09-metas-v68.css">
+<link rel="stylesheet" href="./src/styles/modules/10-importacao-v69.css">
+<link rel="stylesheet" href="./src/styles/core/11-performance-v70.css">
+<link rel="stylesheet" href="./src/styles/core/12-layout-v72.css">
+<link rel="stylesheet" href="./src/styles/stability/13-base-v73-1.css">
+<link rel="stylesheet" href="./src/styles/stability/14-abas-v73-2.css">
+<link rel="stylesheet" href="./src/styles/stability/15-estabilidade-v73-3.css">
+<link rel="stylesheet" href="./src/styles/modules/16-ligacoes-garimpo-v74.css">
+<link rel="stylesheet" href="./src/styles/modules/17-ligacoes-garimpo-v75.css">
+<link rel="stylesheet" href="./src/styles/stability/18-ligacoes-v77-3.css">
+<link rel="stylesheet" href="./src/styles/modules/19-garimpo-v77-5.css">
+<link rel="stylesheet" href="./src/styles/modules/20-garimpo-api-v78-1.css">
+<link rel="stylesheet" href="./src/styles/modules/21-playbooks-v79.css">
+<link rel="stylesheet" href="./src/styles/stability/22-pipeline-v88.css">
+<link rel="stylesheet" href="./src/styles/stability/24-operacional-v91.css">
+<link rel="stylesheet" href="./src/styles/modules/27-followup-v92.css">
+<link rel="stylesheet" href="./src/styles/stability/28-clean-tabs-v93.css">
+<link rel="stylesheet" href="./src/styles/core/29-oficial-v94.css">
+<link rel="stylesheet" href="./src/styles/modules/30-automacoes-v95-2.css">
+<link rel="stylesheet" href="./src/styles/navigation/31-navigation-v97.css">
+<link rel="stylesheet" href="./src/styles/settings/32-configuracoes-v97-2.css">
+<link rel="stylesheet" href="./src/styles/core/33-layout-premium-v97-3.css">
+<link rel="stylesheet" href="./src/styles/stability/34-garimpo-v77-4.css">
+<link rel="stylesheet" href="./src/styles/stability/35-followup-v93-2.css">
+<link rel="stylesheet" href="./src/styles/modules/36-lembretes-v95-3.css">
+<link rel="stylesheet" href="./src/styles/modules/37-notificacoes-v95-4.css">
+<link rel="stylesheet" href="./src/styles/consolidation/38-consolidacao-v97-5.css">
+<link rel="stylesheet" href="./src/styles/stability/39-estabilidade-v98.css">
+<link rel="stylesheet" href="./src/styles/modules/40-operacional-v98-2.css">
+<link rel="stylesheet" href="./src/styles/settings/41-personalizacao-total-v98-3.css">
+<link rel="stylesheet" href="./src/styles/modules/42-pipeline-ligacoes-comandos-v98-5.css">
+<link rel="stylesheet" href="./src/styles/modules/43-integracao-comercial-v98-6.css">
+<link rel="stylesheet" href="./src/styles/modules/44-ligacao-foco-v98-7.css">
+<link rel="stylesheet" href="./src/styles/modules/45-playbook-studio-v98-7.css">
+<link rel="stylesheet" href="./src/styles/core/46-design-system-v98-8.css">
+<link rel="stylesheet" href="./src/styles/core/47-clean-runtime-v99.css">
+<link rel="stylesheet" href="./src/styles/v99/48-kernel-backup-v99.css">
 </head>
 <body class="v94-official"><svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="ic-zap" viewbox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></symbol><symbol id="ic-home" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></symbol><symbol id="ic-users" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6M23 11h-6"></path></symbol><symbol id="ic-columns" viewbox="0 0 24 24"><rect height="4" width="6" x="2" y="7"></rect><rect height="4" width="6" x="9" y="13"></rect><rect height="4" width="6" x="16" y="7"></rect></symbol><symbol id="ic-icon-05" viewbox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></symbol><symbol id="ic-book" viewbox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol><symbol id="ic-icon-07" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></symbol><symbol id="ic-x-circle" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6M9 9l6 6"></path></symbol><symbol id="ic-grid" viewbox="0 0 24 24"><rect height="9" rx="1" width="9" x="2" y="3"></rect><rect height="9" rx="1" width="9" x="13" y="3"></rect><rect height="7" rx="1" width="9" x="2" y="14"></rect><rect height="7" rx="1" width="9" x="13" y="14"></rect></symbol><symbol id="ic-trending-up" viewbox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"></path></symbol><symbol id="ic-calendar" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></symbol><symbol id="ic-message-square" viewbox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></symbol><symbol id="ic-bar-chart" viewbox="0 0 24 24"><path d="M4 20V9M10 20V4M16 20v-7M22 20v-11"></path></symbol><symbol id="ic-upload" viewbox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></symbol><symbol id="ic-plus" viewbox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol><symbol id="ic-search" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></symbol><symbol id="ic-download" viewbox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></symbol><symbol id="ic-close" viewbox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></symbol><symbol id="ic-check" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></symbol><symbol id="ic-icon-20" viewbox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01zm3.96-5.37c-.22-.11-1.28-.63-1.48-.7-.2-.07-.34-.11-.49.11-.14.22-.56.7-.69.84-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.74-1.08-.64-.57-1.08-1.27-1.2-1.49-.13-.22-.01-.34.11-.45.11-.11.25-.27.37-.41.12-.14.16-.24.24-.4.08-.16.04-.3-.04-.41-.07-.11-.43-1.04-.59-1.43-.16-.39-.32-.34-.44-.34-.11-.01-.25-.01-.38-.01-.13 0-.34.05-.52.25-.18.2-.69.68-.69 1.65 0 .97.7 1.91.8 2.04.1.13 1.36 2.08 3.31 2.83 1.64.62 1.97.5 2.32.47.35-.04 1.12-.46 1.28-.9.16-.45.16-.83.11-.91-.05-.08-.2-.13-.42-.24z"></path></symbol><symbol id="ic-phone" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></symbol><symbol id="ic-activity" viewbox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol><symbol id="ic-icon-23" viewbox="0 0 24 24"><line x1="12" x2="12" y1="1" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></symbol><symbol id="ic-refresh" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></symbol><symbol id="ic-icon-25" viewbox="0 0 24 24"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.27 4 3.4 7.85 3.4 12.6c0 1.55.41 3.02 1.16 4.29L3 21l4.27-1.51a8.93 8.93 0 0 0 4.78 1.36c4.78 0 8.65-3.85 8.65-8.6a8.5 8.5 0 0 0-3.1-6.13zm-5.55 13.2a7.4 7.4 0 0 1-3.78-1.04l-.27-.16-2.81 1 .94-2.74-.18-.28a7.16 7.16 0 0 1-1.12-3.8c0-3.95 3.24-7.16 7.23-7.16 1.93 0 3.74.75 5.11 2.11a7.1 7.1 0 0 1 2.12 5.06c0 3.96-3.24 7.17-7.24 7.01z"></path></symbol><symbol id="ic-icon-26" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></symbol></svg>
 <div id="app">
 <aside class="sidebar">
 <div class="sidebar-brand">
 <div class="brand-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><use href="#ic-zap"></use></svg></div>
-<div><div class="brand-name">RealTalent CRM</div><div class="brand-sub">Base oficial V97.5.3</div></div>
+<div><div class="brand-name">RealTalent CRM</div><div class="brand-sub">Operação comercial</div></div>
 </div>
-<nav aria-label="Navegação principal V97" class="sidebar-nav v97-sidebar-nav">
+<nav aria-label="Navegação principal" class="sidebar-nav v97-sidebar-nav">
 <div class="v97-nav-section">
 <div class="nav-label">Operação</div>
 <button aria-label="Painel" class="nav-item active" data-label="Painel" data-view="inicio" title="Painel" type="button"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><use href="#ic-home"></use></svg><span>Painel</span></button>
@@ -529,9 +579,9 @@
 </div>
 </div>
 <div id="importar" data-v975-legacy-placeholder="1" data-v98-legacy-placeholder="1" hidden aria-hidden="true"></div>
-<section class="view grid-view v93-view v93-garimpo-view" id="garimpo"><div class="v93-loading">Carregando módulo V93...</div></section>
+<section class="view grid-view v93-view v93-garimpo-view" id="garimpo"><div class="v93-loading">Carregando módulo...</div></section>
 <div id="funil" data-v975-legacy-placeholder="1" data-v98-legacy-placeholder="1" hidden aria-hidden="true"></div>
-<section class="view grid-view v93-view v93-ligacoes-view" id="ligacoes"><div class="v93-loading">Carregando módulo V93...</div></section>
+<section class="view grid-view v93-view v93-ligacoes-view" id="ligacoes"><div class="v93-loading">Carregando módulo...</div></section>
 <section class="view grid-view v68-goals-page" id="metas">
 <div class="v68-loading" role="status" aria-live="polite">Carregando central de metas...</div>
 </section>
@@ -540,7 +590,7 @@
 <div class="v972-config-shell">
 <div class="v972-config-hero">
 <div>
-<span class="v972-eyebrow">V97.2 · Configurações seguras</span>
+<span class="v972-eyebrow">Configurações do sistema</span>
 <h2>Configurações do CRM</h2>
 <p>Personalize navegação, preferências, notificações, backup e manutenção sem afetar os botões das outras abas.</p>
 </div>
@@ -678,52 +728,103 @@
 </div>
 <div class="toast" id="toast"></div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- V97.5.4: Pipeline V65 restaurado como render oficial do Pipeline -->
+
+
+<!-- V97.5.3: ponte antiga V88.1/V79 removida para impedir re-renderização paralela do Pipeline -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="./src/config/runtime-config.js"></script>
 <script src="./src/data/local-store.js"></script>
 <script src="./src/data/crm-store.js"></script>
+<script src="./src/data/canonical-store-v99.js"></script>
+<script src="./src/core/event-hub-v99.js"></script>
+<script src="./src/ui/dialogs-v99.js"></script>
 <script src="./src/core/events.js"></script>
 <script src="./src/core/state.js"></script>
-<script src="./src/core/router.js"></script>
-<script id="crm-v97-1-boot-shield" src="./src/core/00-boot-shield.js"></script>
+<script src="./src/core/00-boot-shield.js"></script>
 <script src="./src/core/01-dados-base.js"></script>
-
-<script src="./src/modules/dashboard.js"></script><!-- V97.5.4: Pipeline V65 restaurado como render oficial do Pipeline --><script src="./src/modules/metas.js"></script><script src="./src/modules/configuracoes.js"></script><script src="./src/ui/ui-profissional.js"></script><script src="./src/modules/agenda.js"></script><script src="./src/navigation/sidebar-personalizacao.js"></script><script src="./src/modules/importacao-exportacao.js"></script>
+<script src="./src/core/outcome-rules.js"></script>
+<script src="./src/core/commercial-model-v98-8.js"></script>
+<script src="./src/core/script-engine.js"></script>
+<script src="./src/modules/dashboard.js"></script>
+<script src="./src/modules/metas.js"></script>
+<script src="./src/modules/configuracoes.js"></script>
+<script src="./src/ui/ui-profissional.js"></script>
+<script src="./src/modules/agenda.js"></script>
+<script src="./src/navigation/sidebar-personalizacao.js"></script>
+<script src="./src/modules/importacao-exportacao.js"></script>
 <script src="./src/ui/layout-experiencia.js"></script>
-<link rel="stylesheet" id="crm-v774-garimpo-blindado-css" href="./src/styles/stability/34-garimpo-v77-4.css">
-<!-- V97.5.3: ponte antiga V88.1/V79 removida para impedir re-renderização paralela do Pipeline -->
-<script id="crm-v92-followup-active-js" src="./src/modules/followups.js"></script>
-<script id="crm-v921-followup-clean-guard-js" src="./src/stability/followups-clean-guard.js"></script>
-<script id="crm-v93-clean-tabs-js" src="./src/consolidation/clean-tabs.js"></script>
-<link rel="stylesheet" id="crm-v932-followup-repair-css" href="./src/styles/stability/35-followup-v93-2.css">
-<script id="crm-v932-followup-visible-guard-js" src="./src/stability/followups-visible-guard.js"></script>
+<script src="./src/modules/followups.js"></script>
+<script src="./src/modules/ligacoes.js"></script>
+<script src="./src/consolidation/clean-tabs.js"></script>
 <script src="./src/modules/pipeline.js"></script>
-<script id="crm-v94-official-js" src="./src/core/renderizadores-oficiais.js"></script>
-<script id="crm-v952-automations-engine-js" src="./src/modules/automacoes-engine.js"></script>
-<link rel="stylesheet" id="crm-v953-reminders-center-css" href="./src/styles/modules/36-lembretes-v95-3.css">
-<script id="crm-v953-reminders-center-js" src="./src/modules/lembretes.js"></script>
-<link rel="stylesheet" id="crm-v954-notification-center-css" href="./src/styles/modules/37-notificacoes-v95-4.css">
-<script id="crm-v954-notification-center-js" src="./src/modules/notificacoes.js"></script>
-<script id="crm-v97-navigation-map" src="./src/navigation/mapa-navegacao.js"></script>
-<script id="crm-v97-1-boot-health" src="./src/stability/boot-health.js"></script>
-<script id="crm-v97-2-configuracoes-seguras-js" src="./src/settings/configuracoes-seguras.js"></script>
-<script id="crm-v974-personalizacao-real-js" src="./src/settings/personalizacao-real.js"></script>
-
-<link rel="stylesheet" id="crm-v975-consolidacao-visual-css" href="./src/styles/consolidation/38-consolidacao-v97-5.css">
-<script id="crm-v975-consolidacao-visual-js" src="./src/consolidation/consolidacao-visual.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" id="crm-v98-stability-css" href="./src/styles/stability/39-estabilidade-v98.css">
-<script id="crm-v98-stability-core" src="./src/stability/estabilidade-v98.js"></script>
-
+<script src="./src/core/renderizadores-oficiais.js"></script>
+<script src="./src/modules/playbooks-studio.js"></script>
+<script src="./src/modules/automacoes-engine.js"></script>
+<script src="./src/modules/lembretes.js"></script>
+<script src="./src/modules/notificacoes.js"></script>
+<script src="./src/navigation/mapa-navegacao.js"></script>
+<script src="./src/settings/configuracoes-seguras.js"></script>
+<script src="./src/settings/personalizacao-real.js"></script>
+<script src="./src/consolidation/consolidacao-visual.js"></script>
 <script src="./src/app.js"></script>
+<script src="./src/settings/personalizacao-total-v98-3.js"></script>
+<script src="./src/ui/premium-cleanup-v98-8.js"></script>
+<script src="./src/core/navigation-owner-v99.js"></script>
+<script type="module" src="./src/v99/main.js"></script>
 </body>
 </html>

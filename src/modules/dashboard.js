@@ -9,7 +9,7 @@
   const DOC = document;
   const $ = (sel, root=DOC) => root.querySelector(sel);
   const $$ = (sel, root=DOC) => Array.from(root.querySelectorAll(sel));
-  const LEADS_KEY = 'outbounder_leads_v5';
+  const LEADS_KEY = 'crm_v99_leads';
   const EVENTS_KEY = 'outbounder_agenda_v1';
   const NOTE_KEY = 'outbounder_notes';
   const PREF_KEY = 'crm_v67_dashboard_widgets';
@@ -46,17 +46,8 @@
   function writeJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function toast(msg,type='success'){try{window.crmToast?window.crmToast(msg,type):showToast(msg,type);}catch(e){console.log(msg);}}
 
-  function getLeads(){
-    try{if(window.crmGetLeads && Array.isArray(window.crmGetLeads())) return window.crmGetLeads();}catch(e){}
-    try{if(Array.isArray(window.leads)) return window.leads;}catch(e){}
-    try{if(typeof leads !== 'undefined' && Array.isArray(leads)) return leads;}catch(e){}
-    return readJSON(LEADS_KEY,[]);
-  }
-  function saveLeadsData(){
-    try{if(typeof window.crmSaveLeads === 'function'){window.crmSaveLeads();return;}}catch(e){}
-    try{if(typeof globalThis.saveLeads === 'function' && globalThis.saveLeads !== saveLeadsData){globalThis.saveLeads();return;}}catch(e){}
-    writeJSON(LEADS_KEY,getLeads());
-  }
+  function getLeads(){try{return window.CRMData?.leads?.all?.()||[]}catch(e){return[]}}
+  function saveLeadsData(){try{return window.CRMData?.leads?.save?.(getLeads(),'dashboard')}catch(e){console.warn('[CRM V99] Falha ao salvar leads do painel',e)}}
   function getEvents(){
     const raw=readJSON(EVENTS_KEY,[]);
     if(!Array.isArray(raw)) return [];
@@ -72,7 +63,7 @@
       notas:e.notas || e.notes || ''
     }));
   }
-  function isOpen(l){return !CLOSED.has(l.etapa || 'Lead');}
+  function isOpen(l){return window.CRMCommercialModel?window.CRMCommercialModel.isOpen(l):!CLOSED.has(l.etapa||l.pipeline||'Lead');}
   function leadId(l){return String(l.id || l.nome || '').trim();}
   function leadById(id){const n=norm(id);return getLeads().find(l=>norm(l.id)===n || norm(l.nome)===n) || null;}
   function openLead(id){
@@ -90,19 +81,22 @@
   function phoneHref(l){let d=String(l?.telefone||'').replace(/\D/g,'');if(!d)return '#';if(!d.startsWith('55'))d='55'+d;return 'https://wa.me/'+d;}
   function score(l){
     try{if(typeof calcScore === 'function') return calcScore(l);}catch(e){}
-    const stage={Lead:10,Contato:30,Proposta:65,Fechado:100,Perdido:0}[l.etapa] || 10;
+    const stage=Number(window.CRMCommercialModel?.stage(l)?.prob ?? ({Lead:10,Contato:30,Proposta:65,Fechado:100,Perdido:0}[l.etapa]||10));
     const pri={Alta:25,'Média':12,Baixa:4}[l.prioridade] || 8;
     const value=Math.min(25,Math.round((Number(l.valor)||0)/1000));
     const recency=Math.max(0,15-daysSince(l.ultimaAtualizacao||l.dataEntrada));
     return Math.max(0,Math.min(100,stage+pri+value+recency));
   }
+  function nextDate(l){const d=l?.proximaData||l?.nextDate||l?.followupData||'';if(/^\d{4}-\d{2}-\d{2}$/.test(String(d)))return String(d);const legacy=String(l?.followup||'');return /^\d{4}-\d{2}-\d{2}$/.test(legacy)?legacy:'';}
+  function nextTime(l){return l?.proximaHora||l?.nextTime||l?.followupHora||'';}
   function statusBadge(l){
-    if(!l.followup) return {txt:'Sem data', cls:'neutral'};
-    const diff=daysDiff(l.followup);
+    const nd=nextDate(l);
+    if(!nd) return {txt:'Sem data', cls:'neutral'};
+    const diff=daysDiff(nd);
     if(diff<0) return {txt:`Vencido ${Math.abs(diff)}d`, cls:'danger'};
     if(diff===0) return {txt:'Hoje', cls:'warning'};
     if(diff<=7) return {txt:`Em ${diff}d`, cls:'info'};
-    return {txt:fmtShort(l.followup), cls:'neutral'};
+    return {txt:fmtShort(nd), cls:'neutral'};
   }
 
   function data(){
@@ -113,26 +107,26 @@
     const events=getEvents();
     const agendaToday=events.filter(e=>e.data===t && e.status!=='feito');
     const agendaWeek=events.filter(e=>e.data>=t && e.data<=week && e.status!=='feito');
-    const overdue=active.filter(l=>l.followup && daysDiff(l.followup)<0).sort((a,b)=>String(a.followup).localeCompare(String(b.followup)));
-    const followToday=active.filter(l=>l.followup && daysDiff(l.followup)===0).sort((a,b)=>score(b)-score(a));
-    const nextWeek=active.filter(l=>l.followup && l.followup>=t && l.followup<=week);
-    const noNext=active.filter(l=>!l.followup && !l.proximaAcao);
-    const stagnant=active.filter(l=>daysSince(l.ultimaAtualizacao||l.dataEntrada)>=7 && !l.followup);
+    const overdue=active.filter(l=>nextDate(l) && daysDiff(nextDate(l))<0).sort((a,b)=>String(nextDate(a)).localeCompare(String(nextDate(b))));
+    const followToday=active.filter(l=>nextDate(l) && daysDiff(nextDate(l))===0).sort((a,b)=>score(b)-score(a));
+    const nextWeek=active.filter(l=>nextDate(l) && nextDate(l)>=t && nextDate(l)<=week);
+    const noNext=active.filter(l=>!nextDate(l) && !l.proximaAcao);
+    const stagnant=active.filter(l=>daysSince(l.ultimaAtualizacao||l.dataEntrada)>=7 && !nextDate(l));
     const risk=active.filter(l=>{
-      if(l.etapa==='Proposta' && (!l.followup || daysDiff(l.followup)<=1)) return true;
-      if(!l.followup && !l.proximaAcao) return true;
+      if((window.CRMCommercialModel?window.CRMCommercialModel.isProposal(l):(l.etapa||l.pipeline)==='Proposta') && (!nextDate(l) || daysDiff(nextDate(l))<=1)) return true;
+      if(!nextDate(l) && !l.proximaAcao) return true;
       if(daysSince(l.ultimaAtualizacao||l.dataEntrada)>=10) return true;
-      if(l.followup && daysDiff(l.followup)<0) return true;
+      if(nextDate(l) && daysDiff(nextDate(l))<0) return true;
       return false;
     }).sort((a,b)=>(Number(b.valor)||0)-(Number(a.valor)||0));
     const hot=active.filter(l=>score(l)>=55).sort((a,b)=>score(b)-score(a));
-    const proposals=active.filter(l=>l.etapa==='Proposta');
-    const won=leads.filter(l=>l.etapa==='Fechado');
-    const pipe=active.filter(l=>l.etapa!=='Fechado').reduce((s,l)=>s+(Number(l.valor)||0),0);
-    const forecast=active.filter(l=>l.etapa!=='Fechado').reduce((s,l)=>s+(Number(l.valor)||0)*(Number(l.probabilidade || ({Lead:10,Contato:30,Proposta:65}[l.etapa]||20))/100),0);
+    const proposals=active.filter(l=>window.CRMCommercialModel?window.CRMCommercialModel.isProposal(l):l.etapa==='Proposta');
+    const won=leads.filter(l=>window.CRMCommercialModel?window.CRMCommercialModel.isWon(l):l.etapa==='Fechado');
+    const pipe=active.filter(l=>window.CRMCommercialModel?!window.CRMCommercialModel.isWon(l):l.etapa!=='Fechado').reduce((s,l)=>s+(Number(l.valor)||0),0);
+    const forecast=active.filter(l=>window.CRMCommercialModel?!window.CRMCommercialModel.isWon(l):l.etapa!=='Fechado').reduce((s,l)=>s+(Number(l.valor)||0)*(Number(l.probabilidade ?? window.CRMCommercialModel?.stage(l)?.prob ?? 20)/100),0);
     const actions=[
-      ...overdue.map(l=>({kind:'overdue',lead:l,title:'Retornar follow-up vencido',sub:`Venceu em ${fmtDate(l.followup)} · ${l.etapa||'Lead'}`,badge:'Crítico',view:'cadencias'})),
-      ...followToday.map(l=>({kind:'today',lead:l,title:l.proximaAcao||'Executar contato de hoje',sub:`Follow-up para hoje · ${l.etapa||'Lead'}`,badge:'Hoje',view:'cadencias'})),
+      ...overdue.map(l=>({kind:'overdue',lead:l,title:'Retornar follow-up vencido',sub:`Venceu em ${fmtDate(nextDate(l))} · ${l.etapa||l.pipeline||'Lead'}`,badge:'Crítico',view:'cadencias'})),
+      ...followToday.map(l=>({kind:'today',lead:l,title:l.proximaAcao||'Executar contato de hoje',sub:`Follow-up para hoje às ${nextTime(l)||'horário não definido'} · ${l.etapa||l.pipeline||'Lead'}`,badge:'Hoje',view:'cadencias'})),
       ...agendaToday.map(e=>({kind:'agenda',event:e,title:e.title||e.tipo,sub:`${e.hora?e.hora+' · ':''}${e.tipo}${e.leadNome?' · '+e.leadNome:''}`,badge:'Agenda',view:'agenda'})),
       ...noNext.map(l=>({kind:'no-next',lead:l,title:'Definir próximo passo',sub:`Sem follow-up marcado · ${l.etapa||'Lead'}`,badge:'Sem ação',view:'leads'})),
       ...hot.map(l=>({kind:'hot',lead:l,title:'Atacar lead quente',sub:`Score ${score(l)} · ${money(l.valor||0)}`,badge:'Quente',view:'leads'}))
@@ -227,7 +221,7 @@
     const title=$('#v67FocusTitle'),txt=$('#v67FocusText');
     if(title&&txt){
       if(d.overdue.length){title.textContent=`Resolver ${d.overdue.length} follow-up${d.overdue.length>1?'s':''} vencido${d.overdue.length>1?'s':''}`;txt.textContent='Comece pelas pendências vencidas antes de abrir novas oportunidades.';}
-      else if(d.followToday.length || d.agendaToday.length){title.textContent=`Executar ${d.followToday.length+d.agendaToday.length} ação${(d.followToday.length+d.agendaToday.length)>1?'ões':''} de hoje`;txt.textContent='A rotina do dia está pronta: siga a fila, registre o resultado e avance o funil.';}
+      else if(d.followToday.length || d.agendaToday.length){const total=d.followToday.length+d.agendaToday.length;title.textContent=`Executar ${total} ${total===1?'ação':'ações'} de hoje`;txt.textContent='A rotina do dia está pronta: siga a fila, registre o resultado e avance o funil.';}
       else if(d.risk.length){title.textContent='Organizar próximos passos';txt.textContent='Não há atraso crítico, mas existem oportunidades abertas sem ação clara.';}
       else{title.textContent='Painel limpo';txt.textContent='Sem urgências críticas. Aproveite para garimpar, cadastrar novos leads ou revisar o pipeline.';}
     }
@@ -248,8 +242,8 @@
     ];
     const rbox=$('#v67RoutineList');if(rbox)rbox.innerHTML=routine.map(x=>`<button class="v67-step" data-v67-go="${esc(x.view)}" type="button"><i>${esc(x.n)}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span></button>`).join('');
     renderRows('v67AgendaToday',d.agendaToday.slice(0,7),'Nenhum compromisso para hoje.',e=>row({event:e,title:e.title||e.tipo,sub:`${e.hora?e.hora+' · ':''}${e.tipo}${e.leadNome?' · '+e.leadNome:''}`,badge:e.prioridade||'Agenda'},{cls:'is-agenda'}));
-    renderRows('v67OverdueList',d.overdue.slice(0,7),'Nenhum follow-up vencido.',l=>{const b=statusBadge(l);return row({lead:l,title:l.proximaAcao||'Retornar contato',sub:`${l.nome} · ${fmtDate(l.followup)} · ${l.etapa||'Lead'}`,badge:b.txt},{cls:'is-danger'});});
-    renderRows('v67RiskList',d.risk.slice(0,7),'Nenhuma oportunidade em risco agora.',l=>{const reason=l.followup&&daysDiff(l.followup)<0?'Follow-up vencido':!l.followup&&!l.proximaAcao?'Sem próximo passo':daysSince(l.ultimaAtualizacao||l.dataEntrada)>=10?'Parado há '+daysSince(l.ultimaAtualizacao||l.dataEntrada)+'d':'Atenção';return row({lead:l,title:l.nome,sub:`${reason} · ${l.etapa||'Lead'} · ${l.responsavel||'Sem responsável'}`,badge:l.prioridade||'Média'},{cls:'is-risk'});});
+    renderRows('v67OverdueList',d.overdue.slice(0,7),'Nenhum follow-up vencido.',l=>{const b=statusBadge(l);return row({lead:l,title:l.proximaAcao||'Retornar contato',sub:`${l.nome} · ${fmtDate(nextDate(l))} ${nextTime(l)||''} · ${l.etapa||l.pipeline||'Lead'}`,badge:b.txt},{cls:'is-danger'});});
+    renderRows('v67RiskList',d.risk.slice(0,7),'Nenhuma oportunidade em risco agora.',l=>{const reason=nextDate(l)&&daysDiff(nextDate(l))<0?'Follow-up vencido':!nextDate(l)&&!l.proximaAcao?'Sem próximo passo':daysSince(l.ultimaAtualizacao||l.dataEntrada)>=10?'Parado há '+daysSince(l.ultimaAtualizacao||l.dataEntrada)+'d':'Atenção';return row({lead:l,title:l.nome,sub:`${reason} · ${l.etapa||'Lead'} · ${l.responsavel||'Sem responsável'}`,badge:l.prioridade||'Média'},{cls:'is-risk'});});
     renderRows('v67HotList',d.hot.slice(0,7),'Nenhum lead quente no momento.',l=>row({lead:l,title:l.nome,sub:`Score ${score(l)} · ${l.etapa||'Lead'} · ${l.cidade||l.origem||'Sem origem'}`,badge:money(l.valor||0)},{cls:'is-hot'}));
     const sbox=$('#v67Shortcuts');if(sbox)sbox.innerHTML=[
       ['Novo lead','novo-lead','primary'],['Leads','leads',''],['Garimpo','garimpo',''],['Follow-ups','cadencias',''],['Agenda','agenda',''],['Pipeline','pipeline',''],['Funil real','funil',''],['Dashboard comercial','dashboard','']
@@ -339,13 +333,6 @@
       if(typeof old === 'function' && !old.__v67Dash){
         const wrapped=function(){const r=old.apply(this,arguments);if(isActive())setTimeout(render,30);return r;};
         wrapped.__v67Dash=true;window.renderAll=wrapped;try{renderAll=wrapped;}catch(e){}
-      }
-    }catch(e){}
-    try{
-      const prev=window.setView || (typeof setView === 'function' ? setView : null);
-      if(typeof prev === 'function' && !prev.__v67Dash){
-        const wrapped=function(view){const r=prev.apply(this,arguments);if(view==='inicio')setTimeout(render,40);return r;};
-        wrapped.__v67Dash=true;window.setView=wrapped;try{setView=wrapped;}catch(e){}
       }
     }catch(e){}
   }

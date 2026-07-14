@@ -4,8 +4,7 @@ if(window.CRMV952RuleEngine) return;
 const D=document;
 const $=(s,r=D)=>r.querySelector(s);
 const $$=(s,r=D)=>Array.from(r.querySelectorAll(s));
-const VERSION='V95.2';
-const LEAD_KEYS=['outbounder_leads_v5','crm_leads','leads','realtalent_leads','crm_v94_leads'];
+const VERSION='Motor de automações';
 const AGENDA_KEY='crm_agenda_events';
 const RULE_KEY='crm_v952_automation_rules';
 const OLD_RULE_KEYS=['crm_v951_automations','crm_v95_automations'];
@@ -39,14 +38,8 @@ function asArray(v){return Array.isArray(v)?v:[]}
 function lower(v){return String(v??'').toLowerCase()}
 function getSettings(){return Object.assign({enabled:true,autoRunOnOpen:true,notifyInsideCRM:true,defaultReturnDays:1,stuckDays:5,noAnswerLimit:3,dailySummaryHour:'09:00'},readJSON(SETTINGS_KEY,{}))}
 function saveSettings(s){writeJSON(SETTINGS_KEY,Object.assign(getSettings(),s||{}))}
-function seedLeads(){return [
- {id:'lead_demo_barbearia',empresa:'Barbearia Alfa',nome:'Barbearia Alfa',telefone:'51999990001',cidade:'Porto Alegre',segmento:'Barbearia',origem:'Garimpo',campanha:'Barbearias POA',prioridade:'Alta',pipelineStage:'Lead',followupStage:'Primeiro contato',nextAction:'Ligar hoje',proximaData:today(),attempts:0,noAnswerAttempts:0,tags:['Garimpo'],history:[]},
- {id:'lead_demo_clinica',empresa:'Clínica Bella',nome:'Clínica Bella',telefone:'51999990002',cidade:'Canoas',segmento:'Estética',origem:'Indicação',campanha:'Prospecção local',prioridade:'Média',pipelineStage:'Proposta',followupStage:'Aguardando resposta',nextAction:'Follow-up de proposta',proximaData:addDays(-1),attempts:2,noAnswerAttempts:1,tags:['Proposta'],history:[]},
- {id:'lead_demo_studio',empresa:'Studio Prime',nome:'Studio Prime',telefone:'',cidade:'Gravataí',segmento:'Beleza',origem:'Garimpo',campanha:'Sem telefone',prioridade:'Baixa',pipelineStage:'Lead',followupStage:'Dados incompletos',nextAction:'',proximaData:'',attempts:0,noAnswerAttempts:0,tags:['Incompleto'],history:[]}
-]}
-function findLeadKey(){for(const k of LEAD_KEYS){const v=readJSON(k,null);if(Array.isArray(v))return k}return LEAD_KEYS[0]}
-function getLeads(){let key=findLeadKey();let leads=readJSON(key,null);if(!Array.isArray(leads)||!leads.length){leads=seedLeads();writeJSON(key,leads)}let touched=false;leads=leads.map((l,i)=>{const lead=Object.assign({},l);if(!lead.id){lead.id=uid('lead');touched=true}if(!lead.history)lead.history=[];if(!Array.isArray(lead.tags))lead.tags=lead.tags?[String(lead.tags)]:[];return lead});if(touched)writeJSON(key,leads);return {key,leads}}
-function setLeads(key,leads){writeJSON(key,leads)}
+function getLeads(){const list=window.CRMData?.leads?.all?.()||[];return {key:'crm_v99_leads',leads:Array.isArray(list)?list:[]}}
+function setLeads(key,leads){return window.CRMData?.leads?.save?.(leads,'automacoes')||leads}
 function leadName(lead){return lead.empresa||lead.nome||lead.name||lead.company||'Lead sem nome'}
 function phone(lead){return lead.telefone||lead.phone||lead.whatsapp||''}
 function getField(lead,field){
@@ -96,7 +89,7 @@ function saveRules(rules){writeJSON(RULE_KEY,rules)}
 function getHistory(){return readJSON(HIST_KEY,[])}
 function saveHistory(h){writeJSON(HIST_KEY,h.slice(0,160))}
 function addHistory(entry){const h=getHistory();h.unshift(Object.assign({id:uid('hist'),at:nowISO(),version:VERSION},entry));saveHistory(h)}
-function addNotification(title,body,leadId){const n=readJSON(NOTIF_KEY,[]);n.unshift({id:uid('notif'),title,body,leadId,createdAt:nowISO(),read:false,source:'Automação V95.2'});writeJSON(NOTIF_KEY,n.slice(0,80))}
+function addNotification(title,body,leadId){const n=readJSON(NOTIF_KEY,[]);n.unshift({id:uid('notif'),title,body,leadId,createdAt:nowISO(),read:false,source:'Automação'});writeJSON(NOTIF_KEY,n.slice(0,80))}
 function saveUndo(key,leads,label){writeJSON(UNDO_KEY,{key,label,leads,createdAt:nowISO()})}
 function applyAction(lead,action,eventType){const type=action.type;const val=action.value||'';let msg='';lead.history=asArray(lead.history);lead.tags=asArray(lead.tags);
  if(type==='create_call_today'){lead.nextAction=val||'Ligar hoje';lead.proximaData=today();lead.followupChannel='Ligação';msg='criou ligação para hoje'}
@@ -106,7 +99,7 @@ function applyAction(lead,action,eventType){const type=action.type;const val=act
  if(type==='add_tag'){if(val&&!lead.tags.includes(val))lead.tags.push(val);msg='aplicou tag '+val}
  if(type==='set_priority'){lead.prioridade=val||'Média';lead.priority=lead.prioridade;msg='alterou prioridade para '+lead.prioridade}
  if(type==='suggest_playbook'){lead.suggestedPlaybook=val||'Playbook sugerido';msg='sugeriu Playbook'}
- if(type==='create_agenda_task'){const agenda=readJSON(AGENDA_KEY,[]);if(Array.isArray(agenda)){agenda.unshift({id:uid('agenda'),leadId:lead.id,title:val||'Tarefa automática',date:val&&/2 dias/i.test(val)?addDays(2):(lead.proximaData||tomorrow()),createdAt:nowISO(),source:'Automação V95.2'});writeJSON(AGENDA_KEY,agenda.slice(0,200));msg='criou tarefa na Agenda'}}
+ if(type==='create_agenda_task'){const agenda=readJSON(AGENDA_KEY,[]);if(Array.isArray(agenda)){agenda.unshift({id:uid('agenda'),leadId:lead.id,title:val||'Tarefa automática',date:val&&/2 dias/i.test(val)?addDays(2):(lead.proximaData||tomorrow()),createdAt:nowISO(),source:'Automação'});writeJSON(AGENDA_KEY,agenda.slice(0,200));msg='criou tarefa na Agenda'}}
  if(type==='mark_at_risk'){lead.risk=true;lead.riskReason=val||'Automação';msg='marcou como em risco'}
  if(type==='require_loss_reason'){lead.lossReasonRequired=true;lead.lossReason=lead.lossReason||'';msg='marcou motivo de perda como obrigatório'}
  if(type==='close_followup'){lead.followupStage=val||'Encerrado';lead.followupClosed=true;msg='encerrou Follow-up'}
@@ -115,7 +108,7 @@ function applyAction(lead,action,eventType){const type=action.type;const val=act
  if(eventType==='call_result_no_answer'){lead.attempts=Number(lead.attempts||lead.contatos||0)+1;lead.noAnswerAttempts=Number(lead.noAnswerAttempts||0)+1;lead.lastContactResult='Não atendeu';lead.lastContactAt=nowISO()}
  if(eventType==='call_result_answered'){lead.attempts=Number(lead.attempts||lead.contatos||0)+1;lead.noAnswerAttempts=0;lead.lastContactResult='Atendeu';lead.lastContactAt=nowISO()}
  if(eventType==='call_result_callback'){lead.attempts=Number(lead.attempts||lead.contatos||0)+1;lead.lastContactResult='Pediu retorno';lead.lastContactAt=nowISO()}
- if(type!=='create_notification')lead.history.unshift({id:uid('evt'),type:'automation',event:eventType,action:type,note:msg||label(actionLabels,type),date:nowISO(),source:'V95.2'});
+ if(type!=='create_notification')lead.history.unshift({id:uid('evt'),type:'automation',event:eventType,action:type,note:msg||label(actionLabels,type),date:nowISO(),source:'Automação'});
  return msg||label(actionLabels,type)}
 function eventCandidates(eventType,payload){const store=getLeads();let leads=store.leads;let candidates=[];if(payload&&payload.lead){const id=payload.lead.id;const idx=leads.findIndex(l=>l.id===id);if(idx>=0)candidates=[leads[idx]];else candidates=[Object.assign({},payload.lead)]}else if(payload&&payload.leadId){candidates=leads.filter(l=>l.id===payload.leadId)}else{
  candidates=leads.filter(l=>{
@@ -147,7 +140,7 @@ function toast(msg,small){let old=$('.v952-toast');if(old)old.remove();const t=D
 function describeRule(rule){const trig=triggerLabels[rule.trigger]||rule.trigger||'evento manual';const conds=asArray(rule.conditions).filter(c=>c.field).map(c=>(fieldLabels[c.field]||c.field)+' '+(c.op||'é')+' '+(c.value||''));const acts=asArray(rule.actions).map(a=>actionLabels[a.type]||a.type);let text='Quando '+trig.toLowerCase();if(conds.length)text+=' e '+conds.join(' + ');if(acts.length)text+=', o CRM vai '+acts.join(', ').toLowerCase()+'.';return text}
 function filteredRules(){const q=lower(searchTerm);return getRules().filter(r=>(activeCategory==='Todos'||r.category===activeCategory)&&(!q||lower(r.name+' '+r.desc+' '+r.category+' '+describeRule(r)).includes(q)))}
 function layout(){const st=stats();return `<div class="v952-wrap">
-<section class="v952-hero"><div><div class="v952-eyebrow">${VERSION} · Motor de regras interno</div><h1 class="v952-title">Automações que realmente mexem no CRM</h1><p class="v952-sub">Agora cada regra segue a lógica: evento, gatilho, condições, ações e histórico. As automações usam o mesmo lead ID e atualizam Leads, Ligações, Follow-up, Pipeline, Agenda, Playbooks e Métricas pelo localStorage.</p><div class="v952-hero-actions"><button class="v952-btn ghost" data-tab="recipes">Usar receita pronta</button><button class="v952-btn primary" data-new-rule>Criar regra</button><button class="v952-btn ghost" data-tab="engine">Ver motor interno</button><button class="v952-btn ghost" data-run-checks>Rodar verificações agora</button></div></div><div class="v952-engine-card"><div class="v952-engine-row"><span>Motor</span><b><span class="v952-dot"></span> Ativo</b></div><div class="v952-engine-row"><span>Execução</span><b>Dentro do CRM</b></div><div class="v952-engine-row"><span>Eventos monitorados</span><b>${Object.keys(triggerLabels).length}</b></div><div class="v952-engine-row"><span>Notificações internas</span><b>${st.notifications}</b></div></div></section>
+<section class="v952-hero"><div><div class="v952-eyebrow">Motor de regras interno</div><h1 class="v952-title">Automações que realmente mexem no CRM</h1><p class="v952-sub">Agora cada regra segue a lógica: evento, gatilho, condições, ações e histórico. As automações usam o mesmo lead ID e atualizam Leads, Ligações, Follow-up, Pipeline, Agenda, Playbooks e Métricas pelo localStorage.</p><div class="v952-hero-actions"><button class="v952-btn ghost" data-tab="recipes">Usar receita pronta</button><button class="v952-btn primary" data-new-rule>Criar regra</button><button class="v952-btn ghost" data-tab="engine">Ver motor interno</button><button class="v952-btn ghost" data-run-checks>Rodar verificações agora</button></div></div><div class="v952-engine-card"><div class="v952-engine-row"><span>Motor</span><b><span class="v952-dot"></span> Ativo</b></div><div class="v952-engine-row"><span>Execução</span><b>Dentro do CRM</b></div><div class="v952-engine-row"><span>Eventos monitorados</span><b>${Object.keys(triggerLabels).length}</b></div><div class="v952-engine-row"><span>Notificações internas</span><b>${st.notifications}</b></div></div></section>
 <section class="v952-stats"><div class="v952-stat"><strong>${st.active}</strong><span>automações ativas</span></div><div class="v952-stat"><strong>${st.executedToday}</strong><span>eventos hoje</span></div><div class="v952-stat"><strong>${st.affectedToday}</strong><span>leads impactados hoje</span></div><div class="v952-stat"><strong>${st.overdue}</strong><span>follow-ups vencidos</span></div><div class="v952-stat"><strong>${st.withoutNext}</strong><span>sem próxima ação</span></div></section>
 <nav class="v952-tabs">${['overview','recipes','rules','builder','engine','history','settings'].map(t=>`<button class="v952-tab ${activeTab===t?'active':''}" data-tab="${t}">${tabName(t)}</button>`).join('')}</nav>
 ${renderTab()}
@@ -196,19 +189,16 @@ function handleRuleAction(btn,id){let rules=getRules();const r=rules.find(x=>x.i
  if(btn.dataset.runRule){const res=runRule(r,r.trigger||'manual_run',{}, {force:true});toast('Automação executada',res.affected+' lead(s) impactado(s).');render();return}
  if(btn.dataset.copyRule){builderDraft=Object.assign({},r,{id:null,name:r.name+' — cópia'});activeTab='builder';render();return}
  if(btn.dataset.editRule){builderDraft=JSON.parse(JSON.stringify(r));activeTab='builder';render();return}
- if(btn.dataset.deleteRule){if(confirm('Excluir esta automação?')){saveRules(rules.filter(x=>x.id!==id));toast('Automação excluída.');render()}return}
+ if(btn.dataset.deleteRule){window.CRMDialog?.confirm('Excluir esta automação?',{title:'Excluir automação',danger:true,confirmLabel:'Excluir'}).then(ok=>{if(ok){saveRules(rules.filter(x=>x.id!==id));toast('Automação excluída.');render()}});return}
 }
 function saveSettingsFromScreen(){const root=$('#automacoes');const s=getSettings();$$('[data-setting]',root).forEach(el=>{let v=el.type==='checkbox'?el.checked:el.value;if(el.type==='number')v=Number(v);s[el.dataset.setting]=v});saveSettings(s);toast('Configurações salvas.')}
-function render(){const el=$('#automacoes');if(!el)return;D.body.classList.add('v952-automations-ready');el.className='view grid-view v952-automations-view';el.innerHTML=layout();bindLocal(el)}
+function render(){const el=$('#automacoes');if(!el)return;const active=el.classList.contains('active');D.body.classList.add('v952-automations-ready');el.className='view grid-view v952-automations-view'+(active?' active':'');el.innerHTML=layout();bindLocal(el)}
 function setOnlyView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('[data-view],[data-go],[data-go-view]').forEach(b=>{const v=b.getAttribute('data-view')||b.getAttribute('data-go')||b.getAttribute('data-go-view');if(v)b.classList.toggle('active',v===id)})}
 function route(){setOnlyView('automacoes');const tt=$('#topbarTitle'),ts=$('#topbarSub');if(tt)tt.textContent='Automações';if(ts)ts.textContent='Motor de regras interno, receitas e histórico';render()}
-function bindGlobal(){D.addEventListener('click',function(e){const nav=e.target.closest('[data-view="automacoes"],[data-go="automacoes"],[data-go-view="automacoes"]');if(nav){e.preventDefault();/* V97.1: removed e.stopImmediatePropagation() to avoid blocking button handlers */route();return}},true);
- D.addEventListener('click',function(e){const txt=lower((e.target.closest('button,a')||e.target).textContent||'');setTimeout(()=>{if(/não atendeu|nao atendeu/.test(txt))emit('call_result_no_answer',{});else if(/pediu retorno/.test(txt))emit('call_result_callback',{});else if(/atendeu|interessado/.test(txt))emit('call_result_answered',{});else if(/proposta/.test(txt)&&/enviar|enviada|mover/.test(txt))emit('pipeline_changed_to_proposal',{});else if(/fechado|ganho/.test(txt))emit('pipeline_won',{});else if(/perdido/.test(txt))emit('pipeline_lost',{})},120)},false);
+function bindGlobal(){
  window.addEventListener('crm:automation:event',e=>{if(e.detail&&e.detail.type)emit(e.detail.type,e.detail.payload||{})});
  window.addEventListener('storage',e=>{if(LEAD_KEYS.includes(e.key))setTimeout(()=>emit('lead_updated',{}),160)});
 }
-const previousSetView=window.setView;
-window.setView=function(view){if(String(view)==='automacoes'){route();return}if(typeof previousSetView==='function')return previousSetView.apply(this,arguments);setOnlyView(String(view))};
 function boot(){if(booted)return;booted=true;D.body&&D.body.classList.add('v952-automations-ready');getRules();bindGlobal();window.renderAutomations=render;window.CRMV95Automations=Object.assign(window.CRMV95Automations||{},{render,route,runMatchingRules,emit,version:VERSION});window.CRMV952RuleEngine={version:VERSION,render,route,emit,runMatchingRules,runRule,testRule,getRules,saveRules,runSystemChecks,undoLast};if(window.CRMV94Official&&window.CRMV94Official.map)window.CRMV94Official.map.automacoes='V95.2 Motor de Regras Interno';setTimeout(runSystemChecks,520);const active=(location.hash||'').replace('#','')||($('.view.active')&&$('.view.active').id)||'';if(active==='automacoes')route();else setTimeout(()=>{const a=$('#automacoes');if(a&&(/^\s*$|Carregando módulo|Automações de funil/i.test(a.textContent||'')))render()},320)}
 if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot);else boot();
 })();

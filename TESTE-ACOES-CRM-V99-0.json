@@ -1,0 +1,196 @@
+{
+  "version": "V99.0",
+  "startup": {
+    "errors": [],
+    "warnings": []
+  },
+  "globals": {
+    "navigation": true,
+    "eventHub": true,
+    "dialog": true,
+    "canonical": true,
+    "data": true,
+    "kernel": true,
+    "store": true,
+    "backup": true,
+    "supabase": true,
+    "calls": true,
+    "setViewFrozen": true
+  },
+  "routes": {
+    "inicio": {
+      "active": [
+        "inicio"
+      ],
+      "content": 2116,
+      "lifecycle": true
+    },
+    "leads": {
+      "active": [
+        "leads"
+      ],
+      "content": 722,
+      "lifecycle": true
+    },
+    "garimpo": {
+      "active": [
+        "garimpo"
+      ],
+      "content": 748,
+      "lifecycle": true
+    },
+    "pipeline": {
+      "active": [
+        "pipeline"
+      ],
+      "content": 2615,
+      "lifecycle": true
+    },
+    "cadencias": {
+      "active": [
+        "cadencias"
+      ],
+      "content": 1245,
+      "lifecycle": true
+    },
+    "automacoes": {
+      "active": [
+        "automacoes"
+      ],
+      "content": 1486,
+      "lifecycle": true
+    },
+    "agenda": {
+      "active": [
+        "agenda"
+      ],
+      "content": 1382,
+      "lifecycle": true
+    },
+    "ligacoes": {
+      "active": [
+        "ligacoes"
+      ],
+      "content": 790,
+      "lifecycle": true
+    },
+    "metas": {
+      "active": [
+        "metas"
+      ],
+      "content": 2345,
+      "lifecycle": true
+    },
+    "playbooks": {
+      "active": [
+        "playbooks"
+      ],
+      "content": 1210,
+      "lifecycle": true
+    },
+    "metricas": {
+      "active": [
+        "metricas"
+      ],
+      "content": 699,
+      "lifecycle": true
+    },
+    "configuracoes": {
+      "active": [
+        "configuracoes"
+      ],
+      "content": 4547,
+      "lifecycle": true
+    }
+  },
+  "actions": {
+    "navigationSingle": {
+      "changes": 1,
+      "active": [
+        "pipeline"
+      ]
+    },
+    "pipelineFilter": {
+      "found": true,
+      "before": null,
+      "after": "false"
+    },
+    "callResult": {
+      "history": 1,
+      "lastResult": "Atendeu"
+    }
+  },
+  "data": {
+    "before": 2,
+    "created": true,
+    "updatedCity": "Pelotas",
+    "afterCreate": 3,
+    "deleted": true,
+    "canonicalPresent": true,
+    "aliasesEqual": true
+  },
+  "kernel": {
+    "version": "99.0.0",
+    "store": {
+      "ok": true,
+      "mode": "local",
+      "storage": "localStorage",
+      "protectedKeys": 0,
+      "at": "2026-07-14T03:25:03.427Z",
+      "remote": null
+    },
+    "supabase": {
+      "connected": false,
+      "authenticated": false,
+      "userEmail": "",
+      "userId": "",
+      "tenantId": "",
+      "workspaceId": "",
+      "mode": "local",
+      "table": "crm_records",
+      "url": "",
+      "configured": false,
+      "ok": false,
+      "error": "Supabase não conectado."
+    },
+    "lifecycle": {
+      "current": "ligacoes",
+      "registered": [
+        "inicio",
+        "leads",
+        "novo-lead",
+        "garimpo",
+        "pipeline",
+        "cadencias",
+        "automacoes",
+        "agenda",
+        "ligacoes",
+        "chat",
+        "metas",
+        "playbooks",
+        "metricas",
+        "configuracoes"
+      ]
+    },
+    "leads": 2
+  },
+  "backup": {
+    "records": 23,
+    "valid": true,
+    "tamperRejected": true
+  },
+  "automation": {
+    "falsePositiveCount": 0,
+    "explicitCount": 1
+  },
+  "layout": {
+    "active": [
+      "configuracoes"
+    ],
+    "backupPanel": true,
+    "supabasePanel": true,
+    "duplicateIds": [],
+    "inlineOnclick": 0
+  },
+  "ok": true
+}

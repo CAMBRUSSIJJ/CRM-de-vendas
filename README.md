@@ -1,41 +1,66 @@
-# CRM V98.1 — Modularização Estrutural
+# RealTalent CRM V99.0
 
-Esta versão preserva o comportamento da V98, mas separa o sistema em arquivos físicos por responsabilidade.
+Versão de consolidação estrutural com núcleo modular, backup validado e integração híbrida com Supabase.
 
-## Uso direto
+## Executar
 
-Abra `index.html` no Chrome ou Edge dentro da pasta extraída. No Windows, também pode usar `ABRIR-CRM.bat`.
+- Windows: abra `ABRIR-CRM.bat`.
+- Desenvolvimento: `npm run dev`.
+- Build: `npm run build`.
+- HTML único: `npm run standalone`.
 
-A pasta `standalone` contém uma versão HTML única para conferência e backup.
+## Arquitetura V99
 
-## Desenvolvimento
+- `CRMData`: API síncrona canônica para os módulos existentes.
+- `CRMKernelV99`: núcleo ES Module com repositório, adaptadores, transações e ciclo de vida.
+- `LocalStorageAdapter`: modo local padrão, excluindo sessões e configuração do Supabase dos backups.
+- `SupabaseAdapter`: persistência multiworkspace na tabela `crm_records`, isolada por `tenant_id`.
+- `SupabaseConnectionManager`: conexão, autenticação, seleção de workspace e sincronização.
+- `CRMBackupService`: backup versionado, checksum, validação e restauração.
+- `CRMNavigationV990`: proprietário único da navegação.
+
+## Configurar o Supabase
+
+1. Crie um projeto no Supabase.
+2. Abra o SQL Editor e execute `supabase/schema.sql`.
+3. Execute `supabase/VERIFICAR-INSTALACAO.sql`.
+4. Em Authentication, mantenha e-mail e senha habilitados.
+5. Abra o CRM e acesse `Configurações → Supabase`.
+6. Informe a Project URL e a publishable/anon key.
+7. Crie ou acesse uma conta.
+8. Crie um workspace e envie os dados locais para a nuvem.
+
+Nunca use a chave `service_role` ou uma secret key no navegador. O painel rejeita essas chaves e o banco usa RLS para limitar cada conta aos workspaces em que ela é membro.
+
+O modo atual é híbrido: a interface continua operando com armazenamento local e permite enviar ou recuperar uma cópia completa do workspace online. A sincronização trabalha por chave de registro e ainda não faz mesclagem colaborativa de campos; em conflito, o último envio daquela chave prevalece. Isso preserva compatibilidade com os módulos históricos enquanto a migração assíncrona é concluída.
+
+## Objetos do banco
+
+- `crm_profiles`;
+- `crm_tenants`;
+- `crm_memberships`;
+- `crm_records`;
+- `crm_create_tenant`;
+- políticas RLS por workspace;
+- proteção contra remoção do último proprietário;
+- bloqueio de alteração direta do proprietário principal e de `updated_by` forjado.
+
+## Arquivos do Supabase
+
+- `supabase/schema.sql`: tabelas, funções, papéis e políticas RLS.
+- `supabase/VERIFICAR-INSTALACAO.sql`: consultas para conferir a instalação.
+- `src/config/runtime-config.js`: configuração opcional para implantação já conectada.
+- `config/supabase-config.example.js`: exemplo de configuração.
+- `SUPABASE-SETUP.md`: instruções completas.
+
+## Validação
 
 ```bash
-npm install
-npm run dev
-```
-
-Para gerar a versão de produção:
-
-```bash
+npm run check
+npm run audit
+npm run test:kernel
+npm run test:supabase
+npm run test:actions
 npm run build
+npm run standalone
 ```
-
-A saída pronta para publicação fica em `dist/`.
-
-## Estrutura
-
-- `src/core`: inicialização, dados-base, eventos, estado, roteamento e renderizadores oficiais.
-- `src/modules`: Pipeline, Follow-ups, Agenda, Metas, Automação, notificações e demais áreas.
-- `src/data`: armazenamento local e interface `CRMStore`, preparada para adaptação ao Supabase.
-- `src/navigation`: mapa e personalização da navegação.
-- `src/settings`: configurações e personalização.
-- `src/stability`: proteções contra sobreposição, loading infinito e disputas de renderização.
-- `src/styles`: CSS separado por núcleo, módulos, navegação, configurações e estabilidade.
-- `dist`: versão compilada pronta para hospedagem.
-- `standalone`: HTML único da V98.1.
-- `backup`: HTML único da V98 anterior preservado.
-
-## Dados
-
-As mesmas chaves do `localStorage` foram mantidas. A modularização não exige migração e não apaga a base existente.

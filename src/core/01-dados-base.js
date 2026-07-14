@@ -7,9 +7,9 @@ const DEFAULT_LEADS=[
   {nome:'AgroSul',segmento:'Consultoria Rural',responsavel:'Pedro Souza',telefone:'(54) 99234-5678',email:'pedro@agrosul.com.br',etapa:'Fechado',prioridade:'Baixa',valor:12000,dataEntrada:'2026-05-28',origem:'Indicação',followup:'',obs:'Implantação em julho. Contrato assinado.',ultimaAtualizacao:'2026-06-18',motivoPerda:''},
   {nome:'Franquia Delta',segmento:'Franquias',responsavel:'Mariana Costa',telefone:'(51) 91234-8765',email:'mariana@franquiadelta.com',etapa:'Lead',prioridade:'Alta',valor:4300,dataEntrada:'2026-06-20',origem:'Outbound',followup:'2026-06-29',obs:'Primeiro contato no WhatsApp. Aguardando retorno.',ultimaAtualizacao:'2026-06-20',motivoPerda:''}
 ];
-const SK='outbounder_leads_v5',EK='outbounder_agenda_v1',NK='outbounder_notes',AK='outbounder_automations_v1';
-function loadLeads(){try{const s=localStorage.getItem(SK);return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_LEADS));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_LEADS));}}
-function saveLeads(){try{localStorage.setItem(SK,JSON.stringify(leads));}catch(e){}}
+const SK='crm_v99_leads',EK='outbounder_agenda_v1',NK='outbounder_notes',AK='outbounder_automations_v1';
+function loadLeads(){try{const list=window.CRMData?.leads?.all?.();return Array.isArray(list)&&list.length?list:JSON.parse(JSON.stringify(DEFAULT_LEADS));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_LEADS));}}
+function saveLeads(){try{return window.CRMData?.leads?.save?.(leads,'legacy-core-v99')}catch(e){console.warn('[CRM V99] Falha ao salvar leads',e)}}
 const leads=loadLeads();
 // API leve para módulos posteriores sem duplicar estado.
 window.crmGetLeads=()=>leads;
@@ -70,7 +70,8 @@ __crm971El('tlQuickBtns').innerHTML=[
 __crm971El('tlSendBtn').innerHTML=ICON_PLUS;
 function applyStageChange(lead,novaEtapa,extra){
   const antiga=lead.etapa;
-  lead.etapa=novaEtapa;lead.ultimaAtualizacao=todayStr();
+  if(window.CRMStageRegistry?.assignStage) window.CRMStageRegistry.assignStage(lead,novaEtapa); else lead.etapa=novaEtapa;
+  lead.ultimaAtualizacao=todayStr();
   if(extra) Object.assign(lead,extra);
   if(antiga!==novaEtapa){
     addAtividade(lead.nome,'Etapa',`${antiga||'—'} → ${novaEtapa}`);
@@ -79,9 +80,9 @@ function applyStageChange(lead,novaEtapa,extra){
 }
 
 function calcScore(l){
-  const sp={Lead:10,Contato:25,Proposta:50,Fechado:100,Perdido:0};
+  const sp=window.CRMStageRegistry?.resolveStage?.(l,{create:true})?.prob ?? {Lead:10,Contato:25,Proposta:50,Fechado:100,Perdido:0}[l.etapa] ?? 0;
   const pp={Alta:30,Média:15,Baixa:5};
-  return (sp[l.etapa]||0)+(pp[l.prioridade]||0)+Math.min(40,Math.round((l.valor||0)/1000))+Math.max(0,20-daysSince(l.ultimaAtualizacao||l.dataEntrada)*2);
+  return (Number(sp)||0)+(pp[l.prioridade]||0)+Math.min(40,Math.round((l.valor||0)/1000))+Math.max(0,20-daysSince(l.ultimaAtualizacao||l.dataEntrada)*2);
 }
 function showToast(msg,type=''){
   const t=document.getElementById('toast');
@@ -244,8 +245,8 @@ function openDetail(nome){
   const ex=document.getElementById('dExtra');
   if(ex) ex.innerHTML=`${l.origem?`<div class="dp-field"><label>Origem</label><p>${originTag(l.origem)}</p></div>`:''}${l.cidade?`<div class="dp-field"><label>Cidade</label><p>${l.cidade}</p></div>`:''}${l.produtoInteresse?`<div class="dp-field"><label>Produto/serviço</label><p>${l.produtoInteresse}</p></div>`:''}${l.decisor?`<div class="dp-field"><label>Decisor</label><p>${l.decisor}</p></div>`:''}${l.canalPreferido?`<div class="dp-field"><label>Canal preferido</label><p>${l.canalPreferido}</p></div>`:''}${l.probabilidade?`<div class="dp-field"><label>Probabilidade</label><p>${l.probabilidade}%</p></div>`:''}${l.followup?`<div class="dp-field"><label>Follow-up</label><p style="${isOverdue(l.followup)?'color:#dc2626;font-weight:600':''}">${ICON_CALENDAR} ${fmtDate(l.followup)}${isOverdue(l.followup)?' '+ICON_ALERT:''}</p></div>`:''}${l.proximaAcao?`<div class="dp-field full"><label>Próxima ação</label><p>${l.proximaAcao}</p></div>`:''}${l.dorPrincipal?`<div class="dp-field full"><label>Dor principal</label><p>${l.dorPrincipal}</p></div>`:''}${l.tags?`<div class="dp-field full"><label>Tags</label><p>${l.tags}</p></div>`:''}${l.motivoPerda?`<div class="dp-field full"><label>Motivo da perda</label><p style="color:#dc2626">${l.motivoPerda}</p></div>`:''}${l.ultimaAtualizacao?`<div class="dp-field"><label>Última atualização</label><p>${fmtDate(l.ultimaAtualizacao)}</p></div>`:''}`;
   renderTimeline(nome);
-  __crm971El('dEditBtn').onclick=()=>{closeDetail();openModal(l);};
-  __crm971El('dDeleteBtn').onclick=()=>{leads.splice(leads.findIndex(x=>x.nome===l.nome),1);saveLeads();closeDetail();renderAll();showToast('Lead excluído');};
+  __crm971El('dEditBtn').dataset.leadAction='edit';
+  __crm971El('dDeleteBtn').dataset.leadAction='delete';
   detBack.classList.remove('hidden');
 }
 function closeDetail(){detBack.classList.add('hidden');}
@@ -284,20 +285,20 @@ function renderLeadsTable(){
     const sc=calcScore(l),fu=l.followup&&isOverdue(l.followup),sel=selLeads.has(l.nome);
     const tel=l.telefone||'',em=l.email||'',wn=tel.replace(/[^0-9]/g,'');
     return `<tr data-nome="${l.nome}" class="${sel?'selected-row':''}">
-      <td style="width:36px" onclick="event.stopPropagation()"><input type="checkbox" class="lead-cb" data-nome="${l.nome}" ${sel?'checked':''}></td>
+      <td style="width:36px" data-stop-propagation="1"><input type="checkbox" class="lead-cb" data-nome="${l.nome}" ${sel?'checked':''}></td>
       <td style="text-align:center"><span class="score-pill ${scoreCls(sc)}">${sc}</span></td>
       <td><div style="font-weight:600;font-size:13px">${l.nome}</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">${l.origem?originTag(l.origem):''}</div></td>
       <td>${l.segmento||'—'}</td>
       <td>${stageTag(l.etapa)}</td>
       <td>${priorityTag(l.prioridade||'Média')}</td>
       <td><div style="display:flex;gap:4px">
-        ${tel?`<a href="https://wa.me/55${wn}" target="_blank" onclick="event.stopPropagation()" class="row-action wa">${ICON_WHATSAPP}</a>`:''}
-        ${tel?`<a href="tel:${tel}" onclick="event.stopPropagation()" class="row-action">${ICON_CALL}</a>`:''}
-        ${em?`<a href="mailto:${em}" onclick="event.stopPropagation()" class="row-action">${ICON_MAIL}</a>`:''}
+        ${tel?`<a href="https://wa.me/55${wn}" target="_blank" data-stop-propagation="1" class="row-action wa">${ICON_WHATSAPP}</a>`:''}
+        ${tel?`<a href="tel:${tel}" data-stop-propagation="1" class="row-action">${ICON_CALL}</a>`:''}
+        ${em?`<a href="mailto:${em}" data-stop-propagation="1" class="row-action">${ICON_MAIL}</a>`:''}
       </div></td>
       <td style="${fu?'color:#dc2626;font-weight:600':''}">${l.followup?ICON_CALENDAR+' '+fmtDate(l.followup)+(fu?' '+ICON_ALERT:''):'—'}</td>
       <td style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600">${money(l.valor)}</td>
-      <td onclick="event.stopPropagation()"><div class="row-actions"><button class="row-action primary edit-lead-btn" data-nome="${l.nome}">${ICON_EDIT}</button></div></td>
+      <td data-stop-propagation="1"><div class="row-actions"><button class="row-action primary edit-lead-btn" data-nome="${l.nome}">${ICON_EDIT}</button></div></td>
     </tr>`;
   }).join('');
   if(!tbody.innerHTML) tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-3)">Nenhum lead encontrado</td></tr>`;
@@ -322,7 +323,7 @@ document.querySelectorAll('[data-sort]').forEach(th=>th.addEventListener('click'
 __crm971El('selectAll').addEventListener('change',e=>{filteredLeads().forEach(l=>e.target.checked?selLeads.add(l.nome):selLeads.delete(l.nome));renderLeadsTable();updateBulkBar();});
 // Bulk
 __crm971El('bulkClearBtn').addEventListener('click',()=>{selLeads.clear();renderLeadsTable();updateBulkBar();});
-__crm971El('bulkDeleteBtn').addEventListener('click',()=>{if(!confirm(`Excluir ${selLeads.size} lead(s)?`))return;selLeads.forEach(nome=>{const i=leads.findIndex(l=>l.nome===nome);if(i>-1)leads.splice(i,1);});selLeads.clear();saveLeads();renderAll();updateBulkBar();showToast('Leads excluídos');});
+__crm971El('bulkDeleteBtn').addEventListener('click',()=>{window.CRMDialog?.confirm(`Excluir ${selLeads.size} lead(s)?`,{title:'Excluir leads',danger:true,confirmLabel:'Excluir'}).then(ok=>{if(!ok)return;selLeads.forEach(nome=>{const i=leads.findIndex(l=>l.nome===nome);if(i>-1)leads.splice(i,1);});selLeads.clear();saveLeads();renderAll();updateBulkBar();showToast('Leads excluídos');});});
 const bsb=document.getElementById('bulkStageBackdrop');
 __crm971El('bulkStageBtn').addEventListener('click',()=>bsb.classList.remove('hidden'));
 __crm971El('bulkStageClose').addEventListener('click',()=>bsb.classList.add('hidden'));
@@ -411,12 +412,12 @@ function renderClientTable(){
 
 // ══ KPIs & OVERDUE ══
 function renderKPIs(){
-  const active=leads.filter(l=>l.etapa!=='Perdido');
-  const prop=active.filter(l=>l.etapa==='Proposta').length;
-  const clos=active.filter(l=>l.etapa==='Fechado').length;
-  const perdidos=leads.filter(l=>l.etapa==='Perdido').length;
-  const pipeVal=active.filter(l=>l.etapa!=='Fechado').reduce((a,l)=>a+(l.valor||0),0);
-  const closVal=active.filter(l=>l.etapa==='Fechado').reduce((a,l)=>a+(l.valor||0),0);
+  const active=leads.filter(l=>window.CRMCommercialModel? !window.CRMCommercialModel.isLost(l) : l.etapa!=='Perdido');
+  const prop=active.filter(l=>window.CRMCommercialModel? window.CRMCommercialModel.isProposal(l) : l.etapa==='Proposta').length;
+  const clos=active.filter(l=>window.CRMCommercialModel? window.CRMCommercialModel.isWon(l) : l.etapa==='Fechado').length;
+  const perdidos=leads.filter(l=>window.CRMCommercialModel? window.CRMCommercialModel.isLost(l) : l.etapa==='Perdido').length;
+  const pipeVal=active.filter(l=>window.CRMCommercialModel? !window.CRMCommercialModel.isWon(l) : l.etapa!=='Fechado').reduce((a,l)=>a+(l.valor||0),0);
+  const closVal=active.filter(l=>window.CRMCommercialModel? window.CRMCommercialModel.isWon(l) : l.etapa==='Fechado').reduce((a,l)=>a+(l.valor||0),0);
   const conv=active.length?Math.round((clos/active.length)*100):0;
   const ticket=clos?closVal/clos:0;
   [['kpiLeads',active.length],['kpiPropostas',prop],['kpiFechamentos',clos],['kpiPipeline',money(pipeVal)],
@@ -429,9 +430,9 @@ function renderKPIs(){
 }
 function renderOverdueList(){
   const ol=document.getElementById('overdueList');if(!ol)return;
-  const ov=leads.filter(l=>l.followup&&isOverdue(l.followup)&&l.etapa!=='Fechado'&&l.etapa!=='Perdido').slice(0,8);
+  const ov=leads.filter(l=>l.followup&&isOverdue(l.followup)&&(window.CRMCommercialModel?window.CRMCommercialModel.isOpen(l):(l.etapa!=='Fechado'&&l.etapa!=='Perdido'))).slice(0,8);
   if(!ov.length){ol.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 0;color:var(--text-3)">${ICON_CHECK}<p style="font-size:13px">Nenhum follow-up vencido</p></div>`;return;}
-  ol.innerHTML=ov.map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:8px" onclick="openDetail('${l.nome.replace(/'/g,"\\'")}')">${stageTag(l.etapa)}<div style="flex:1"><div style="font-size:13px;font-weight:600">${l.nome}</div><div style="font-size:11px;color:#dc2626">${ICON_CALENDAR} ${fmtDate(l.followup)}</div></div>${priorityTag(l.prioridade||'Média')}</div>`).join('');
+  ol.innerHTML=ov.map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:8px" data-open-detail-name="${String(l.nome).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${stageTag(l.etapa)}<div style="flex:1"><div style="font-size:13px;font-weight:600">${l.nome}</div><div style="font-size:11px;color:#dc2626">${ICON_CALENDAR} ${fmtDate(l.followup)}</div></div>${priorityTag(l.prioridade||'Média')}</div>`).join('');
 }
 
 // ══ METRICS ══
@@ -472,7 +473,7 @@ __crm971El('exportCsvBtn2').addEventListener('click',exportCSV);
 __crm971El('exportJsonBtn').addEventListener('click',()=>{
   const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify({leads,exportDate:todayStr()},null,2));a.download='outbounder_backup_'+todayStr()+'.json';document.body.appendChild(a);a.click();a.remove();showToast('JSON exportado','success');
 });
-__crm971El('clearAllBtn').addEventListener('click',()=>{if(!confirm('Apagar TODOS os leads?'))return;leads.length=0;saveLeads();renderAll();showToast('Dados limpos','warn');});
+__crm971El('clearAllBtn').addEventListener('click',()=>{window.CRMDialog?.confirm('Apagar todos os leads?',{title:'Limpar base comercial',danger:true,confirmLabel:'Apagar'}).then(ok=>{if(!ok)return;leads.length=0;saveLeads();renderAll();showToast('Dados limpos','warn');});});
 const iz=document.getElementById('importZone'),cfi=document.getElementById('csvFileInput');
 if(iz&&cfi){
 iz.addEventListener('click',()=>cfi.click());
@@ -555,10 +556,10 @@ function renderAgenda(){
           <div class="ag-meta"><span>${ev.tipo||'—'}</span>${priorityTag(ev.prioridade||'Média')}${l?stageTag(l.etapa):''}${l?`<span style="font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--blue)">${money(l.valor)}</span>`:''}${stg?`<span style="color:#dc2626;font-size:11px;font-weight:600">${ICON_CLOCK} Estagnado</span>`:''}</div>
         </div>
         <div class="ag-actions">
-          ${tel?`<a class="ag-action" href="https://wa.me/55${wn}" target="_blank" onclick="event.stopPropagation()">${ICON_WHATSAPP}</a>`:''}
-          ${tel?`<a class="ag-action" href="tel:${tel}" onclick="event.stopPropagation()">${ICON_CALL}</a>`:''}
-          ${em?`<a class="ag-action" href="mailto:${em}" onclick="event.stopPropagation()">${ICON_MAIL}</a>`:''}
-          <button class="ag-action edit-ev-btn" data-evid="${ev.id}" onclick="event.stopPropagation()">${ICON_EDIT}</button>
+          ${tel?`<a class="ag-action" href="https://wa.me/55${wn}" target="_blank" data-stop-propagation="1">${ICON_WHATSAPP}</a>`:''}
+          ${tel?`<a class="ag-action" href="tel:${tel}" data-stop-propagation="1">${ICON_CALL}</a>`:''}
+          ${em?`<a class="ag-action" href="mailto:${em}" data-stop-propagation="1">${ICON_MAIL}</a>`:''}
+          <button class="ag-action edit-ev-btn" data-evid="${ev.id}" data-stop-propagation="1">${ICON_EDIT}</button>
         </div>
       </div>`;
     }).join('');
@@ -578,8 +579,8 @@ function renderCalendar(){
   for(let d=1;d<=dim;d++){
     const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const de=agEvents.filter(e=>e.data===ds),iT=ds===today;
-    const eh=de.slice(0,3).map(e=>{const c=e.prioridade==='Alta'?'alta':e.prioridade==='Baixa'?'baixa':'media';return `<div class="cal-ev ${c}" onclick="event.stopPropagation();openAgDetail('${e.id}')">${e.leadNome}</div>`;}).join('')+(de.length>3?`<div style="font-size:10px;color:var(--text-3)">+${de.length-3}</div>`:'');
-    html+=`<div class="cal-day${iT?' today':''}" onclick="openNewEventOnDay('${ds}')"><div class="cal-day-num">${d}</div>${eh}</div>`;
+    const eh=de.slice(0,3).map(e=>{const c=e.prioridade==='Alta'?'alta':e.prioridade==='Baixa'?'baixa':'media';return `<div class="cal-ev ${c}" data-open-ag-detail="${e.id}">${e.leadNome}</div>`;}).join('')+(de.length>3?`<div style="font-size:10px;color:var(--text-3)">+${de.length-3}</div>`:'');
+    html+=`<div class="cal-day${iT?' today':''}" data-open-ag-day="${ds}"><div class="cal-day-num">${d}</div>${eh}</div>`;
   }
   __crm971El('calGrid').innerHTML=html;
 }
@@ -627,8 +628,8 @@ __crm971El('agEventClose').addEventListener('click',()=>__crm971El('agEventBackd
 __crm971El('agEventCancel').addEventListener('click',()=>__crm971El('agEventBackdrop').classList.add('hidden'));
 __crm971El('agEventBackdrop').addEventListener('click',e=>{if(e.target===document.getElementById('agEventBackdrop'))__crm971El('agEventBackdrop').classList.add('hidden');});
 __crm971El('agEventSave').addEventListener('click',()=>{
-  const nome=__crm971El('agEvLead').value;if(!nome){alert('Selecione um lead');return;}
-  const data=__crm971El('agEvData').value;if(!data){alert('Informe a data');return;}
+  const nome=__crm971El('agEvLead').value;if(!nome){window.CRMDialog?.alert('Selecione um lead.',{title:'Lead obrigatório'});return;}
+  const data=__crm971El('agEvData').value;if(!data){window.CRMDialog?.alert('Informe a data.',{title:'Data obrigatória'});return;}
   const ev={id:editEvId||('ev'+Date.now()),leadNome:nome,data,hora:__crm971El('agEvHora').value,tipo:__crm971El('agEvTipo').value,prioridade:__crm971El('agEvPrioridade').value,notas:__crm971El('agEvNotas').value,spin:editEvId?(agEvents.find(e=>e.id===editEvId)?.spin||{s:'',p:'',i:'',n:''}):{s:'',p:'',i:'',n:''}};
   if(editEvId){const idx=agEvents.findIndex(e=>e.id===editEvId);if(idx>-1)agEvents[idx]=ev;}else agEvents.push(ev);
   saveEvents();__crm971El('agEventBackdrop').classList.add('hidden');renderAgenda();renderKPIs();showToast(editEvId?'Compromisso atualizado':'Compromisso criado','success');
@@ -646,7 +647,7 @@ function renderAutomations(){
     return;
   }
   const el=document.getElementById('automacoes');
-  if(el) el.innerHTML='<div class="card" style="padding:24px">Carregando automações V95...</div>';
+  if(el) el.innerHTML='<div class="card" style="padding:24px">Carregando automações...</div>';
 }
 window.crmAutomationAPI={
   get:()=>window.CRMV95Automations?.getRules?.()||[],
@@ -746,11 +747,8 @@ function openConversation(id){
   // messages
   renderMessages(conv);
   // call/lead buttons
-  __crm971El('chatCallBtn').onclick=()=>window.open('tel:'+conv.phone);
-  __crm971El('chatViewLeadBtn').onclick=()=>{
-    const lead=leads.find(l=>l.nome===conv.name);
-    if(lead)openDetail(lead.id);else showToast('Lead não encontrado','warn');
-  };
+  __crm971El('chatCallBtn').dataset.chatPhone=conv.phone||'';
+  __crm971El('chatViewLeadBtn').dataset.chatLead=conv.name||'';
 }
 
 function renderMessages(conv){
@@ -1020,7 +1018,7 @@ const CAT_COLORS={Outbound:'#2563eb',Inbound:'#16a34a',Fechamento:'#7c3aed',Reat
 function renderPB(cat){
   const grid=document.getElementById('pbGrid');if(!grid)return;
   const list=cat?playbooks.filter(p=>p.categoria===cat):playbooks;
-  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3)">Nenhum playbook. <button class="btn btn-sm btn-primary" style="margin-left:8px" onclick="openPbModal(null)">Criar primeiro</button></div>';return;}
+  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3)">Nenhum playbook. <button class="btn btn-sm btn-primary" style="margin-left:8px" data-create-playbook="1">Criar primeiro</button></div>';return;}
   grid.innerHTML=list.map(p=>{
     const cc=CAT_COLORS[p.categoria]||'#6b7280';
     return '<div class="pb-card">'+
@@ -1235,16 +1233,16 @@ document.getElementById('perdaModalSave')?.addEventListener('click',()=>{
 // ══ DASHBOARD COMERCIAL ══
 function renderDashboard(){
   const prd=Number(document.getElementById('dashPeriod')?.value||30);
-  const total=leads.length,ativos=leads.filter(l=>l.etapa!=='Perdido').length;
+  const total=leads.length,ativos=leads.filter(l=>window.CRMCommercialModel? !window.CRMCommercialModel.isLost(l) : l.etapa!=='Perdido').length;
   const novos=leads.filter(l=>{if(!l.criadoEm)return false;return(new Date()-new Date(l.criadoEm))/(864e5)<=prd;}).length;
-  const perdidosN=leads.filter(l=>l.etapa==='Perdido').length;
+  const perdidosN=leads.filter(l=>window.CRMCommercialModel? window.CRMCommercialModel.isLost(l) : l.etapa==='Perdido').length;
   const fechados=leads.filter(l=>l.etapa==='Fechado').length;
   const conv=total>0?((fechados/total)*100).toFixed(1):0;
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   setEl('dkLeadsCad',total);setEl('dkLeadsAtivos',ativos);setEl('dkLeadsNovos',novos);setEl('dkLeadsPerdidos',perdidosN);setEl('dkConvGeral',conv+'%');
   setEl('dkLeadsCadD','Total cadastrado');setEl('dkLeadsAtivosD','Em andamento');setEl('dkLeadsNovosD','Últimos '+prd+' dias');setEl('dkLeadsPerdidosD','Oportunidades perdidas');setEl('dkConvGeralD','Fechados / Total');
-  const propostas=leads.filter(l=>l.etapa==='Proposta'||l.etapa==='Fechado').length;
-  const recPrev=leads.filter(l=>l.etapa!=='Perdido').reduce((s,l)=>s+(l.valor||0),0);
+  const propostas=leads.filter(l=>(window.CRMCommercialModel?(window.CRMCommercialModel.isProposal(l)||window.CRMCommercialModel.isWon(l)):(l.etapa==='Proposta'||l.etapa==='Fechado'))).length;
+  const recPrev=leads.filter(l=>window.CRMCommercialModel? !window.CRMCommercialModel.isLost(l) : l.etapa!=='Perdido').reduce((s,l)=>s+(l.valor||0),0);
   const ticket=fechados>0?Math.round(leads.filter(l=>l.etapa==='Fechado').reduce((s,l)=>s+(l.valor||0),0)/fechados):0;
   setEl('dkPropostas',propostas);setEl('dkContratos',fechados);setEl('dkRecPrev','R$'+recPrev.toLocaleString('pt-BR'));setEl('dkTicket','R$'+ticket.toLocaleString('pt-BR'));setEl('dkTempFech',Math.round(14+Math.random()*10)+'d');
   // Bar chart
@@ -1277,16 +1275,19 @@ function renderDashboard(){
 document.getElementById('dashPeriod')?.addEventListener('change',renderDashboard);
 document.getElementById('dashRefresh')?.addEventListener('click',()=>{renderDashboard();showToast('Dashboard atualizado','success');});
 
-// ══ PATCH setView for new modules ══
-const _sv=setView;
-window.setView=function(v){
-  _sv(v);
-  const extra={playbooks:{title:'Playbooks',sub:'Scripts, checklists e materiais de vendas'},objecoes:{title:'Biblioteca de Objeções',sub:'Respostas prontas para superar objeções'},perdas:{title:'Motivos de Perda',sub:'Análise e reativação de negócios perdidos'},dashboard:{title:'Dashboard Comercial',sub:'Visão completa de indicadores e performance'}};
-  if(extra[v]){const tt=document.getElementById('topbarTitle'),ts=document.getElementById('topbarSub');if(tt)tt.textContent=extra[v].title;if(ts)ts.textContent=extra[v].sub;}
-  if(v==='playbooks')renderPB();
-  if(v==='objecoes')renderObj();
-  if(v==='perdas')renderPerdas();
-  if(v==='dashboard')setTimeout(renderDashboard,60);
-};
-document.querySelectorAll('[data-view]').forEach(b=>{b.onclick=null;b.addEventListener('click',()=>window.setView(b.dataset.view));});
-document.querySelectorAll('[data-go]').forEach(b=>{b.onclick=null;b.addEventListener('click',()=>window.setView(b.dataset.go));});
+
+// CRM V99.0 — delegação única das ações remanescentes do núcleo histórico.
+document.addEventListener('click',function crmV99LegacyActions(event){
+  const stop=event.target.closest?.('[data-stop-propagation]');if(stop)event.stopPropagation();
+  const leadAction=event.target.closest?.('[data-lead-action]');
+  if(leadAction){
+    if(leadAction.dataset.leadAction==='edit'){const lead=leads.find(x=>x.nome===detNome);if(lead){closeDetail();openModal(lead)}}
+    if(leadAction.dataset.leadAction==='delete'){const index=leads.findIndex(x=>x.nome===detNome);if(index>=0){leads.splice(index,1);saveLeads();closeDetail();renderAll();showToast('Lead excluído')}}
+  }
+  const detail=event.target.closest?.('[data-open-detail-name]');if(detail){event.preventDefault();openDetail(detail.dataset.openDetailName)}
+  const agDetail=event.target.closest?.('[data-open-ag-detail]');if(agDetail){event.stopPropagation();openAgDetail(agDetail.dataset.openAgDetail)}
+  const agDay=event.target.closest?.('[data-open-ag-day]');if(agDay&&!event.target.closest('[data-open-ag-detail]'))openNewEventOnDay(agDay.dataset.openAgDay);
+  const chatCall=event.target.closest?.('[data-chat-phone]');if(chatCall?.dataset.chatPhone)window.open('tel:'+chatCall.dataset.chatPhone);
+  const chatLead=event.target.closest?.('[data-chat-lead]');if(chatLead){const lead=leads.find(l=>l.nome===chatLead.dataset.chatLead);if(lead)openDetail(lead.nome);else showToast('Lead não encontrado','warn')}
+  if(event.target.closest?.('[data-create-playbook]'))openPbModal(null);
+},false);

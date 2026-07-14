@@ -1,0 +1,40 @@
+{
+  "version": "V99.0",
+  "sourceFiles": 91,
+  "js": 45,
+  "css": 46,
+  "references": 85,
+  "missing": [],
+  "duplicateReferences": [],
+  "syntax": [],
+  "architecture": {
+    "moduleEntry": true,
+    "canonicalStore": true,
+    "navigationOwner": true,
+    "eventHub": true,
+    "backupService": true,
+    "supabaseAdapter": true,
+    "supabaseConnection": true,
+    "runtimeConfig": true,
+    "supabaseSchema": true,
+    "schemaChecks": {
+      "tenantTable": true,
+      "memberships": true,
+      "recordsTenant": true,
+      "rls": true,
+      "ownerGuard": true,
+      "secretRevoked": true
+    }
+  },
+  "debt": {
+    "legacyLeadRefs": [],
+    "onclick": [],
+    "setViewAssignments": [
+      "src/core/navigation-owner-v99.js"
+    ],
+    "timeouts": 110,
+    "observers": 4,
+    "important": 865
+  },
+  "ok": true
+}

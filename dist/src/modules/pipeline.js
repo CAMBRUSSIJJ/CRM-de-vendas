@@ -1,86 +1,89 @@
-/* EMBED: assets/js/modules/11-pipeline-dados-reais-v65.js */
-/* CRM V65 — Pipeline com dados reais
-   Substitui o pipeline antigo por uma única renderização oficial baseada diretamente na base outbounder_leads_v5. */
+/* Pipeline oficial — dados reais, filtros recolhíveis e etapas configuráveis. */
 (function(){
   'use strict';
-  if(window.__crmV65PipelineActive) return;
-  window.__crmV65PipelineActive = true;
+  if(window.__crmV985PipelineActive) return;
+  window.__crmV985PipelineActive=true;
+  window.__crmV65PipelineActive=true;
 
   const $=(q,r=document)=>r.querySelector(q);
   const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+  const LEADS_KEY='crm_v99_leads';
   const STORAGE_STAGE='crm_pipeline_stage_config_v20';
   const VIEW_KEY='crm_v65_pipeline_view';
   const STALE_KEY='crm_v65_pipeline_stale_days';
-  const DEFAULT_STAGES=['Lead','Contato','Proposta','Fechado','Perdido'];
-  const DEFAULT_PROB={Lead:10,Contato:25,Proposta:60,Fechado:100,Perdido:0};
-  const DEFAULT_COLORS={Lead:'#6366f1',Contato:'#f59e0b',Proposta:'#06b6d4',Fechado:'#22c55e',Perdido:'#ef4444'};
+  const FILTER_COLLAPSED_KEY='crm_pipeline_filters_collapsed';
+  const DEFAULT_STAGE_DATA=[
+    {id:'st_lead',name:'Lead',color:'#6366f1',prob:10,type:'open',role:'lead',slaDays:1,description:'Novas oportunidades que ainda precisam do primeiro contato.',defaultAction:'Fazer o primeiro contato e qualificar a oportunidade.',visible:true},
+    {id:'st_contato',name:'Contato',color:'#f59e0b',prob:25,type:'open',role:'contact',slaDays:2,description:'Leads que já tiveram contato e estão em qualificação.',defaultAction:'Confirmar necessidade, decisor, urgência e próximo passo.',visible:true},
+    {id:'st_proposta',name:'Proposta',color:'#06b6d4',prob:60,type:'open',role:'proposal',slaDays:3,description:'Oportunidades com proposta ou condição comercial em andamento.',defaultAction:'Acompanhar decisão, objeções e prazo de fechamento.',visible:true},
+    {id:'st_fechado',name:'Fechado',color:'#22c55e',prob:100,type:'won',role:'won',slaDays:0,description:'Negócios ganhos e prontos para pós-venda ou implantação.',defaultAction:'Confirmar entrega, onboarding e oportunidade de indicação.',visible:true},
+    {id:'st_perdido',name:'Perdido',color:'#ef4444',prob:0,type:'lost',role:'lost',slaDays:0,description:'Oportunidades encerradas sem fechamento.',defaultAction:'Registrar motivo da perda e programar reativação quando fizer sentido.',visible:true}
+  ];
   let dragId=null;
+  let activeStageDrawer='';
 
   const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
   const today=()=>new Date().toISOString().slice(0,10);
-  const addDays=(n)=>{const d=new Date(today()+'T12:00:00');d.setDate(d.getDate()+Number(n||0));return d.toISOString().slice(0,10)};
-  const parseDate=v=>{if(!v)return null;const d=new Date(String(v).slice(0,10)+'T12:00:00');return isNaN(+d)?null:d};
-  const dateKey=v=>v?String(v).slice(0,10):'';
+  const parseDate=v=>{if(!v)return null;const s=String(v).slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return null;const d=new Date(s+'T12:00:00');return Number.isNaN(+d)?null:d};
+  const dateKey=v=>parseDate(v)?String(v).slice(0,10):'';
   const brl=v=>{try{return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(Number(v)||0)}catch(e){return 'R$ '+(Number(v)||0)}};
-  const fmtDate=v=>{if(!v)return '—';try{return new Date(String(v).slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR')}catch(e){return String(v)}};
-  const daysSince=v=>{const d=parseDate(v);if(!d)return 0;const base=parseDate(today());return Math.max(0,Math.floor((base-d)/86400000))};
-  const isOverdue=v=>!!v && dateKey(v)<today();
-  const isToday=v=>!!v && dateKey(v)===today();
-  const isOpen=s=>!['Fechado','Perdido'].includes(s);
+  const fmtDate=v=>{const d=parseDate(v);return d?d.toLocaleDateString('pt-BR'):'—'};
+  const daysSince=v=>{const d=parseDate(v);if(!d)return 0;return Math.max(0,Math.floor((parseDate(today())-d)/86400000))};
+  const uid=p=>(p||'id')+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);
 
-  function safeLeads(){
-    try{if(Array.isArray(leads))return leads}catch(e){}
-    try{if(Array.isArray(window.leads))return window.leads}catch(e){}
-    try{if(typeof window.crmGetLeads==='function')return window.crmGetLeads()}catch(e){}
-    try{return JSON.parse(localStorage.getItem('outbounder_leads_v5')||'[]')}catch(e){return []}
-  }
-  function saveLeadsSafe(){
-    try{typeof saveLeads==='function'&&saveLeads()}catch(e){}
-    try{typeof window.crmSaveLeads==='function'&&window.crmSaveLeads()}catch(e){}
-    try{localStorage.setItem('outbounder_leads_v5',JSON.stringify(safeLeads()))}catch(e){}
-  }
-  function toast(msg,type){try{typeof showToast==='function'?showToast(msg,type):window.crmToast?.(msg,type)}catch(e){console.log(msg)}}
-  function uid(){return 'lead_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
-  function ensureIds(){let changed=false;safeLeads().forEach((l,i)=>{if(!l.id){l.id=uid()+'_'+i;changed=true}if(!l.etapa){l.etapa='Lead';changed=true}if(!l.ultimaAtualizacao){l.ultimaAtualizacao=l.dataEntrada||l.criadoEm||today();changed=true}if(!l.prioridade){l.prioridade='Média';changed=true}});if(changed)saveLeadsSafe()}
+  function readJSON(key,fb){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fb}catch(e){return fb}}
+  function writeJSON(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){console.warn('Pipeline: falha ao salvar',e)}}
+  function nextDate(l){return l?.proximaData||l?.followupData||l?.nextDate||(parseDate(l?.followup)?l.followup:'')||''}
+  function stageName(l){return window.CRMStageRegistry?.resolveStage(l,{create:true})?.name||l?.pipeline||l?.etapa||'Lead'}
+  function tags(l){return String(l?.tags||'').split(',').map(s=>s.trim()).filter(Boolean)}
+  function leadUpdated(l){return l?.ultimaAtualizacao||l?.updatedAt||l?.dataEntrada||l?.criadoEm||nextDate(l)}
+  function isOverdue(l){const d=dateKey(nextDate(l));return !!d&&d<today()}
+  function isToday(l){return dateKey(nextDate(l))===today()}
+  function toast(msg,type='success'){try{if(window.crmToast)return window.crmToast(msg,type);if(window.showToast)return window.showToast(msg,type)}catch(e){}console.log(msg)}
+
+  function safeLeads(){return window.CRMData?.leads?.all?.()||window.CRMCommercialModel?.getLeads?.()||[];}
+  function saveLeadsSafe(list){const arr=Array.isArray(list)?list:safeLeads();return window.CRMData?.leads?.save?.(arr,'pipeline')||arr}
+  function ensureIds(){const list=safeLeads();let changed=false;list.forEach((l,i)=>{if(!l.id){l.id=uid('lead')+'_'+i;changed=true}if(!l.pipeline&&!l.etapa&&!l.pipelineStageId){l.pipeline='Lead';l.etapa='Lead';changed=true}if(!l.ultimaAtualizacao){l.ultimaAtualizacao=l.dataEntrada||l.criadoEm||today();changed=true}if(!l.prioridade){l.prioridade='Média';changed=true}});const migrated=window.CRMStageRegistry?.migrateLeads?.(list);if(migrated?.changed)changed=true;if(changed)saveLeadsSafe(list)}
   function leadById(id){return safeLeads().find(l=>String(l.id||l.nome)===String(id)||String(l.nome)===String(id))}
-  function leadDate(l){return l.dataFechamento||l.dataPerda||l.ultimaAtualizacao||l.dataEntrada||l.criadoEm||l.followup}
-  function monthKey(d){const x=parseDate(d);return x?`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}`:''}
-  function thisMonth(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-  function prevMonth(){const d=new Date();d.setMonth(d.getMonth()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-  function score(l){try{if(typeof calcScore==='function')return calcScore(l)}catch(e){}const st={Lead:10,Contato:25,Proposta:55,Fechado:100,Perdido:0};const pr={Alta:30,'Média':15,Baixa:5};return Math.max(0,Math.min(100,(st[l.etapa]||10)+(pr[l.prioridade]||0)+Math.min(30,Math.round((Number(l.valor)||0)/1000))))}
-  function scoreClass(s){return s>=75?'score-hi':s>=45?'score-md':'score-lo'}
-  function nextAction(l){if(l.proximaAcao)return l.proximaAcao;if(isOverdue(l.followup))return 'Retomar follow-up vencido';if(isToday(l.followup))return 'Executar contato de hoje';if(l.etapa==='Lead')return 'Fazer primeiro contato';if(l.etapa==='Contato')return 'Qualificar necessidade';if(l.etapa==='Proposta')return 'Cobrar decisão da proposta';if(l.etapa==='Fechado')return 'Pós-venda / implantação';if(l.etapa==='Perdido')return 'Avaliar reativação';return 'Definir próximo passo'}
-  function tags(l){return String(l.tags||'').split(',').map(s=>s.trim()).filter(Boolean)}
-  function lossReason(l){return l.motivoPerda||l.perdaMotivo||l.lossReason||l.razaoPerda||(l.etapa==='Perdido'?'Sem motivo informado':'')}
 
-  function loadStages(){
-    let arr=[];
-    try{arr=JSON.parse(localStorage.getItem(STORAGE_STAGE)||'[]')}catch(e){arr=[]}
-    if(!Array.isArray(arr)||!arr.length){arr=DEFAULT_STAGES.map((name,i)=>({id:'st_'+i,name,color:DEFAULT_COLORS[name],prob:DEFAULT_PROB[name],visible:true,order:i}))}
-    safeLeads().forEach(l=>{const name=l.etapa||'Lead';if(!arr.some(s=>s.name===name))arr.push({id:'st_custom_'+norm(name)+'_'+Date.now(),name,color:DEFAULT_COLORS[name]||'#2563eb',prob:DEFAULT_PROB[name]??20,visible:true,order:arr.length})});
-    return arr.map((s,i)=>({id:s.id||'st_'+i,name:s.name||'Etapa',color:s.color||DEFAULT_COLORS[s.name]||'#2563eb',prob:Number(s.prob??DEFAULT_PROB[s.name]??20),visible:s.visible!==false,order:Number.isFinite(Number(s.order))?Number(s.order):i})).sort((a,b)=>a.order-b.order)
+  function normalizeStage(s,i){
+    if(window.CRMStageRegistry?.normalizeStage)return window.CRMStageRegistry.normalizeStage(s,i,Array.isArray(s)?s:[]);
+    const fallback=DEFAULT_STAGE_DATA.find(x=>x.name===s?.name)||{};
+    return {id:s?.id||uid('stage'),name:String(s?.name||fallback.name||'Etapa').trim()||'Etapa',color:s?.color||fallback.color||'#2563eb',prob:Math.max(0,Math.min(100,Number(s?.prob??fallback.prob??20))),type:['open','won','lost'].includes(s?.type)?s.type:'open',role:s?.role||'custom',slaDays:Math.max(0,Number(s?.slaDays??fallback.slaDays??2)),description:String(s?.description??fallback.description??'Etapa do processo comercial.'),defaultAction:String(s?.defaultAction??fallback.defaultAction??'Definir o próximo passo desta oportunidade.'),visible:s?.visible!==false,order:Number.isFinite(Number(s?.order))?Number(s.order):i};
   }
-  function visibleStages(){return loadStages().filter(s=>s.visible!==false)}
-  function stageCfg(name){return loadStages().find(s=>s.name===name)||{name,prob:DEFAULT_PROB[name]??20,color:DEFAULT_COLORS[name]||'#2563eb'}}
+  function loadStages(){return window.CRMStageRegistry?.getStages?.()||readJSON(STORAGE_STAGE,DEFAULT_STAGE_DATA).map(normalizeStage).sort((a,b)=>a.order-b.order)}
+  function saveStages(stages){return window.CRMStageRegistry?.saveStages?.(stages)||writeJSON(STORAGE_STAGE,stages.map((s,i)=>({...normalizeStage(s,i),order:i})))}
+  function visibleStages(){return loadStages().filter(s=>s.visible)}
+  function stageCfg(ref){return window.CRMStageRegistry?.resolveStage?.(ref,{create:true})||loadStages().find(s=>s.id===ref||s.name===ref)||normalizeStage({name:String(ref||'Etapa')},0)}
+  function isOpenStage(ref){return stageCfg(ref).type==='open'}
   function uniques(field){const set=new Set();safeLeads().forEach(l=>{if(field==='tags')tags(l).forEach(t=>set.add(t));else if(l[field])set.add(String(l[field]))});return [...set].sort((a,b)=>a.localeCompare(b,'pt-BR'))}
+  function score(l){const st=stageCfg(stageName(l));const pr={Alta:30,'Média':15,Media:15,Baixa:5};return Math.max(0,Math.min(100,Math.round(st.prob*.55)+(pr[l.prioridade]||10)+Math.min(25,Math.round((Number(l.valor)||0)/1000))))}
+  function scoreClass(s){return s>=75?'score-hi':s>=45?'score-md':'score-lo'}
+  function nextAction(l){return l.proximaAcao||stageCfg(stageName(l)).defaultAction}
+  function lossReason(l){return l.motivoPerda||l.perdaMotivo||l.lossReason||l.razaoPerda||(stageCfg(stageName(l)).type==='lost'?'Sem motivo informado':'')}
+  function filtersCollapsed(){return readJSON(FILTER_COLLAPSED_KEY,true)===true}
+  function setFiltersCollapsed(value){writeJSON(FILTER_COLLAPSED_KEY,!!value);applyFilterVisibility()}
 
   function ensureLayout(){
-    const page=$('#pipeline'); if(!page)return;
-    page.className='view grid-view pipeline-v65'+(page.classList.contains('active')?' active':'');
-    if(page.dataset.v65Ready==='1')return;
-    page.dataset.v65Ready='1';
+    const page=$('#pipeline');if(!page)return;
+    const active=page.classList.contains('active');
+    page.className='view grid-view pipeline-v65 v985-pipeline'+(active?' active':'');
+    page.dataset.renderOwner='pipeline-official';
+    if(page.dataset.v985Ready==='1')return;
+    page.dataset.v985Ready='1';
     page.innerHTML=`
       <div class="v65-pipe-hero">
-        <div><span>Pipeline V65 · dados reais</span><h2>Pipeline conectado à base de Leads</h2><p>Os números abaixo vêm dos leads salvos: etapa, valor, probabilidade, cidade, tag, follow-up, perdas e fechamentos. Nada é simulado.</p></div>
-        <div class="v65-pipe-actions"><button class="btn btn-primary" id="v65PipeNewLead" type="button">+ Novo lead</button><button class="btn" id="v65PipeRefresh" type="button">Atualizar</button></div>
+        <div><span>Pipeline comercial · dados reais</span><h2>Oportunidades organizadas por etapa</h2><p>Kanban, tabela e funil conectados à mesma base de Leads, com filtros recolhíveis e configuração completa de cada etapa.</p></div>
+        <div class="v65-pipe-actions"><button class="btn btn-primary" id="v65PipeNewLead" type="button">+ Novo lead</button></div>
       </div>
       <div id="v65PipeKpis" class="v65-pipe-kpis"></div>
-      <div class="v65-pipe-tools card">
-        <div class="v65-pipe-topline">
-          <div class="v65-search-block"><label>Buscar oportunidade</label><div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><use href="#ic-search"></use></svg><input id="v65PipeSearch" class="search-input" type="search" placeholder="Nome, telefone, cidade, tag, origem, observação..."></div></div>
-          <div class="v65-view-switch"><button class="active" data-v65-pipe-view="kanban" type="button">Kanban</button><button data-v65-pipe-view="table" type="button">Tabela</button><button data-v65-pipe-view="funnel" type="button">Funil real</button></div>
-        </div>
+      <div class="v985-pipeline-commandbar card">
+        <div class="v65-view-switch"><button class="active" data-v65-pipe-view="kanban" type="button">Kanban</button><button data-v65-pipe-view="table" type="button">Tabela</button><button data-v65-pipe-view="funnel" type="button">Funil</button></div>
+        <div class="v985-command-actions"><button class="btn btn-sm" id="v985ToggleFilters" type="button" aria-expanded="false">Mostrar filtros</button><button class="btn btn-sm" id="v985ConfigureStages" type="button">Configurar etapas</button><button class="btn btn-sm" id="v65PipeRefresh" type="button">Atualizar</button></div>
+      </div>
+      <div class="v65-pipe-tools card" id="v65PipeFilterPanel">
+        <div class="v65-pipe-topline"><div class="v65-search-block"><label>Buscar oportunidade</label><div class="search-wrap"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><use href="#ic-search"></use></svg><input id="v65PipeSearch" class="search-input" type="search" placeholder="Nome, telefone, cidade, tag, origem, observação..."></div></div><button class="btn btn-sm" id="v65PipeClear" type="button">Limpar filtros</button></div>
         <div class="v65-pipe-filter-grid">
           <label><span>Etapa</span><select id="v65PipeStage"><option value="">Todas etapas</option></select></label>
           <label><span>Prioridade</span><select id="v65PipePriority"><option value="">Todas</option><option>Alta</option><option>Média</option><option>Baixa</option></select></label>
@@ -91,210 +94,95 @@
           <label><span>Situação</span><select id="v65PipeStatus"><option value="">Todas</option><option value="vencidos">Follow-up vencido</option><option value="hoje">Follow-up hoje</option><option value="sem_follow">Sem follow-up</option><option value="parados">Parados</option><option value="alto_valor">Alto valor</option><option value="ganhos_mes">Ganhos este mês</option><option value="perdidos_mes">Perdidos este mês</option></select></label>
           <label><span>Período</span><select id="v65PipePeriod"><option value="all">Toda base</option><option value="month">Mês atual</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option></select></label>
           <label><span>Parado após</span><input id="v65PipeStaleDays" type="number" min="1" max="90" value="7"></label>
-          <button class="btn btn-sm" id="v65PipeClear" type="button">Limpar filtros</button>
         </div>
       </div>
       <div id="v65PipeInsights" class="v65-pipe-insights"></div>
       <div id="v65PipeKanban" class="v65-pipe-kanban"></div>
       <div id="v65PipeTable" class="v65-pipe-table-wrap hidden"></div>
       <div id="v65PipeFunnel" class="v65-pipe-funnel-wrap hidden"></div>
-      <div id="v65PipeDrawer" class="v65-pipe-drawer hidden"></div>`;
+      <div id="v65PipeDrawer" class="v985-stage-workspace hidden"></div>
+      <div id="v985StageConfigModal" class="v985-stage-modal hidden" aria-hidden="true"><div class="v985-stage-modal-card"><div class="v985-stage-modal-head"><div><span>Configuração do Pipeline</span><h2>Etapas do Kanban</h2><p>Defina nome, cor, probabilidade, prazo, orientação e visibilidade de cada etapa.</p></div><button type="button" data-v985-close-stage-config aria-label="Fechar">×</button></div><div id="v985StageConfigList" class="v985-stage-config-list"></div><div class="v985-stage-modal-foot"><button class="btn" type="button" data-v985-add-stage>+ Adicionar etapa</button><div><button class="btn" type="button" data-v985-reset-stages>Restaurar padrão</button><button class="btn btn-primary" type="button" data-v985-save-stages>Salvar etapas</button></div></div></div></div>`;
+    applyFilterVisibility();
   }
 
+  function applyFilterVisibility(){
+    const panel=$('#v65PipeFilterPanel'),btn=$('#v985ToggleFilters');if(!panel||!btn)return;
+    const collapsed=filtersCollapsed();panel.classList.toggle('is-collapsed',collapsed);btn.textContent=collapsed?'Mostrar filtros':'Ocultar filtros';btn.setAttribute('aria-expanded',String(!collapsed));
+  }
   function currentView(){return localStorage.getItem(VIEW_KEY)||'kanban'}
   function setViewMode(v){localStorage.setItem(VIEW_KEY,v);render()}
   function getStaleDays(){return Number($('#v65PipeStaleDays')?.value||localStorage.getItem(STALE_KEY)||7)||7}
-  function setSelectOptions(id,items,placeholder){const el=$('#'+id);if(!el)return;const cur=el.value;const html='<option value="">'+E(placeholder)+'</option>'+items.map(v=>`<option value="${E(v)}">${E(v)}</option>`).join('');if(el.dataset.html!==html){el.innerHTML=html;el.dataset.html=html}if([...el.options].some(o=>o.value===cur))el.value=cur}
-  function syncOptions(){
-    setSelectOptions('v65PipeStage',visibleStages().map(s=>s.name),'Todas etapas');
-    setSelectOptions('v65PipeOrigin',uniques('origem'),'Todas origens');
-    setSelectOptions('v65PipeOwner',uniques('responsavel'),'Todos responsáveis');
-    setSelectOptions('v65PipeCity',uniques('cidade'),'Todas cidades');
-    setSelectOptions('v65PipeTag',uniques('tags'),'Todas tags');
-    const st=$('#v65PipeStaleDays'); if(st){st.value=String(getStaleDays())}
-  }
-  function filters(){return{
-    q:norm($('#v65PipeSearch')?.value||''),stage:$('#v65PipeStage')?.value||'',priority:$('#v65PipePriority')?.value||'',origin:$('#v65PipeOrigin')?.value||'',owner:$('#v65PipeOwner')?.value||'',city:$('#v65PipeCity')?.value||'',tag:$('#v65PipeTag')?.value||'',status:$('#v65PipeStatus')?.value||'',period:$('#v65PipePeriod')?.value||'all',stale:getStaleDays()
-  }}
-  function inPeriod(l,period){
-    if(!period||period==='all')return true;
-    const d=parseDate(leadDate(l)); if(!d)return false;
-    const now=new Date(); now.setHours(12,0,0,0);
-    if(period==='month')return monthKey(leadDate(l))===thisMonth();
-    const days=Number(period)||0; const start=new Date(now); start.setDate(start.getDate()-days+1); return d>=start;
-  }
-  function filteredLeads(){
-    const f=filters();
-    return safeLeads().filter(l=>{
-      const hay=[l.nome,l.segmento,l.responsavel,l.telefone,l.email,l.origem,l.cidade,l.tags,l.obs,l.proximaAcao,l.dorPrincipal,l.produtoInteresse,l.decisor].map(norm).join(' ');
-      if(f.q && !hay.includes(f.q))return false;
-      if(f.stage && (l.etapa||'Lead')!==f.stage)return false;
-      if(f.priority && (l.prioridade||'Média')!==f.priority)return false;
-      if(f.origin && (l.origem||'')!==f.origin)return false;
-      if(f.owner && (l.responsavel||'')!==f.owner)return false;
-      if(f.city && (l.cidade||'')!==f.city)return false;
-      if(f.tag && !tags(l).map(norm).includes(norm(f.tag)))return false;
-      if(!inPeriod(l,f.period))return false;
-      if(f.status==='vencidos' && !isOverdue(l.followup))return false;
-      if(f.status==='hoje' && !isToday(l.followup))return false;
-      if(f.status==='sem_follow' && (!isOpen(l.etapa)||l.followup))return false;
-      if(f.status==='parados' && (!isOpen(l.etapa)||daysSince(l.ultimaAtualizacao||l.dataEntrada)<f.stale))return false;
-      if(f.status==='alto_valor' && (Number(l.valor)||0)<3000)return false;
-      if(f.status==='ganhos_mes' && !((l.etapa||'')==='Fechado' && monthKey(leadDate(l))===thisMonth()))return false;
-      if(f.status==='perdidos_mes' && !((l.etapa||'')==='Perdido' && monthKey(leadDate(l))===thisMonth()))return false;
-      return true;
-    });
-  }
-  function stageMetrics(list){
-    const stages=visibleStages();
-    const firstCount=Math.max(1,list.length);
-    return stages.map((s,i)=>{
-      const arr=list.filter(l=>(l.etapa||'Lead')===s.name);
-      const next=stages[i+1]?.name;
-      const nextCount=next?list.filter(l=>(l.etapa||'Lead')===next).length:0;
-      const value=arr.reduce((a,l)=>a+(Number(l.valor)||0),0);
-      const forecast=arr.reduce((a,l)=>a+(Number(l.valor)||0)*(Number(l.probabilidade||s.prob||0)/100),0);
-      const stale=arr.filter(l=>isOpen(s.name)&&daysSince(l.ultimaAtualizacao||l.dataEntrada)>=getStaleDays()).length;
-      const overdue=arr.filter(l=>isOverdue(l.followup)).length;
-      const avg=arr.length?Math.round(arr.reduce((a,l)=>a+daysSince(l.ultimaAtualizacao||l.dataEntrada),0)/arr.length):0;
-      return {...s,arr,count:arr.length,value,forecast,stale,overdue,avg,share:Math.round((arr.length/firstCount)*100),conversion:arr.length&&next?Math.round((nextCount/arr.length)*100):(s.name==='Fechado'?100:0)}
-    })
-  }
-  function renderKpis(list){
-    const open=list.filter(l=>isOpen(l.etapa));
-    const valueOpen=open.reduce((a,l)=>a+(Number(l.valor)||0),0);
-    const forecast=open.reduce((a,l)=>a+(Number(l.valor)||0)*(Number(l.probabilidade||stageCfg(l.etapa||'Lead').prob||0)/100),0);
-    const won=list.filter(l=>l.etapa==='Fechado');
-    const lost=list.filter(l=>l.etapa==='Perdido');
-    const conv=list.length?Math.round((won.length/list.length)*100):0;
-    const overdue=open.filter(l=>isOverdue(l.followup)).length;
-    const noFollow=open.filter(l=>!l.followup).length;
-    const box=$('#v65PipeKpis'); if(!box)return;
-    const items=[['Oportunidades abertas',open.length,'Leads fora de ganho/perda'],['Valor aberto',brl(valueOpen),'Soma real dos valores'],['Forecast ponderado',brl(forecast),'Valor × probabilidade'],['Conversão geral',conv+'%',`${won.length} ganhos · ${lost.length} perdidos`],['Follow-ups vencidos',overdue,'Precisam de ação'],['Sem próximo contato',noFollow,'Oportunidades abertas sem data']];
-    box.innerHTML=items.map((it,i)=>`<button class="v65-pipe-kpi" type="button" data-v65-kpi="${i}"><b>${E(it[1])}</b><span>${E(it[0])}</span><small>${E(it[2])}</small></button>`).join('')
-  }
-  function renderInsights(list,metrics){
-    const box=$('#v65PipeInsights'); if(!box)return;
-    const open=list.filter(l=>isOpen(l.etapa));
-    const maxStage=metrics.filter(m=>isOpen(m.name)).sort((a,b)=>b.count-a.count)[0];
-    const prop=metrics.find(m=>m.name==='Proposta');
-    const losses=list.filter(l=>l.etapa==='Perdido');
-    const lossMap={}; losses.forEach(l=>{const r=lossReason(l);lossMap[r]=(lossMap[r]||0)+1});
-    const topLoss=Object.entries(lossMap).sort((a,b)=>b[1]-a[1])[0];
-    const stale=open.filter(l=>daysSince(l.ultimaAtualizacao||l.dataEntrada)>=getStaleDays()).length;
-    const chips=[];
-    if(maxStage)chips.push(['Gargalo',`${maxStage.name}: ${maxStage.count} lead(s)`]);
-    if(prop?.stale)chips.push(['Propostas paradas',`${prop.stale} sem atualização recente`]);
-    if(topLoss)chips.push(['Maior motivo de perda',`${topLoss[0]} (${topLoss[1]})`]);
-    chips.push(['Parados',`${stale} lead(s) acima do limite`]);
-    box.innerHTML=chips.map(c=>`<div class="v65-insight"><span>${E(c[0])}</span><b>${E(c[1])}</b></div>`).join('')
-  }
-  function tagHtml(l){const t=tags(l).slice(0,3);return t.length?`<div class="v65-card-tags">${t.map(x=>`<span>${E(x)}</span>`).join('')}</div>`:''}
-  function card(l){
-    const tel=String(l.telefone||'').replace(/\D/g,'');
-    const wa=tel?`https://wa.me/55${tel.replace(/^55/,'')}`:'';
-    const sc=score(l);
-    return `<article class="v65-pipe-card${isOverdue(l.followup)?' overdue':''}" draggable="true" data-v65-card="${E(l.id)}">
-      <div class="v65-card-head"><div><b>${E(l.nome||'Lead')}</b><span>${E([l.segmento,l.cidade].filter(Boolean).join(' · ')||'Sem segmento/cidade')}</span></div><strong class="score-pill ${scoreClass(sc)}">${sc}</strong></div>
-      <div class="v65-card-next">${E(nextAction(l))}</div>
-      <div class="v65-card-meta"><span>${E(l.prioridade||'Média')}</span><span>${E(l.origem||'Sem origem')}</span><span>${E(brl(l.valor||0))}</span></div>
-      ${tagHtml(l)}
-      <div class="v65-card-foot"><span class="${isOverdue(l.followup)?'danger':''}">${l.followup?fmtDate(l.followup):'Sem follow-up'}</span><div>${wa?`<a href="${wa}" target="_blank" rel="noopener" title="WhatsApp">WA</a>`:''}<button type="button" data-v65-follow="${E(l.id)}">+1d</button><button type="button" data-v65-edit="${E(l.id)}">Editar</button></div></div>
-    </article>`
-  }
-  function renderKanban(list,metrics){
-    const board=$('#v65PipeKanban'); if(!board)return;
-    board.innerHTML=metrics.map(m=>`<section class="v65-pipe-col" data-v65-stage="${E(m.name)}" style="--stage:${E(m.color)}">
-      <header><div><span class="v65-stage-dot"></span><b>${E(m.name)}</b><small>${m.count} lead(s) · ${E(brl(m.value))}</small></div><button type="button" data-v65-open-stage="${E(m.name)}">Abrir</button></header>
-      <div class="v65-col-metrics"><span>Forecast <b>${E(brl(m.forecast))}</b></span><span>Conv. <b>${m.conversion}%</b></span><span>Parados <b>${m.stale}</b></span></div>
-      <div class="v65-pipe-col-body">${m.arr.length?m.arr.sort(sortCommercial).map(card).join(''):'<div class="v65-empty-col">Nenhum lead nesta etapa.</div>'}</div>
-    </section>`).join('');
-    bindDrag();
-  }
-  function sortCommercial(a,b){
-    const ao=isOverdue(a.followup)?1:0,bo=isOverdue(b.followup)?1:0;if(ao!==bo)return bo-ao;
-    const av=Number(a.valor)||0,bv=Number(b.valor)||0;if(av!==bv)return bv-av;
-    return score(b)-score(a)
-  }
-  function renderTable(list){
-    const box=$('#v65PipeTable'); if(!box)return;
-    const rows=list.slice().sort(sortCommercial);
-    box.innerHTML=`<table class="v65-pipe-table"><thead><tr><th>Lead</th><th>Etapa</th><th>Cidade</th><th>Tags</th><th>Responsável</th><th>Follow-up</th><th>Valor</th><th>Score</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(l=>`<tr data-v65-open="${E(l.id)}"><td><b>${E(l.nome||'Lead')}</b><small>${E(l.segmento||'')}</small></td><td>${E(l.etapa||'Lead')}</td><td>${E(l.cidade||'—')}</td><td>${tags(l).slice(0,3).map(t=>`<span class="mini-tag">${E(t)}</span>`).join('')||'—'}</td><td>${E(l.responsavel||'—')}</td><td class="${isOverdue(l.followup)?'danger':''}">${fmtDate(l.followup)}</td><td>${E(brl(l.valor||0))}</td><td><span class="score-pill ${scoreClass(score(l))}">${score(l)}</span></td><td><button class="btn btn-xs" data-v65-edit="${E(l.id)}" type="button">Editar</button></td></tr>`).join(''):`<tr><td colspan="9" class="crm-empty">Nenhuma oportunidade encontrada.</td></tr>`}</tbody></table>`
-  }
-  function renderFunnel(list,metrics){
-    const box=$('#v65PipeFunnel'); if(!box)return;
-    const total=Math.max(1,metrics[0]?.count||list.length||1);
-    const losses=list.filter(l=>l.etapa==='Perdido');
-    const lossMap={}; losses.forEach(l=>{const r=lossReason(l);lossMap[r]=(lossMap[r]||0)+1});
-    const cur=thisMonth(),prev=prevMonth();
-    box.innerHTML=`<div class="v65-funnel-grid"><div class="v65-funnel-card"><div class="v65-card-title">Funil real por etapa</div><div class="v65-funnel-stack">${metrics.map((m,i)=>{const w=Math.max(32,Math.round((m.count/total)*100));return `<button type="button" class="v65-funnel-step" data-v65-open-stage="${E(m.name)}" style="--w:${w}%;--stage:${E(m.color)}"><b>${E(m.name)}</b><span>${m.count} · ${E(brl(m.value))} · ${m.conversion}% conv.</span></button>`}).join('')}</div></div><div class="v65-funnel-card"><div class="v65-card-title">Este mês vs mês passado</div><div class="v65-compare-list">${visibleStages().map(s=>{const c=safeLeads().filter(l=>(l.etapa||'Lead')===s.name&&monthKey(leadDate(l))===cur).length;const p=safeLeads().filter(l=>(l.etapa||'Lead')===s.name&&monthKey(leadDate(l))===prev).length;const d=c-p;return `<div><span>${E(s.name)}</span><b>${c}</b><small class="${d>=0?'ok':'danger'}">${d>=0?'+':''}${d}</small></div>`}).join('')}</div></div><div class="v65-funnel-card"><div class="v65-card-title">Perdas por motivo</div><div class="v65-loss-list">${Object.entries(lossMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div><span>${E(k)}</span><b>${v}</b></div>`).join('')||'<div class="crm-empty">Nenhuma perda registrada nos filtros.</div>'}</div></div></div>`
-  }
-  function renderDrawer(stage,list){
-    const box=$('#v65PipeDrawer'); if(!box)return;
-    const arr=list.filter(l=>(l.etapa||'Lead')===stage).sort(sortCommercial);
-    box.classList.remove('hidden');
-    box.innerHTML=`<div class="v65-drawer-head"><div><b>Leads em ${E(stage)}</b><span>${arr.length} oportunidade(s) nos filtros atuais.</span></div><button type="button" id="v65DrawerClose">×</button></div><div class="v65-drawer-list">${arr.length?arr.map(l=>`<button type="button" data-v65-open="${E(l.id)}"><div><b>${E(l.nome||'Lead')}</b><span>${E([l.cidade,l.responsavel,l.origem].filter(Boolean).join(' · '))}</span></div><strong>${E(brl(l.valor||0))}</strong></button>`).join(''):'<div class="crm-empty">Nenhum lead nessa etapa.</div>'}</div>`;
-    $('#v65DrawerClose')?.addEventListener('click',()=>box.classList.add('hidden'))
-  }
-  function bindDrag(){
-    $$('#v65PipeKanban [data-v65-card]').forEach(card=>{
-      card.addEventListener('dragstart',e=>{dragId=card.dataset.v65Card;card.classList.add('dragging');try{e.dataTransfer.setData('text/plain',dragId)}catch(_){}});
-      card.addEventListener('dragend',()=>{card.classList.remove('dragging');dragId=null});
-      card.addEventListener('click',e=>{if(e.target.closest('a,button'))return;openLead(leadById(card.dataset.v65Card))});
-    });
-    $$('#v65PipeKanban [data-v65-stage]').forEach(col=>{
-      col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drop')});
-      col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('drop')});
-      col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('drop');const id=dragId||e.dataTransfer.getData('text/plain');moveLead(id,col.dataset.v65Stage)})
-    })
-  }
-  function moveLead(id,stage){
-    const l=leadById(id); if(!l||!stage||l.etapa===stage)return;
-    const old=l.etapa||'Lead';
-    l.etapa=stage;l.probabilidade=stageCfg(stage).prob;l.ultimaAtualizacao=today();
-    if(stage==='Fechado'&&!l.dataFechamento)l.dataFechamento=today();
-    if(stage==='Perdido'&&!l.dataPerda)l.dataPerda=today();
-    try{typeof addAtividade==='function'&&addAtividade(l.nome,'Etapa',`${old} → ${stage}`)}catch(e){}
-    saveLeadsSafe();render();try{typeof renderLeadsTable==='function'&&renderLeadsTable()}catch(e){}try{window.CRMV64Agenda?.render?.()}catch(e){}
-    toast(`${l.nome||'Lead'} movido para ${stage}`,'success')
-  }
-  function openLead(l){if(!l)return;try{typeof openDetail==='function'?openDetail(l.nome):window.crmOpenLead?.(l.nome)}catch(e){} }
-  function editLead(l){if(!l)return;try{typeof openModal==='function'?openModal(l):window.crmOpenLeadModal?.(l)}catch(e){} }
-  function quickFollow(id){const l=leadById(id);if(!l)return;l.followup=addDays(1);l.proximaAcao=l.proximaAcao||'Follow-up criado pelo Pipeline';l.ultimaAtualizacao=today();try{typeof addAtividade==='function'&&addAtividade(l.nome,'Nota','Follow-up criado pelo Pipeline para amanhã.')}catch(e){}saveLeadsSafe();render();try{typeof renderLeadsTable==='function'&&renderLeadsTable()}catch(e){}toast('Follow-up criado para amanhã','success')}
+  function setSelectOptions(id,items,placeholder){const el=$('#'+id);if(!el)return;const cur=el.value;el.innerHTML='<option value="">'+E(placeholder)+'</option>'+items.map(v=>`<option value="${E(v)}">${E(v)}</option>`).join('');if([...el.options].some(o=>o.value===cur))el.value=cur}
+  function syncOptions(){setSelectOptions('v65PipeStage',visibleStages().map(s=>s.name),'Todas etapas');setSelectOptions('v65PipeOrigin',uniques('origem'),'Todas origens');setSelectOptions('v65PipeOwner',uniques('responsavel'),'Todos responsáveis');setSelectOptions('v65PipeCity',uniques('cidade'),'Todas cidades');setSelectOptions('v65PipeTag',uniques('tags'),'Todas tags');const st=$('#v65PipeStaleDays');if(st)st.value=String(getStaleDays())}
+  function filters(){return{q:norm($('#v65PipeSearch')?.value||''),stage:$('#v65PipeStage')?.value||'',priority:$('#v65PipePriority')?.value||'',origin:$('#v65PipeOrigin')?.value||'',owner:$('#v65PipeOwner')?.value||'',city:$('#v65PipeCity')?.value||'',tag:$('#v65PipeTag')?.value||'',status:$('#v65PipeStatus')?.value||'',period:$('#v65PipePeriod')?.value||'all',stale:getStaleDays()}}
+  function inPeriod(l,period){if(!period||period==='all')return true;const d=parseDate(leadUpdated(l));if(!d)return false;const now=parseDate(today());if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();const start=new Date(now);start.setDate(start.getDate()-Number(period)+1);return d>=start}
+  function filteredLeads(){const f=filters();return safeLeads().filter(l=>{const hay=norm([l.nome,l.empresa,l.segmento,l.responsavel,l.telefone,l.email,l.origem,l.cidade,l.tags,l.obs,l.observacoes,l.proximaAcao,l.decisor].join(' '));if(f.q&&!hay.includes(f.q))return false;if(f.stage&&stageName(l)!==f.stage)return false;if(f.priority&&l.prioridade!==f.priority)return false;if(f.origin&&l.origem!==f.origin)return false;if(f.owner&&l.responsavel!==f.owner)return false;if(f.city&&l.cidade!==f.city)return false;if(f.tag&&!tags(l).includes(f.tag))return false;if(!inPeriod(l,f.period))return false;if(f.status==='vencidos'&&!isOverdue(l))return false;if(f.status==='hoje'&&!isToday(l))return false;if(f.status==='sem_follow'&&nextDate(l))return false;if(f.status==='parados'&&daysSince(leadUpdated(l))<f.stale)return false;if(f.status==='alto_valor'&&Number(l.valor||0)<5000)return false;if(f.status==='ganhos_mes'&&stageCfg(stageName(l)).type!=='won')return false;if(f.status==='perdidos_mes'&&stageCfg(stageName(l)).type!=='lost')return false;return true})}
+  function sortCommercial(a,b){return Number(isOverdue(b))-Number(isOverdue(a))||score(b)-score(a)||String(nextDate(a)||'9999').localeCompare(String(nextDate(b)||'9999'))}
+  function stageMetrics(list){const stages=visibleStages();return stages.map((s,i)=>{const arr=list.filter(l=>stageName(l)===s.name);const next=stages[i+1]?.name;const nextCount=next?list.filter(l=>stageName(l)===next).length:0;const value=arr.reduce((a,l)=>a+Number(l.valor||0),0);const forecast=arr.reduce((a,l)=>a+Number(l.valor||0)*(Number(l.probabilidade??s.prob)/100),0);const stale=arr.filter(l=>s.type==='open'&&daysSince(leadUpdated(l))>=getStaleDays()).length;const overdue=arr.filter(isOverdue).length;const avgDays=arr.length?Math.round(arr.reduce((a,l)=>a+daysSince(leadUpdated(l)),0)/arr.length):0;return{...s,count:arr.length,value,forecast,stale,overdue,avgDays,conversion:arr.length?Math.round(nextCount/arr.length*100):s.type==='won'?100:0}})}
 
+  function renderKpis(list){const open=list.filter(l=>isOpenStage(stageName(l))),value=open.reduce((a,l)=>a+Number(l.valor||0),0),forecast=open.reduce((a,l)=>a+Number(l.valor||0)*(stageCfg(stageName(l)).prob/100),0),won=list.filter(l=>stageCfg(stageName(l)).type==='won'),lost=list.filter(l=>stageCfg(stageName(l)).type==='lost'),conversion=(won.length+lost.length)?Math.round(won.length/(won.length+lost.length)*100):0,overdue=open.filter(isOverdue).length,noFollow=open.filter(l=>!nextDate(l)).length;const box=$('#v65PipeKpis');if(!box)return;box.innerHTML=[['Oportunidades abertas',open.length,'Leads fora de ganho/perda'],['Valor aberto',brl(value),'Soma real dos valores'],['Forecast ponderado',brl(forecast),'Valor × probabilidade'],['Conversão geral',conversion+'%','Ganhos sobre decisões'],['Follow-ups vencidos',overdue,'Precisam de ação'],['Sem próximo contato',noFollow,'Oportunidades sem data']].map(([v,l,s])=>`<button class="v65-pipe-kpi" type="button"><b>${E(v)}</b><span>${E(l)}</span><small>${E(s)}</small></button>`).join('')}
+  function renderInsights(list,metrics){const box=$('#v65PipeInsights');if(!box)return;const open=list.filter(l=>isOpenStage(stageName(l))),bottleneck=metrics.filter(m=>m.type==='open').sort((a,b)=>b.count-a.count)[0],slow=metrics.filter(m=>m.type==='open').sort((a,b)=>b.avgDays-a.avgDays)[0],stale=open.filter(l=>daysSince(leadUpdated(l))>=getStaleDays()).length;box.innerHTML=`<div class="v65-insight"><span>Gargalo</span><b>${E(bottleneck?.name||'Sem dados')}: ${bottleneck?.count||0} lead(s)</b></div><div class="v65-insight"><span>Maior permanência</span><b>${E(slow?.name||'Sem dados')}: ${slow?.avgDays||0} dia(s)</b></div><div class="v65-insight"><span>Parados</span><b>${stale} lead(s) acima do limite</b></div><div class="v65-insight"><span>Base filtrada</span><b>${list.length} oportunidade(s)</b></div>`}
+  function callActionHTML(l,compact=false){const cfg=stageCfg(l),phone=window.CRMStageRegistry?.phoneInfo?.(l)||{valid:!!l.telefone,reason:'Telefone inválido'};if(cfg.type!=='open')return '';if(!phone.valid)return `<button ${compact?'class="btn btn-xs" ':''}type="button" disabled title="${E(phone.reason)}">Sem telefone</button>`;return `<button ${compact?'class="btn btn-xs" ':''}data-v985-call-lead="${E(l.id)}" type="button">Ligar</button>`}
+  function cardHTML(l){const sc=score(l);return `<article class="v65-pipe-card ${isOverdue(l)?'overdue':''}" draggable="true" data-v65-card="${E(l.id)}"><div class="v65-card-head"><div><b>${E(l.empresa||l.nome||'Lead')}</b><span>${E([l.segmento,l.cidade].filter(Boolean).join(' · ')||'Sem segmento/cidade')}</span></div><strong class="score-pill ${scoreClass(sc)}">${sc}</strong></div><div class="v65-card-next">${E(nextAction(l))}</div><div class="v65-card-meta"><span>${E(l.prioridade||'Média')}</span><span>${E(l.origem||'Sem origem')}</span><span>${E(brl(l.valor||0))}</span></div><div class="v65-card-foot"><span class="${isOverdue(l)?'danger':''}">${E(fmtDate(nextDate(l)))}</span><div>${callActionHTML(l)}<button data-v65-follow="${E(l.id)}" type="button">+1d</button><button data-v65-edit="${E(l.id)}" type="button">Editar</button></div></div></article>`}
+  function renderKanban(list,metrics){const board=$('#v65PipeKanban');if(!board)return;board.innerHTML=metrics.map(m=>`<section class="v65-pipe-col" data-v65-stage="${E(m.name)}" style="--stage:${E(m.color)}"><header><div><span class="v65-stage-dot"></span><b>${E(m.name)}</b><small>${m.count} lead(s) · ${E(brl(m.value))}</small></div><button type="button" data-v65-open-stage="${E(m.name)}">Abrir etapa</button></header><div class="v65-col-metrics"><span>Forecast<b>${E(brl(m.forecast))}</b></span><span>Conversão<b>${m.conversion}%</b></span><span>Parados<b>${m.stale}</b></span></div><div class="v65-pipe-col-body">${list.filter(l=>stageName(l)===m.name).sort(sortCommercial).map(cardHTML).join('')||'<div class="v65-empty-col">Nenhum lead nesta etapa.</div>'}</div></section>`).join('');bindDrag()}
+  function renderTable(list){const box=$('#v65PipeTable');if(!box)return;const rows=list.slice().sort(sortCommercial);box.innerHTML=`<table class="v65-pipe-table"><thead><tr><th>Lead</th><th>Etapa</th><th>Cidade</th><th>Responsável</th><th>Próximo contato</th><th>Valor</th><th>Score</th><th>Ações</th></tr></thead><tbody>${rows.length?rows.map(l=>`<tr><td data-v65-open="${E(l.id)}"><b>${E(l.empresa||l.nome||'Lead')}</b><small>${E(l.segmento||'')}</small></td><td>${E(stageName(l))}</td><td>${E(l.cidade||'—')}</td><td>${E(l.responsavel||'—')}</td><td class="${isOverdue(l)?'danger':''}">${E(fmtDate(nextDate(l)))}</td><td>${E(brl(l.valor||0))}</td><td><span class="score-pill ${scoreClass(score(l))}">${score(l)}</span></td><td>${callActionHTML(l,true)} <button class="btn btn-xs" data-v65-edit="${E(l.id)}" type="button">Editar</button></td></tr>`).join(''):`<tr><td colspan="8" class="crm-empty">Nenhuma oportunidade encontrada.</td></tr>`}</tbody></table>`}
+  function renderFunnel(list,metrics){const box=$('#v65PipeFunnel');if(!box)return;const total=Math.max(1,metrics[0]?.count||list.length||1),losses=list.filter(l=>stageCfg(stageName(l)).type==='lost'),lossMap={};losses.forEach(l=>{const r=lossReason(l);lossMap[r]=(lossMap[r]||0)+1});box.innerHTML=`<div class="v65-funnel-grid"><div class="v65-funnel-card"><div class="v65-card-title">Funil por etapa</div><div class="v65-funnel-stack">${metrics.map(m=>{const w=Math.max(32,Math.round(m.count/total*100));return `<button type="button" class="v65-funnel-step" data-v65-open-stage="${E(m.name)}" style="--w:${w}%;--stage:${E(m.color)}"><b>${E(m.name)}</b><span>${m.count} · ${E(brl(m.value))} · ${m.conversion}% conv.</span></button>`}).join('')}</div></div><div class="v65-funnel-card"><div class="v65-card-title">Previsão por etapa</div><div class="v65-compare-list">${metrics.map(m=>`<div><span>${E(m.name)}</span><b>${E(brl(m.forecast))}</b><small>${m.prob}%</small></div>`).join('')}</div></div><div class="v65-funnel-card"><div class="v65-card-title">Perdas por motivo</div><div class="v65-loss-list">${Object.entries(lossMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div><span>${E(k)}</span><b>${v}</b></div>`).join('')||'<div class="crm-empty">Nenhuma perda registrada nos filtros.</div>'}</div></div></div>`}
+
+  function renderStageWorkspace(stage,list){
+    const box=$('#v65PipeDrawer');if(!box)return;const cfg=stageCfg(stage),arr=list.filter(l=>stageName(l)===stage).sort(sortCommercial),value=arr.reduce((s,l)=>s+Number(l.valor||0),0),over=arr.filter(isOverdue).length,stale=arr.filter(l=>daysSince(leadUpdated(l))>=cfg.slaDays&&cfg.slaDays>0).length,avg=arr.length?Math.round(arr.reduce((s,l)=>s+daysSince(leadUpdated(l)),0)/arr.length):0;activeStageDrawer=stage;box.classList.remove('hidden');box.innerHTML=`<div class="v985-stage-workspace-head" style="--stage:${E(cfg.color)}"><div><span>Etapa do Pipeline</span><h2>${E(cfg.name)}</h2><p>${E(cfg.description)}</p></div><div><button class="btn" type="button" data-v985-config-stage="${E(cfg.name)}">Configurar etapa</button><button class="btn" type="button" data-v985-close-stage>Fechar</button></div></div><div class="v985-stage-kpis"><div><span>Leads</span><b>${arr.length}</b></div><div><span>Valor</span><b>${E(brl(value))}</b></div><div><span>Vencidos</span><b>${over}</b></div><div><span>Acima do prazo</span><b>${stale}</b></div><div><span>Tempo médio</span><b>${avg} dia(s)</b></div></div><div class="v985-stage-guidance"><div><span>Probabilidade</span><b>${cfg.prob}%</b></div><div><span>Prazo recomendado</span><b>${cfg.slaDays?cfg.slaDays+' dia(s)':'Sem limite'}</b></div><div><span>Próxima ação padrão</span><b>${E(cfg.defaultAction)}</b></div></div><div class="v985-stage-leads"><div class="v985-stage-leads-head"><div><h3>Oportunidades nesta etapa</h3><p>Ordenadas por vencimento, score e próxima data.</p></div><span>${arr.length} resultado(s)</span></div>${arr.length?arr.map(l=>`<article><div><b>${E(l.empresa||l.nome)}</b><span>${E([l.segmento,l.cidade,l.responsavel].filter(Boolean).join(' · '))}</span><small>${E(nextAction(l))} · ${E(fmtDate(nextDate(l)))}</small></div><strong>${E(brl(l.valor||0))}</strong><div><button type="button" data-v65-open="${E(l.id)}">Abrir ficha</button>${callActionHTML(l)}</div></article>`).join(''):'<div class="crm-empty">Nenhum lead nesta etapa com os filtros atuais.</div>'}</div>`;
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function stageRowHTML(s){return `<article class="v985-stage-config-row" data-stage-id="${E(s.id)}" data-original-name="${E(s.name)}"><div class="v985-stage-row-top"><input class="v985-stage-color" type="color" data-stage-field="color" value="${E(s.color)}"><input class="v985-stage-name" data-stage-field="name" value="${E(s.name)}" aria-label="Nome da etapa"><select data-stage-field="type"><option value="open" ${s.type==='open'?'selected':''}>Em andamento</option><option value="won" ${s.type==='won'?'selected':''}>Ganha</option><option value="lost" ${s.type==='lost'?'selected':''}>Perdida</option></select><select data-stage-field="role" title="Função interna da etapa"><option value="lead" ${s.role==='lead'?'selected':''}>Entrada</option><option value="contact" ${s.role==='contact'?'selected':''}>Contato</option><option value="proposal" ${s.role==='proposal'?'selected':''}>Proposta</option><option value="custom" ${s.role==='custom'?'selected':''}>Personalizada</option><option value="won" ${s.role==='won'?'selected':''}>Ganho</option><option value="lost" ${s.role==='lost'?'selected':''}>Perda</option></select><label class="v985-visible-check"><input type="checkbox" data-stage-field="visible" ${s.visible?'checked':''}> Visível</label><div class="v985-stage-order"><button type="button" data-stage-move="up" title="Mover para cima">↑</button><button type="button" data-stage-move="down" title="Mover para baixo">↓</button><button type="button" data-stage-remove title="Remover etapa">×</button></div></div><div class="v985-stage-row-grid"><label>Probabilidade<input type="number" min="0" max="100" data-stage-field="prob" value="${s.prob}"></label><label>Prazo recomendado (dias)<input type="number" min="0" max="365" data-stage-field="slaDays" value="${s.slaDays}"></label><label class="wide">Descrição<textarea data-stage-field="description">${E(s.description)}</textarea></label><label class="wide">Próxima ação padrão<textarea data-stage-field="defaultAction">${E(s.defaultAction)}</textarea></label></div></article>`}
+  function openStageConfig(focusName=''){const modal=$('#v985StageConfigModal'),list=$('#v985StageConfigList');if(!modal||!list)return;list.innerHTML=loadStages().map(stageRowHTML).join('');modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');if(focusName){setTimeout(()=>{const row=$$('[data-original-name]',list).find(r=>r.dataset.originalName===focusName);row?.scrollIntoView({behavior:'smooth',block:'center'});row?.classList.add('is-focused');setTimeout(()=>row?.classList.remove('is-focused'),1300)},50)}}
+  function closeStageConfig(){const modal=$('#v985StageConfigModal');if(modal){modal.classList.add('hidden');modal.setAttribute('aria-hidden','true')}}
+  function collectStageRows(){return $$('#v985StageConfigList .v985-stage-config-row:not([data-pending-remove="1"])').map((row,i)=>{const val=f=>row.querySelector(`[data-stage-field="${f}"]`);return normalizeStage({id:row.dataset.stageId||uid('stage'),name:val('name')?.value,oldName:row.dataset.originalName,color:val('color')?.value,prob:val('prob')?.value,type:val('type')?.value,role:val('role')?.value,slaDays:val('slaDays')?.value,description:val('description')?.value,defaultAction:val('defaultAction')?.value,visible:!!val('visible')?.checked,order:i},i)})}
+  function persistStageRows(){const stages=collectStageRows();if(!stages.length){toast('O Pipeline precisa ter pelo menos uma etapa.','warn');return}const names=stages.map(s=>norm(s.name));if(names.some((n,i)=>!n||names.indexOf(n)!==i)){toast('Use nomes únicos e não deixe etapas sem nome.','warn');return}const oldStages=loadStages(),before=Object.fromEntries(oldStages.map(s=>[s.id,s])),oldByName=Object.fromEntries(oldStages.map(s=>[norm(s.name),s]));const removals=Object.fromEntries($$('#v985StageConfigList .v985-stage-config-row[data-pending-remove="1"]').map(r=>[r.dataset.stageId,r.dataset.migrateTo]));const leads=safeLeads();leads.forEach(l=>{const oldId=l.pipelineStageId||oldByName[norm(l.pipeline||l.etapa)]?.id;const target=stages.find(s=>s.id===oldId)||stages.find(s=>s.id===removals[oldId])||stages.find(s=>norm(s.name)===norm(l.pipeline||l.etapa))||stages[0];if(target){l.pipelineStageId=target.id;l.pipeline=target.name;l.etapa=target.name;l.pipelineType=target.type;l.pipelineRole=target.role;l.probabilidade=target.prob}});saveStages(stages);saveLeadsSafe(leads);closeStageConfig();syncOptions();render();toast('Etapas atualizadas e leads realocados com segurança.');if(activeStageDrawer){const oldStage=Object.values(before).find(s=>s.name===activeStageDrawer);const renamed=stages.find(s=>s.id===oldStage?.id);if(renamed)activeStageDrawer=renamed.name;else activeStageDrawer=''}}
+
+  function bindDrag(){
+    $$('#v65PipeKanban [data-v65-card]').forEach(card=>{card.addEventListener('dragstart',e=>{dragId=card.dataset.v65Card;card.classList.add('dragging');try{e.dataTransfer.setData('text/plain',dragId)}catch(_){} });card.addEventListener('dragend',()=>{card.classList.remove('dragging');dragId=null});card.addEventListener('click',e=>{if(e.target.closest('a,button'))return;openLead(leadById(card.dataset.v65Card))})});
+    $$('#v65PipeKanban [data-v65-stage]').forEach(col=>{col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drop')});col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('drop')});col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('drop');const id=dragId||e.dataTransfer.getData('text/plain');moveLead(id,col.dataset.v65Stage)})})
+  }
+  function moveLead(id,stage){const list=safeLeads(),l=list.find(x=>String(x.id)===String(id));if(!l||!stage||stageName(l)===stage)return;const old=stageName(l);const changed=window.CRMStageRegistry?.assignStage?.(l,stage)||null;if(!changed){l.pipeline=stage;l.etapa=stage;l.probabilidade=stageCfg(stage).prob;l.ultimaAtualizacao=today()}l.historico=Array.isArray(l.historico)?l.historico:[];l.historico.push({tipo:'Pipeline',resultado:`${old} → ${stageName(l)}`,data:today(),hora:new Date().toTimeString().slice(0,5),obs:'Movido pelo Kanban.'});saveLeadsSafe(list);try{const st=stageCfg(l);window.CRMEventHub?.emit?.('crm:pipeline-stage-changed',{leadId:l.id,lead:l,from:old,to:stageName(l),stage:st});if(st.role==='proposal')window.CRMEventHub?.emit?.('crm:pipeline-proposal',{leadId:l.id,lead:l});if(st.type==='won')window.CRMEventHub?.emit?.('crm:pipeline-won',{leadId:l.id,lead:l});if(st.type==='lost')window.CRMEventHub?.emit?.('crm:pipeline-lost',{leadId:l.id,lead:l});}catch(e){}render();toast(`${l.empresa||l.nome||'Lead'} movido para ${stageName(l)}`)}
+  function openLead(l){if(!l)return;try{if(window.CRMV94Official?.openLeadDrawer)return window.CRMV94Official.openLeadDrawer(l.id);if(typeof window.crmOpenLead==='function')return window.crmOpenLead(l.id);if(typeof openDetail==='function')return openDetail(l.nome)}catch(e){}}
+  function editLead(l){if(!l)return;try{if(window.CRMV94Official?.openLeadDrawer)return window.CRMV94Official.openLeadDrawer(l.id);if(typeof openModal==='function')return openModal(l)}catch(e){}}
+  function quickFollow(id){const list=safeLeads(),l=list.find(x=>String(x.id)===String(id));if(!l)return;const d=new Date();d.setDate(d.getDate()+1);l.proximaData=d.toISOString().slice(0,10);l.followupData=l.proximaData;l.proximaAcao=l.proximaAcao||'Retomar contato';l.ultimaAtualizacao=today();saveLeadsSafe(list);render();toast('Follow-up agendado para amanhã')}
+  function captureContext(id){const values={};['v65PipeSearch','v65PipeStage','v65PipePriority','v65PipeOrigin','v65PipeOwner','v65PipeCity','v65PipeTag','v65PipeStatus','v65PipePeriod','v65PipeStaleDays'].forEach(k=>{const el=$('#'+k);if(el)values[k]=el.value});return {view:currentView(),values,scrollY:window.scrollY,stageDrawer:activeStageDrawer,leadId:id}}
+  function restoreContext(ctx={}){window.setView?.('pipeline');setTimeout(()=>{render();Object.entries(ctx.values||{}).forEach(([k,v])=>{const el=$('#'+k);if(el)el.value=v});if(ctx.view)setViewMode(ctx.view);if(ctx.stageDrawer){activeStageDrawer=ctx.stageDrawer;renderStageWorkspace(ctx.stageDrawer,filteredLeads())}setTimeout(()=>{const card=$(`[data-v65-card="${CSS.escape(String(ctx.leadId||''))}"]`);card?.scrollIntoView({behavior:'smooth',block:'center'});card?.classList.add('is-focused');setTimeout(()=>card?.classList.remove('is-focused'),1400);if(!card&&Number.isFinite(ctx.scrollY))window.scrollTo({top:ctx.scrollY,behavior:'smooth'})},120)},40)}
+  function callLead(id){const lead=leadById(id),phone=window.CRMStageRegistry?.phoneInfo?.(lead);if(!lead||!isOpenStage(lead))return toast('Este lead está em uma etapa encerrada.','warn');if(phone&&!phone.valid)return toast(phone.reason,'warn');const origin={view:'pipeline',context:captureContext(id)};window.CRMCallsBridge?.openLead(id,{origin}).catch(e=>toast(e.message||'Não foi possível abrir Ligações.','warn'))}
+
+  function clearFilters(){['v65PipeSearch','v65PipeStage','v65PipePriority','v65PipeOrigin','v65PipeOwner','v65PipeCity','v65PipeTag','v65PipeStatus'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});const p=$('#v65PipePeriod');if(p)p.value='all';render()}
   function bind(){
-    if(document.body.dataset.v65PipelineBound==='1')return;document.body.dataset.v65PipelineBound='1';
-    document.addEventListener('input',e=>{if(e.target.closest('#pipeline #v65PipeSearch,#pipeline #v65PipeStaleDays')){if(e.target.id==='v65PipeStaleDays')localStorage.setItem(STALE_KEY,e.target.value);setTimeout(render,60)}},true);
-    document.addEventListener('change',e=>{if(e.target.closest('#pipeline select'))render()},true);
+    if(document.body.dataset.v985PipelineBound==='1')return;document.body.dataset.v985PipelineBound='1';
+    document.addEventListener('input',e=>{if(e.target.closest('#pipeline #v65PipeSearch,#pipeline #v65PipeStaleDays')){if(e.target.id==='v65PipeStaleDays')localStorage.setItem(STALE_KEY,e.target.value);setTimeout(render,80)}},true);
+    document.addEventListener('change',e=>{if(e.target.closest('#pipeline #v65PipeFilterPanel select'))render()},true);
     document.addEventListener('click',e=>{
-      const view=e.target.closest('[data-v65-pipe-view]'); if(view){e.preventDefault();setViewMode(view.dataset.v65PipeView);return}
-      if(e.target.closest('#v65PipeRefresh')){e.preventDefault();render();toast('Pipeline atualizado','success');return}
-      if(e.target.closest('#v65PipeNewLead')){e.preventDefault();try{setView('novo-lead')}catch(err){}return}
-      if(e.target.closest('#v65PipeClear')){e.preventDefault();['v65PipeSearch','v65PipeStage','v65PipePriority','v65PipeOrigin','v65PipeOwner','v65PipeCity','v65PipeTag','v65PipeStatus'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});$('#v65PipePeriod')&&($('#v65PipePeriod').value='all');render();return}
-      const edit=e.target.closest('[data-v65-edit]'); if(edit){e.preventDefault();e.stopPropagation();editLead(leadById(edit.dataset.v65Edit));return}
-      const fol=e.target.closest('[data-v65-follow]'); if(fol){e.preventDefault();e.stopPropagation();quickFollow(fol.dataset.v65Follow);return}
-      const open=e.target.closest('[data-v65-open]'); if(open){e.preventDefault();openLead(leadById(open.dataset.v65Open));return}
-      const stage=e.target.closest('[data-v65-open-stage]'); if(stage){e.preventDefault();renderDrawer(stage.dataset.v65OpenStage,filteredLeads());return}
+      const view=e.target.closest('[data-v65-pipe-view]');if(view){e.preventDefault();setViewMode(view.dataset.v65PipeView);return}
+      if(e.target.closest('#v985ToggleFilters')){e.preventDefault();setFiltersCollapsed(!filtersCollapsed());return}
+      if(e.target.closest('#v985ConfigureStages')){e.preventDefault();openStageConfig();return}
+      if(e.target.closest('#v65PipeRefresh')){e.preventDefault();render();toast('Pipeline atualizado');return}
+      if(e.target.closest('#v65PipeNewLead')){e.preventDefault();window.setView?.('novo-lead');return}
+      if(e.target.closest('#v65PipeClear')){e.preventDefault();clearFilters();return}
+      const edit=e.target.closest('[data-v65-edit]');if(edit){e.preventDefault();e.stopPropagation();editLead(leadById(edit.dataset.v65Edit));return}
+      const fol=e.target.closest('[data-v65-follow]');if(fol){e.preventDefault();e.stopPropagation();quickFollow(fol.dataset.v65Follow);return}
+      const open=e.target.closest('[data-v65-open]');if(open){e.preventDefault();openLead(leadById(open.dataset.v65Open));return}
+      const call=e.target.closest('[data-v985-call-lead]');if(call){if(e.defaultPrevented)return;e.preventDefault();e.stopPropagation();callLead(call.dataset.v985CallLead);return}
+      const stage=e.target.closest('[data-v65-open-stage]');if(stage){e.preventDefault();renderStageWorkspace(stage.dataset.v65OpenStage,filteredLeads());return}
+      if(e.target.closest('[data-v985-close-stage]')){$('#v65PipeDrawer')?.classList.add('hidden');activeStageDrawer='';return}
+      const cfg=e.target.closest('[data-v985-config-stage]');if(cfg){openStageConfig(cfg.dataset.v985ConfigStage);return}
+      if(e.target.closest('[data-v985-close-stage-config]')||e.target.id==='v985StageConfigModal'){closeStageConfig();return}
+      if(e.target.closest('[data-v985-add-stage]')){const list=$('#v985StageConfigList');if(list)list.insertAdjacentHTML('beforeend',stageRowHTML(normalizeStage({id:uid('stage'),name:'Nova etapa',color:'#64748b',prob:20,type:'open',slaDays:2,description:'Descreva o objetivo desta etapa.',defaultAction:'Defina a próxima ação padrão.',visible:true},list.children.length)));return}
+      if(e.target.closest('[data-v985-reset-stages]')){window.CRMDialog?.confirm('Restaurar as etapas padrão? Os leads serão mantidos nas etapas atuais até você movê-los.',{title:'Restaurar etapas'}).then(ok=>{if(ok)$('#v985StageConfigList').innerHTML=DEFAULT_STAGE_DATA.map(stageRowHTML).join('')});return}
+      if(e.target.closest('[data-v985-save-stages]')){persistStageRows();return}
+      const move=e.target.closest('[data-stage-move]');if(move){const row=move.closest('.v985-stage-config-row'),dir=move.dataset.stageMove;if(dir==='up'&&row.previousElementSibling)row.parentElement.insertBefore(row,row.previousElementSibling);if(dir==='down'&&row.nextElementSibling)row.parentElement.insertBefore(row.nextElementSibling,row);return}
+      const remove=e.target.closest('[data-stage-remove]');if(remove){const row=remove.closest('.v985-stage-config-row'),rows=$$('#v985StageConfigList .v985-stage-config-row:not([data-pending-remove="1"])');if(rows.length<=1){toast('O Pipeline precisa ter pelo menos uma etapa.','warn');return}const count=safeLeads().filter(l=>(l.pipelineStageId||stageCfg(stageName(l)).id)===row.dataset.stageId).length;const targets=rows.filter(r=>r!==row);if(count){row.querySelector('.v988-stage-removal')?.remove();row.insertAdjacentHTML('beforeend',`<div class="v988-stage-removal"><div><b>Esta etapa possui ${count} lead(s).</b><span>Escolha para onde eles irão antes de remover.</span></div><select data-v988-migration-target>${targets.map(r=>`<option value="${E(r.dataset.stageId)}">${E(r.querySelector('[data-stage-field=name]')?.value||'Etapa')}</option>`).join('')}</select><button type="button" data-v988-confirm-remove>Confirmar remoção</button><button type="button" data-v988-cancel-remove>Cancelar</button></div>`)}else{row.dataset.pendingRemove='1';row.hidden=true}return}if(e.target.closest('[data-v988-confirm-remove]')){const row=e.target.closest('.v985-stage-config-row');row.dataset.migrateTo=row.querySelector('[data-v988-migration-target]')?.value||'';row.dataset.pendingRemove='1';row.hidden=true;return}if(e.target.closest('[data-v988-cancel-remove]')){e.target.closest('.v988-stage-removal')?.remove();return}
     },true);
   }
-  function patch(){
-    try{window.renderBoard=render}catch(e){}
-    try{window.CRMV65Pipeline={render,filteredLeads,stageMetrics}}catch(e){}
-    try{const old=window.setView||setView;if(typeof old==='function'&&!old.__pipelineV65){const w=function(v){const out=old.apply(this,arguments);if(v==='pipeline')setTimeout(render,80);return out};w.__pipelineV65=true;window.setView=w;try{setView=w}catch(e){} }}catch(e){}
-    try{const old=window.renderAll||renderAll;if(typeof old==='function'&&!old.__pipelineV65){const w=function(){const out=old.apply(this,arguments);if(isActive())setTimeout(render,120);return out};w.__pipelineV65=true;window.renderAll=w;try{renderAll=w}catch(e){} }}catch(e){}
-  }
-  function render(){
-    ensureIds();ensureLayout();syncOptions();
-    const list=filteredLeads();const metrics=stageMetrics(list);const view=currentView();
-    $$('#pipeline [data-v65-pipe-view]').forEach(b=>b.classList.toggle('active',b.dataset.v65PipeView===view));
-    $('#v65PipeKanban')?.classList.toggle('hidden',view!=='kanban');
-    $('#v65PipeTable')?.classList.toggle('hidden',view!=='table');
-    $('#v65PipeFunnel')?.classList.toggle('hidden',view!=='funnel');
-    renderKpis(list);renderInsights(list,metrics);renderKanban(list,metrics);renderTable(list);renderFunnel(list,metrics);
-  }
-  function isActive(){return !!$('#pipeline.active') || document.body?.dataset.currentView==='pipeline';}
-  function init(){bind();patch();try{window.CRMV65Pipeline={render,filteredLeads,stageMetrics}}catch(e){};if(isActive()){ensureLayout();render();setTimeout(render,350)}}
-  document.addEventListener('crm:viewchange',e=>{if(e.detail?.view==='pipeline')setTimeout(()=>{ensureLayout();render();},45)});
-  document.addEventListener('crm:datachange',()=>{if(isActive())setTimeout(render,100)});
+  function patch(){window.renderBoard=render;window.CRMV65Pipeline={version:'98.6',render,filteredLeads,stageMetrics,openStageConfig,loadStages,captureContext,restoreContext};}
+  function render(){ensureIds();ensureLayout();syncOptions();applyFilterVisibility();const list=filteredLeads(),metrics=stageMetrics(list),view=currentView();$$('#pipeline [data-v65-pipe-view]').forEach(b=>b.classList.toggle('active',b.dataset.v65PipeView===view));$('#v65PipeKanban')?.classList.toggle('hidden',view!=='kanban');$('#v65PipeTable')?.classList.toggle('hidden',view!=='table');$('#v65PipeFunnel')?.classList.toggle('hidden',view!=='funnel');renderKpis(list);renderInsights(list,metrics);renderKanban(list,metrics);renderTable(list);renderFunnel(list,metrics);if(activeStageDrawer)renderStageWorkspace(activeStageDrawer,list)}
+  function isActive(){return !!$('#pipeline.active')||document.body?.dataset.currentView==='pipeline'}
+  function init(){bind();patch();if(isActive()){render();setTimeout(render,250)}}
+  document.addEventListener('crm:viewchange',e=>{if(e.detail?.view==='pipeline')setTimeout(render,30)});
+  document.addEventListener('crm:datachange',()=>{if(isActive())setTimeout(render,80)});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

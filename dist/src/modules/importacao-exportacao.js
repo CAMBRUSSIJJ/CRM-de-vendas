@@ -6,7 +6,7 @@
   'use strict';
 
   const VERSION='V69';
-  const LEADS_KEY='outbounder_leads_v5';
+  const LEADS_KEY='crm_v99_leads';
   const AGENDA_KEY='outbounder_agenda_v1';
   const DATA_PREFIXES=['outbounder_','crm_'];
   const EXPORT_DATE=()=>new Date().toISOString().slice(0,10);
@@ -45,19 +45,8 @@
   }
   function readJSON(key,fallback=null){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
   function writeJSON(key,val){localStorage.setItem(key,JSON.stringify(val));}
-  function getLeads(){
-    try{ if(window.crmGetLeads) return window.crmGetLeads() || []; }catch(e){}
-    const arr=readJSON(LEADS_KEY,[]);return Array.isArray(arr)?arr:[];
-  }
-  function saveLeads(list){
-    try{
-      const live=window.crmGetLeads ? window.crmGetLeads() : null;
-      if(Array.isArray(live) && live!==list){ live.length=0; list.forEach(x=>live.push(x)); }
-    }catch(e){}
-    writeJSON(LEADS_KEY,list);
-    try{ if(window.crmSaveLeads) window.crmSaveLeads(); else if(typeof renderAll==='function') renderAll(); }catch(e){}
-    window.dispatchEvent(new CustomEvent('crm:leads-updated',{detail:{source:'v69-import-export'}}));
-  }
+  function getLeads(){try{return window.CRMData?.leads?.all?.()||[]}catch(e){return[]}}
+  function saveLeads(list){const saved=window.CRMData?.leads?.save?.(list,'import-export')||list;try{if(typeof renderAll==='function')renderAll()}catch(e){}return saved;}
   function normalizeText(v){return String(v||'').trim()}
   function normalizePhone(v){return normalizeText(v).replace(/\D/g,'')}
   function normLower(v){return normalizeText(v).toLowerCase()}
@@ -78,7 +67,7 @@
   }
   function normalizeLead(row){
     const etapa=normalizeText(row.etapa||row.stage||row.status)||'Lead';
-    const validStage=['Lead','Contato','Proposta','Fechado','Perdido'].includes(etapa)?etapa:'Lead';
+    const resolved=window.CRMStageRegistry?.resolveStage?.(etapa,{create:true});const validStage=resolved?.name||etapa||'Lead';
     const prioridade=normalizeText(row.prioridade||row.priority)||'Média';
     return {
       nome: normalizeText(row.nome||row.name||row.empresa||row.lead),
@@ -88,7 +77,7 @@
       email: normalizeText(row.email||row.e_mail||row.mail),
       cidade: normalizeText(row.cidade||row.city||row.localidade),
       tags: normalizeTags(row.tags||row.tag),
-      etapa: validStage,
+      etapa: validStage, pipeline:validStage, pipelineStageId:resolved?.id||'', pipelineType:resolved?.type||'open', pipelineRole:resolved?.role||'lead',
       prioridade: ['Alta','Média','Baixa'].includes(prioridade)?prioridade:'Média',
       valor: asNumber(row.valor||row.value||row.ticket),
       probabilidade: Math.max(0,Math.min(100,asNumber(row.probabilidade||row.probability))),
@@ -303,11 +292,11 @@
   function triggerPreImportBackup(){
     try{downloadFile(`backup_antes_importacao_${EXPORT_DATE()}.json`, JSON.stringify(collectBackup(),null,2), 'application/json;charset=utf-8');}catch(e){}
   }
-  function applyJSONImport(){
+  async function applyJSONImport(){
     if(!pendingImport || pendingImport.type!=='json-backup') return;
     const mode=$('#v69JsonMode')?.value||'replace';
     const payload=pendingImport.payload;
-    if(!confirm(mode==='replace'?'Restaurar backup e substituir dados atuais?':'Mesclar backup com dados atuais?')) return;
+    const approved=await window.CRMDialog?.confirm(mode==='replace'?'Restaurar backup e substituir dados atuais?':'Mesclar backup com dados atuais?',{title:'Restaurar backup',danger:mode==='replace'});if(!approved)return;
     triggerPreImportBackup();
     let imported=0;
     const leadsPayload=Array.isArray(payload.leads)?payload.leads:(Array.isArray(payload.datasets?.leads)?payload.datasets.leads:null);
@@ -379,8 +368,8 @@
     toast('Dados antigos reparados para o padrão atual','success');
     renderImportExport();
   }
-  function clearData(){
-    const text=prompt('Para apagar os dados comerciais, digite APAGAR:');
+  async function clearData(){
+    const text=await window.CRMDialog?.prompt('Para apagar os dados comerciais, digite APAGAR:',{title:'Apagar dados comerciais',label:'Confirmação',danger:true});
     if(text!=='APAGAR'){toast('Limpeza cancelada','warn');return;}
     triggerPreImportBackup();
     [LEADS_KEY,AGENDA_KEY,'outbounder_garimpo_leads_v62','crm_v63_cadencias','outbounder_goals_v5','crm_goals_v5','outbounder_automations_v1','outbounder_chat_v1'].forEach(k=>localStorage.removeItem(k));
@@ -394,7 +383,7 @@
   function statusHTML(){
     const d=datasetSummary();
     const duplicates=scanDuplicates();
-    const incomplete=getLeads().filter(l=>!l.proximaAcao&&!l.followup&& !['Fechado','Perdido'].includes(l.etapa));
+    const incomplete=getLeads().filter(l=>!l.proximaAcao&&!l.followup&& (window.CRMCommercialModel?window.CRMCommercialModel.isOpen(l):!['Fechado','Perdido'].includes(l.etapa)));
     const keys=allManagedKeys().length;
     return `<div class="v69-kpi-row">
       ${mini('Leads',d.leads.length,'ok')}

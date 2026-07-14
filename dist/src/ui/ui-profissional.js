@@ -101,22 +101,12 @@
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(node){const s=node.nodeValue||'';return s.length>160 && /(function\s|const\s|let\s|window\.|document\.|=>)/.test(s)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT}});
     const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
     nodes.forEach(n=>{n.nodeValue='';removed++});
-    try{typeof showToast==='function'?showToast(removed?`Texto técnico removido (${removed})`:'Nenhum texto técnico encontrado',removed?'success':'warn'):alert(removed?`Textos removidos: ${removed}`:'Nenhum texto técnico encontrado')}catch(e){}
+    try{typeof showToast==='function'?showToast(removed?`Texto técnico removido (${removed})`:'Nenhum texto técnico encontrado',removed?'success':'warn'):console.info(removed?`Textos removidos: ${removed}`:'Nenhum texto técnico encontrado')}catch(e){}
   }
   function patchNavigation(){
-    const prev=window.setView || (typeof setView==='function'?setView:null);
-    if(typeof prev==='function' && !prev.__crmV47){
-      const patched=function(view){
-        document.body.dataset.currentView=view;
-        let out;try{out=prev.apply(this,arguments)}catch(e){console.error('Erro ao abrir aba',view,e)}
-        setTimeout(()=>{apply();normalizeFilters();},80);
-        return out;
-      };
-      patched.__crmV47=true;window.setView=patched;try{setView=patched}catch(e){}
-    }
-    document.addEventListener('click',e=>{const n=e.target.closest('[data-view],[data-go],[data-go-view]');if(n)setTimeout(()=>normalizeFilters(),120)},true);
-    document.addEventListener('input',e=>{if(e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*="Filters"],[id*="Toolbar"]'))updateFilterCount(e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*="Filters"],[id*="Toolbar"]'))},true);
-    document.addEventListener('change',e=>{if(e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*="Filters"],[id*="Toolbar"]'))updateFilterCount(e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*="Filters"],[id*="Toolbar"]'))},true);
+    document.addEventListener('crm:viewchange',()=>{apply();normalizeFilters();});
+    document.addEventListener('input',e=>{const bar=e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*=\"Filters\"],[id*=\"Toolbar\"]');if(bar)updateFilterCount(bar)},true);
+    document.addEventListener('change',e=>{const bar=e.target.closest('.crm-filterbar,.pipeline-toolbar,.leads-toolbar,.agenda-toolbar,[id*=\"Filters\"],[id*=\"Toolbar\"]');if(bar)updateFilterCount(bar)},true);
   }
   function boot(){ensureDrawer();addSettingsButtons();patchNavigation();apply();normalizeFilters();setTimeout(normalizeFilters,600);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();

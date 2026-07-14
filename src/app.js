@@ -1,7 +1,9 @@
 (function(W,D){
   'use strict';
+  D.title='RealTalent CRM';
+  D.body?.classList.add('crm-v987-premium');
   const project={
-    version:'V98.1 Modularização Estrutural',
+    version:'V99.0 Núcleo Modular e Supabase Ready',
     architecture:'classic-modular',
     storage:'local-compatible',
     bootedAt:new Date().toISOString(),

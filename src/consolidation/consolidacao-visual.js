@@ -40,10 +40,7 @@
     D.body.dataset.currentView=parent;syncTitle(parent);
     return true;
   }
-  function finiteEnhance(parent,target){
-    [0,70,190,420].forEach(ms=>setTimeout(()=>{if(parent)forceParent(parent);enhance(parent,target)},ms));
-    if(target)setTimeout(()=>{if(pendingTarget===target)pendingTarget='';},560);
-  }
+  function finiteEnhance(parent,target){requestAnimationFrame(()=>{if(parent)forceParent(parent);enhance(parent,target);if(target&&pendingTarget===target)pendingTarget='';});}
   function routeLegacy(target,navigator){
     const cfg=LEGACY[target];if(!cfg)return false;
     setMode(cfg.parent,cfg.mode);pendingTarget=target;
@@ -53,22 +50,7 @@
     try{history.replaceState(null,'','#'+cfg.parent)}catch(e){}
     return true;
   }
-  function installRouter(){
-    if(typeof W.setView==='function'&&W.setView.__v975Router)return;
-    W.__crmV975RouterInstalled=true;
-    const prev=W.setView;latestPreviousSetView=prev;
-    const wrapped=function(view){
-      view=String(view||'');
-      if(LEGACY[view]){routeLegacy(view,prev);return;}
-      const out=typeof prev==='function'?prev.apply(this,arguments):undefined;
-      if(D.getElementById(view)?.classList.contains('view'))forceParent(view);
-      finiteEnhance(view,'');
-      return out;
-    };
-    wrapped.__v975Router=true;wrapped.__v975Previous=prev;
-    W.setView=wrapped;
-    try{setView=wrapped}catch(e){}
-  }
+  function installRouter(){/* Navegação pertence exclusivamente ao CRMNavigationV989. */}
   function normalizeLegacyLinks(){
     $('.v97-nav-archive')?.remove();
     Object.entries(LEGACY).forEach(([old,cfg])=>{
@@ -240,8 +222,8 @@
     if(activeBackup){const layout=sec.querySelector('.v972-layout');if(layout){layout.querySelector(':scope > .v972-panel')?.remove();if(!layout.querySelector('[data-v975-import-panel]'))layout.insertAdjacentHTML('beforeend',configPanel());}}
     try{W.CRMV974Personalizacao?.render?.()}catch(e){}
   }
-  function restoreJSONFile(file){const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(String(r.result||'{}'));if(data.localStorage&&typeof data.localStorage==='object'){if(!confirm('Restaurar o backup completo e substituir os dados locais atuais?'))return;Object.entries(data.localStorage).forEach(([k,v])=>localStorage.setItem(k,String(v)));showImportResult(true,'Backup completo restaurado. Recarregando o CRM...');setTimeout(()=>location.reload(),350);return}const arr=Array.isArray(data)?data:(Array.isArray(data.leads)?data.leads:null);if(!arr)throw new Error('JSON sem lista de leads ou backup localStorage.');saveLeads(arr);showImportResult(true,arr.length+' lead(s) restaurado(s) do JSON.');finiteEnhance('configuracoes','importar')}catch(e){showImportResult(false,'Falha ao importar JSON: '+e.message)}};r.readAsText(file,'utf-8');}
-  function handleCSVFile(file){const r=new FileReader();r.onload=()=>{try{const replace=$('[data-v975-import-mode]')?.value==='replace';if(replace&&!confirm('Substituir toda a base atual de leads pelo CSV?'))return;const n=importCSVText(r.result,replace);showImportResult(true,n+' lead(s) importado(s) com sucesso.');toast('Importação concluída.');}catch(e){showImportResult(false,'Falha ao importar CSV: '+e.message)}};r.readAsText(file,'utf-8');}
+  function restoreJSONFile(file){const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(String(r.result||'{}'));if(data.localStorage&&typeof data.localStorage==='object'){window.CRMDialog?.confirm('Restaurar o backup completo e substituir os dados locais atuais?',{title:'Restaurar backup',danger:true}).then(ok=>{if(!ok)return;Object.entries(data.localStorage).forEach(([k,v])=>localStorage.setItem(k,String(v)));showImportResult(true,'Backup completo restaurado. Recarregando o CRM...');setTimeout(()=>location.reload(),350)});return}const arr=Array.isArray(data)?data:(Array.isArray(data.leads)?data.leads:null);if(!arr)throw new Error('JSON sem lista de leads ou backup localStorage.');saveLeads(arr);showImportResult(true,arr.length+' lead(s) restaurado(s) do JSON.');finiteEnhance('configuracoes','importar')}catch(e){showImportResult(false,'Falha ao importar JSON: '+e.message)}};r.readAsText(file,'utf-8');}
+  function handleCSVFile(file){const r=new FileReader();r.onload=()=>{try{const replace=$('[data-v975-import-mode]')?.value==='replace';const run=()=>{const n=importCSVText(r.result,replace);showImportResult(true,n+' lead(s) importado(s) com sucesso.');toast('Importação concluída.');};if(replace){window.CRMDialog?.confirm('Substituir toda a base atual de leads pelo CSV?',{title:'Substituir base',danger:true}).then(ok=>{if(ok)run()});return}run();}catch(e){showImportResult(false,'Falha ao importar CSV: '+e.message)}};r.readAsText(file,'utf-8');}
   function bind(){
     if(W.__crmV975Bound)return;W.__crmV975Bound=true;
     D.addEventListener('click',e=>{
@@ -273,9 +255,7 @@
     installRouter();normalizeLegacyLinks();bind();
     const h=location.hash.replace('#','');if(LEGACY[h])routeLegacy(h);
     setTimeout(()=>{cleanLegacyViews();normalizeLegacyLinks();initialRoute();},230);
-    setTimeout(()=>{installRouter();cleanLegacyViews();normalizeLegacyLinks();enhance(getActive(),'');},700);
-    setTimeout(()=>{installRouter();cleanLegacyViews();normalizeLegacyLinks();enhance(getActive(),'');},1600);
-    setTimeout(()=>{installRouter();cleanLegacyViews();normalizeLegacyLinks();enhance(getActive(),'');},3200);
+    setTimeout(()=>{cleanLegacyViews();normalizeLegacyLinks();enhance(getActive(),'');},240);
     W.CRMV975Consolidacao={version:VERSION,routeLegacy,enhance,map:LEGACY,diagnostics:function(){const ids={};$$('[id]').forEach(el=>ids[el.id]=(ids[el.id]||0)+1);return {version:VERSION,active:getActive(),duplicateIds:Object.entries(ids).filter(([,n])=>n>1),legacyViews:Object.keys(LEGACY).map(id=>({id,placeholder:!!$('#'+id+'[data-v975-legacy-placeholder]')})),mainViews:$$('.view').map(v=>v.id)}}};
     if(W.CRMV97Navigation)W.CRMV97NavigationV975=Object.freeze({version:VERSION,consolidados:LEGACY});
   }

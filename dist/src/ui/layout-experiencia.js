@@ -19,15 +19,7 @@
   }
 
   function addVersionBadge(){
-    if($('#crmV72VisualBadge')) return;
-    const actions=$('.topbar-actions') || $('.topbar');
-    if(!actions) return;
-    const badge=document.createElement('span');
-    badge.id='crmV72VisualBadge';
-    badge.className='crm-v70-badge crm-v72-visual-badge';
-    badge.textContent='V72 · visual';
-    badge.title='Layout e experiência visual ativos';
-    actions.appendChild(badge);
+    $('#crmV72VisualBadge')?.remove();
   }
 
   function wrapTables(root=document){
@@ -109,27 +101,9 @@
 
   function observeViews(){ /* V97.1: observer v72 desativado para evitar loop; schedule manual no boot/setView. */ const main=$('.main')||document.body; if(main) schedule(main); }
 
-  function patchSetView(){
-    try{
-      const old=window.setView;
-      if(typeof old==='function' && !old.__v72Visual){
-        const wrapped=function(view){
-          const out=old.apply(this,arguments);
-          document.body.dataset.currentView=view || activeView();
-          schedule(document);
-          return out;
-        };
-        wrapped.__v72Visual=true;
-        window.setView=wrapped;
-        try{ setView=wrapped; }catch(e){}
-      }
-    }catch(e){}
-  }
-
   function boot(){
     enhance(document);
     observeViews();
-    patchSetView();
     window.addEventListener('crm:settings-updated',()=>schedule(document));
     window.addEventListener('crm:datachange',()=>schedule(document));
     window.addEventListener('crm:tab-rendered',()=>schedule(document));

@@ -41,8 +41,8 @@
   function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
   function setJSON(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
   function saveUI(){setJSON(LS_UI,state);}
-  function getLeads(){try{return window.crmGetLeads?window.crmGetLeads():(window.leads||[]);}catch(e){return [];}}
-  function saveLeads(){try{window.crmSaveLeads?window.crmSaveLeads():null;}catch(e){}}
+  function getLeads(){try{return window.CRMData?.leads?.all?.()||[]}catch(e){return[]}}
+  function saveLeads(){try{return window.CRMData?.leads?.save?.(getLeads(),'agenda')}catch(e){return null}}
   function toast(msg,type='success'){try{window.crmToast?window.crmToast(msg,type):showToast(msg,type);}catch(e){console.log(msg);}}
   function openLead(name){try{window.crmOpenLead?window.crmOpenLead(name):openDetail(name);}catch(e){try{window.setView('leads');}catch(_){}}}
   function uid(prefix='ev_'){return prefix+Date.now()+Math.random().toString(36).slice(2,7);}

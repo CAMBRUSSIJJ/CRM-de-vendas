@@ -1,5 +1,1 @@
-CRM V98.1 — Modularização Estrutural
-Base: CRM V98 Estabilização Definitiva
-Arquitetura: arquivos CSS e JavaScript separados
-Dados: localStorage compatível
-Build: pasta dist pronta para publicação
+CRM V99.0 — Núcleo Modular, Backup Seguro e Supabase Ready

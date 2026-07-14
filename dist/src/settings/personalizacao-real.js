@@ -90,7 +90,7 @@
   function panelHtml(){
     var cfg=load();
     return '<section class="v974-personalizacao" data-v974-panel>'+ 
-      '<div class="v974-head"><div><span class="v974-eyebrow">V97.4 · Personalização real</span><h3>Aparência, densidade e abas</h3><p>Preferências salvas no navegador, sem criar página nova, sem bloquear botões e sem mexer no motor das outras abas.</p></div><div class="v974-actions"><button type="button" class="v972-btn soft" data-v974-action="reset">Restaurar</button><button type="button" class="v972-btn primary" data-v974-action="save">Salvar preferências</button></div></div>'+
+      '<div class="v974-head"><div><span class="v974-eyebrow">Personalização real</span><h3>Aparência, densidade e abas</h3><p>Preferências salvas no navegador, sem criar página nova, sem bloquear botões e sem mexer no motor das outras abas.</p></div><div class="v974-actions"><button type="button" class="v972-btn soft" data-v974-action="reset">Restaurar</button><button type="button" class="v972-btn primary" data-v974-action="save">Salvar preferências</button></div></div>'+
       '<div class="v974-body">'+
         '<div class="v974-grid">'+
           '<div class="v974-field"><label>Tema</label><select data-v974-field="theme"><option value="premium" '+(cfg.theme==='premium'?'selected':'')+'>Premium</option><option value="claro" '+(cfg.theme==='claro'?'selected':'')+'>Claro</option><option value="escuro" '+(cfg.theme==='escuro'?'selected':'')+'>Escuro</option></select></div>'+
